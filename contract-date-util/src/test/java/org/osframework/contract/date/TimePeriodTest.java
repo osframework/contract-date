@@ -17,6 +17,7 @@ public class TimePeriodTest {
 	@DataProvider
 	public Object[][] validNotations() {
 		return new Object[][] {
+			new Object[] { "0D", 0, TimeUnit.DAY },
 			new Object[] { "2B", 2, TimeUnit.BUSINESS_DAY },
 			new Object[] { "3M", 3, TimeUnit.MONTH },
 			new Object[] { "10Y", 10, TimeUnit.YEAR },

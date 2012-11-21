@@ -31,7 +31,7 @@ import java.util.Date;
  * <i>desired month</i>; the digit represents the <i>desired year</i> (desired
  * year mod 10).</p>
  * <p>The IMM code months are:</p>
- * <table border="1">
+ * <table border="1" cellpadding="1">
  * 	<tr>
  * 		<th>Letter</th>
  * 		<th>Month</th>
