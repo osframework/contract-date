@@ -1,4 +1,4 @@
-package org.osframework.contract.date.imm;
+package org.osframework.contract.date.util;
 
 import static org.testng.Assert.*;
 import static org.testng.ContractDateAssert.*;
@@ -6,6 +6,7 @@ import static org.testng.ContractDateAssert.*;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.osframework.contract.date.util.IMM;
 import org.testng.annotations.Test;
 import org.testng.annotations.DataProvider;
 

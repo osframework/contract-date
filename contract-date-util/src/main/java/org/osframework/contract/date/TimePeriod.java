@@ -41,6 +41,12 @@ package org.osframework.contract.date;
  * 		<td>MONTH</td>
  * 	</tr>
  * 	<tr>
+ * 		<td>1Q</td>
+ * 		<td>=</td>
+ * 		<td>3</th>
+ * 		<td>MONTH</td>
+ * 	</tr>
+ * 	<tr>
  * 		<td>10Y</td>
  * 		<td>=</td>
  * 		<td>10</td>
@@ -92,6 +98,11 @@ public class TimePeriod {
 		}
 		int amount = Integer.parseInt(iBuf.toString());
 		char symbol = cBuf.toString().toUpperCase().charAt(0);
+		// Convert quarter to months (1Q = 3M)
+		if ('Q' == symbol) {
+			amount *= 3;
+			symbol = 'M';
+		}
 		this.amount = amount;
 		this.timeUnit = TimeUnit.valueOf(symbol);
 	}

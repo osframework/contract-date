@@ -38,6 +38,8 @@
 		<build.timestamp>${maven.build.timestamp}</build.timestamp>
 		
 		<!-- Managed dependency versions -->
+		<commons-lang.version>2.6</commons-lang.version>
+		<jfin-DateMath.version>1.0.1</jfin-DateMath.version>
 		<testng.version>6.8</testng.version>
 	</properties>
 
@@ -47,6 +49,18 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>commons-lang</groupId>
+				<artifactId>commons-lang</artifactId>
+				<version>${commons-lang.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.jfin</groupId>
+				<artifactId>jFin-DateMath</artifactId>
+				<version>${jfin-DateMath.version}</version>
+				<scope>compile</scope>
+			</dependency>
 			<dependency>
 				<groupId>org.testng</groupId>
 				<artifactId>testng</artifactId>
