@@ -1,0 +1,36 @@
+			--------------------
+			Introduction
+			--------------------
+			Dave Joyce
+			--------------------
+			2012-11-22
+			--------------------
+* Summary
+
+	The <<<contract-date>>> project provides calculation of the dates used on
+	derivative contract trades across the financial world. It recognizes and
+	uses current standard market conventions employed by traders to correctly
+	calculate the dates upon which various types of contract ('products') begin,
+	settle, become eligible for exercise, or end.
+
+	The products for which <<<contract-date>>> can be used include:
+
+	* Forwards
+	* Forward Rate Agreements (FRAs)
+	* Futures
+	* Options
+	* Swaps (Interest Rate and FX)
+	* Swaptions (American, Bermudan, European)
+	[]
+
+	Updated, in-depth documentation and discussion of this project is available
+	on the {{{https://github.com/osframework/contract-date/wiki}project wiki}.
+
+* Purpose
+
+	The purpose of the <<<contract-date>>> project is twofold. It aims to:
+
+	[[1]] Provide developers with an introduction to financial date calculation
+	      and the standard market conventions used in the derivatives trading
+	      business domain
+	[[2]] Provide a publicly consumable library and web service for integration

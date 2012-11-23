@@ -27,9 +27,9 @@
 	</licenses>
 
 	<scm>
-		<url>https://github.com/davejoyce/contract-date</url>
-		<connection>git://github.com/davejoyce/contract-date.git</connection>
-		<developerConnection>https://github.com/davejoyce/contract-date.git</developerConnection>
+		<url>https://github.com/osframework/contract-date</url>
+		<connection>git://github.com/osframework/contract-date.git</connection>
+		<developerConnection>https://github.com/osframework/contract-date.git</developerConnection>
 	</scm>
 
 	<properties>
