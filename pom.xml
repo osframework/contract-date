@@ -34,6 +34,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.javaVersion>1.6</project.build.javaVersion>
 		<maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
 		<build.timestamp>${maven.build.timestamp}</build.timestamp>
 		
@@ -41,10 +42,14 @@
 		<commons-lang.version>2.6</commons-lang.version>
 		<jfin-DateMath.version>1.0.1</jfin-DateMath.version>
 		<testng.version>6.8</testng.version>
+		
+		<!-- Plugin versions -->
+		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
 	</properties>
 
 	<modules>
 		<module>contract-date-util</module>
+		<module>contract-date-holiday</module>
 	</modules>
 
 	<dependencyManagement>
@@ -69,4 +74,20 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${maven-compiler-plugin.version}</version>
+					<configuration>
+						<source>${project.build.javaVersion}</source>
+						<target>${project.build.javaVersion}</target>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 </project>
