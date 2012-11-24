@@ -64,14 +64,14 @@ public class ContractDateSetDefaultImpl implements ContractDateSet {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Date getEffectiveDate() {
+	public Date getStartDate() {
 		return effectiveDate;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Date getMaturityDate() {
+	public Date getEndDate() {
 		return maturityDate;
 	}
 

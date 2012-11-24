@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.osframework.contract-date</groupId>
@@ -11,12 +10,12 @@
 
 	<name>Contract Date Calculator</name>
 	<description>Derivative contract date calculation service</description>
+	<inceptionYear>2012</inceptionYear>
 
 	<organization>
 		<name>OSFramework Project</name>
-		<url>http://osframework.org/projects/</url>
+		<url>http://osframework.github.org/</url>
 	</organization>
-	<inceptionYear>2012</inceptionYear>
 
 	<licenses>
 		<license>
@@ -45,9 +44,11 @@
 		
 		<!-- Plugin versions -->
 		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
+		<maven-remote-resources-plugin.version>1.4</maven-remote-resources-plugin.version>
 	</properties>
 
 	<modules>
+		<module>shared-resources</module>
 		<module>contract-date-util</module>
 		<module>contract-date-holiday</module>
 	</modules>
@@ -86,6 +87,11 @@
 						<source>${project.build.javaVersion}</source>
 						<target>${project.build.javaVersion}</target>
 					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-remote-resources-plugin</artifactId>
+					<version>${maven-remote-resources-plugin.version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>

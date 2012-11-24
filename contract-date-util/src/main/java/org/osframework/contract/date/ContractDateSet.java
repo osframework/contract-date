@@ -20,19 +20,26 @@ package org.osframework.contract.date;
 import java.util.Date;
 
 /**
- * Basic contract of an object that provides the various major dates on a
+ * Basic contract of objects that provide the essential major dates on a
  * derivative contract trade.
  *
  * @author <a href="mailto:david.joyce13@gmail.com">Dave Joyce</a>
  */
 public interface ContractDateSet {
 
+	/**
+	 * @return date of trade execution
+	 */
 	public Date getTradeDate();
 
-	public Date getEffectiveDate();
+	/**
+	 * @return date on which contract starts
+	 */
+	public Date getStartDate();
 
-	public Date getMaturityDate();
-
-	public Date getExpirationDate();
+	/**
+	 * @return date on which contract ends
+	 */
+	public Date getEndDate();
 
 }

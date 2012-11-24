@@ -34,8 +34,24 @@ import org.osframework.contract.date.impl.ContractDateSetDefaultImpl;
 import org.osframework.contract.date.util.IMM;
 
 /**
- * ContractDateSetBuilder description here.
- *
+ * Builder for configurable construction of a <code>ContractDateSet</code>
+ * object.
+ * <p>
+ * Most methods of this class expose several versions, to enable ease of client
+ * use. Additionally, all methods of this class return a reference to the same
+ * builder instance (except for {@link #build()}). This allows clients to
+ * incrementally set up and construct a <code>ContractDateSet</code> object like
+ * so:
+ * </p>
+ * <pre>
+ * ContractDateSet allDates = new ContractDateSetBuilder("2012-11-13")
+ *                                .setEffectiveDate("Z9")
+ *                                .setMaturityDate("23Y")
+ *                                .setIMMRoll()
+ *                                .setTimeZone("America/New_York")
+ *                                .build();
+ * </pre>
+ * 
  * @author <a href="mailto:david.joyce13@gmail.com">Dave Joyce</a>
  */
 public class ContractDateSetBuilder {
@@ -48,25 +64,66 @@ public class ContractDateSetBuilder {
 	private boolean useIMMRoll = false;
 
 	/**
-	 * 
+	 * Default constructor - uses default trade date of today in system default
+	 * <code>TimeZone</code>.
 	 */
 	public ContractDateSetBuilder() {
 		this(Calendar.getInstance());
 	}
 
+	/**
+	 * Constructor - accepts <code>Calendar</code> object representing the base
+	 * trade date from which relative future dates are calculated. The
+	 * <code>TimeZone</code> of this object (and all calculated dates) is
+	 * derived from the given trade date object.
+	 * 
+	 * @param tradeDate base trade date from which relative future dates are to
+	 *                  be calculated
+	 */
 	public ContractDateSetBuilder(Calendar tradeDate) {
 		this.setTradeDate(tradeDate);
 		this.timeZone = tradeDate.getTimeZone();
 	}
 
+	/**
+	 * Constructor - accepts <code>Date</code> object representing the base
+	 * trade date from which relative future dates are calculated. The
+	 * <code>TimeZone</code> of this object (and all calculated dates) is set to
+	 * system default.
+	 * 
+	 * @param tradeDate base trade date from which relative future dates are to
+	 *                  be calculated
+	 */
 	public ContractDateSetBuilder(Date tradeDate) {
 		this.setTradeDate(tradeDate);
 	}
 
+	/**
+	 * Constructor - accepts string representation of the base trade date from
+	 * which relative future dates are calculated. The <code>TimeZone</code> of
+	 * this object (and all calculated dates) is set to system default.
+	 * 
+	 * @param tradeDate base trade date from which relative future dates are to
+	 *                  be calculated
+	 */
 	public ContractDateSetBuilder(String tradeDate) {
 		this.setTradeDate(tradeDate);
 	}
 
+	/**
+	 * Set the trade effective date of the <code>ContractDateSet</code> object
+	 * to be built. If the <code>TimeZone</code> of this builder is non-null and
+	 * differs from that of the given <code>Calendar</code> object, the time
+	 * zone of the builder is used.
+	 * <p>
+	 * Calling this method eliminates calculation of effective date when the
+	 * {@link #build()} method is invoked.
+	 * </p>
+	 * 
+	 * @param effectiveDate trade effective date to be used
+	 * @return this builder instance
+	 * @throws IllegalArgumentException if argument is <code>null</code>
+	 */
 	public ContractDateSetBuilder setEffectiveDate(Calendar effectiveDate) {
 		if (null == effectiveDate) {
 			throw new IllegalArgumentException("argument 'effectiveDate' cannot be null");
@@ -78,6 +135,20 @@ public class ContractDateSetBuilder {
 		return this;
 	}
 
+	/**
+	 * Set the trade effective date of the <code>ContractDateSet</code> object
+	 * to be built. If the <code>TimeZone</code> of this builder is non-null,
+	 * the time zone of the builder is used; otherwise, time zone is set to the
+	 * system default.
+	 * <p>
+	 * Calling this method eliminates calculation of effective date when the
+	 * {@link #build()} method is invoked.
+	 * </p>
+	 * 
+	 * @param effectiveDate trade effective date to be used
+	 * @return this builder instance
+	 * @throws IllegalArgumentException if argument is <code>null</code>
+	 */
 	public ContractDateSetBuilder setEffectiveDate(Date effectiveDate) {
 		if (null == effectiveDate) {
 			throw new IllegalArgumentException("argument 'effectiveDate' cannot be null");
@@ -87,6 +158,26 @@ public class ContractDateSetBuilder {
 		return this.setEffectiveDate(edCal);
 	}
 
+	/**
+	 * Set the trade effective date of the <code>ContractDateSet</code> object
+	 * to be built. If the <code>TimeZone</code> of this builder is non-null,
+	 * the time zone of the builder is used; otherwise, time zone is set to the
+	 * system default.
+	 * <p>
+	 * Calling this method <i>may</i> eliminate calculation of effective date
+	 * when the {@link #build()} method is invoked. Calculation is eliminated
+	 * if:
+	 * </p>
+	 * <ol type="A">
+	 * 	<li>the given string is parseable as a date, or</li>
+	 * 	<li>the given string is an IMM date code representing an explicit date
+	 *      forward of trade date.</li>
+	 * </ol>
+	 * 
+	 * @param effectiveDate trade effective date to be used
+	 * @return this builder instance
+	 * @throws IllegalArgumentException if argument is <code>null</code>
+	 */
 	public ContractDateSetBuilder setEffectiveDate(String effectiveDate) {
 		if (null == effectiveDate) {
 			throw new IllegalArgumentException("argument 'effectiveDate' cannot be null");
@@ -104,6 +195,20 @@ public class ContractDateSetBuilder {
 		}
 	}
 
+	/**
+	 * Set the trade expiration date of the <code>ContractDateSet</code> object
+	 * to be built. If the <code>TimeZone</code> of this builder is non-null and
+	 * differs from that of the given <code>Calendar</code> object, the time
+	 * zone of the builder is used.
+	 * <p>
+	 * Calling this method eliminates calculation of expiration date when the
+	 * {@link #build()} method is invoked.
+	 * </p>
+	 * 
+	 * @param expirationDate trade expiration date to be used
+	 * @return this builder instance
+	 * @throws IllegalArgumentException if argument is <code>null</code>
+	 */
 	public ContractDateSetBuilder setExpirationDate(Calendar expirationDate) {
 		if (null == expirationDate) {
 			throw new IllegalArgumentException("argument 'expirationDate' cannot be null");
@@ -115,6 +220,20 @@ public class ContractDateSetBuilder {
 		return this;
 	}
 
+	/**
+	 * Set the trade expiration date of the <code>ContractDateSet</code> object
+	 * to be built. If the <code>TimeZone</code> of this builder is non-null,
+	 * the time zone of the builder is used; otherwise, time zone is set to the
+	 * system default.
+	 * <p>
+	 * Calling this method eliminates calculation of expiration date when the
+	 * {@link #build()} method is invoked.
+	 * </p>
+	 * 
+	 * @param expirationDate trade expiration date to be used
+	 * @return this builder instance
+	 * @throws IllegalArgumentException if argument is <code>null</code>
+	 */
 	public ContractDateSetBuilder setExpirationDate(Date expirationDate) {
 		if (null == expirationDate) {
 			throw new IllegalArgumentException("argument 'expirationDate' cannot be null");
@@ -124,6 +243,26 @@ public class ContractDateSetBuilder {
 		return this.setExpirationDate(edCal);
 	}
 
+	/**
+	 * Set the trade expiration date of the <code>ContractDateSet</code> object
+	 * to be built. If the <code>TimeZone</code> of this builder is non-null,
+	 * the time zone of the builder is used; otherwise, time zone is set to the
+	 * system default.
+	 * <p>
+	 * Calling this method <i>may</i> eliminate calculation of expiration date
+	 * when the {@link #build()} method is invoked. Calculation is eliminated
+	 * if:
+	 * </p>
+	 * <ol type="A">
+	 * 	<li>the given string is parseable as a date, or</li>
+	 * 	<li>the given string is an IMM date code representing an explicit date
+	 *      forward of trade date.</li>
+	 * </ol>
+	 * 
+	 * @param expirationDate trade expiration date to be used
+	 * @return this builder instance
+	 * @throws IllegalArgumentException if argument is <code>null</code>
+	 */
 	public ContractDateSetBuilder setExpirationDate(String expirationDate) {
 		if (null == expirationDate) {
 			throw new IllegalArgumentException("argument 'expirationDate' cannot be null");
@@ -135,11 +274,25 @@ public class ContractDateSetBuilder {
 			this.expirationDateNotation = expirationDate;
 			return this.setEffectiveDate(toCalendar(expirationDate, refDate));
 		} else {
-			this.effectiveDateNotation = expirationDate;
+			this.expirationDateNotation = expirationDate;
 			return this;
 		}
 	}
 
+	/**
+	 * Set the trade maturity date of the <code>ContractDateSet</code> object
+	 * to be built. If the <code>TimeZone</code> of this builder is non-null and
+	 * differs from that of the given <code>Calendar</code> object, the time
+	 * zone of the builder is used.
+	 * <p>
+	 * Calling this method eliminates calculation of maturity date when the
+	 * {@link #build()} method is invoked.
+	 * </p>
+	 * 
+	 * @param maturityDate trade maturity date to be used
+	 * @return this builder instance
+	 * @throws IllegalArgumentException if argument is <code>null</code>
+	 */
 	public ContractDateSetBuilder setMaturityDate(Calendar maturityDate) {
 		if (null == maturityDate) {
 			throw new IllegalArgumentException("argument 'maturityDate' cannot be null");
@@ -151,6 +304,20 @@ public class ContractDateSetBuilder {
 		return this;
 	}
 
+	/**
+	 * Set the trade maturity date of the <code>ContractDateSet</code> object
+	 * to be built. If the <code>TimeZone</code> of this builder is non-null,
+	 * the time zone of the builder is used; otherwise, time zone is set to the
+	 * system default.
+	 * <p>
+	 * Calling this method eliminates calculation of maturity date when the
+	 * {@link #build()} method is invoked.
+	 * </p>
+	 * 
+	 * @param maturityDate trade maturity date to be used
+	 * @return this builder instance
+	 * @throws IllegalArgumentException if argument is <code>null</code>
+	 */
 	public ContractDateSetBuilder setMaturityDate(Date maturityDate) {
 		if (null == maturityDate) {
 			throw new IllegalArgumentException("argument 'maturityDate' cannot be null");
@@ -160,6 +327,26 @@ public class ContractDateSetBuilder {
 		return this.setMaturityDate(mdCal);
 	}
 
+	/**
+	 * Set the trade maturity date of the <code>ContractDateSet</code> object
+	 * to be built. If the <code>TimeZone</code> of this builder is non-null,
+	 * the time zone of the builder is used; otherwise, time zone is set to the
+	 * system default.
+	 * <p>
+	 * Calling this method <i>may</i> eliminate calculation of maturity date
+	 * when the {@link #build()} method is invoked. Calculation is eliminated
+	 * if:
+	 * </p>
+	 * <ol type="A">
+	 * 	<li>the given string is parseable as a date, or</li>
+	 * 	<li>the given string is an IMM date code representing an explicit date
+	 *      forward of trade date.</li>
+	 * </ol>
+	 * 
+	 * @param maturityDate trade maturity date to be used
+	 * @return this builder instance
+	 * @throws IllegalArgumentException if argument is <code>null</code>
+	 */
 	public ContractDateSetBuilder setMaturityDate(String maturityDate) {
 		if (null == maturityDate) {
 			throw new IllegalArgumentException("argument 'maturityDate' cannot be null");
@@ -176,6 +363,16 @@ public class ContractDateSetBuilder {
 		}
 	}
 
+	/**
+	 * Set the trade date of the <code>ContractDateSet</code> object to be
+	 * built. If the <code>TimeZone</code> of this builder is non-null and
+	 * differs from that of the given <code>Calendar</code> object, the time
+	 * zone of the builder is used.
+	 * 
+	 * @param tradeDate trade date to be used
+	 * @return this builder instance
+	 * @throws IllegalArgumentException if argument is <code>null</code>
+	 */
 	public ContractDateSetBuilder setTradeDate(Calendar tradeDate) {
 		if (null == tradeDate) {
 			throw new IllegalArgumentException("argument 'tradeDate' cannot be null");
@@ -187,6 +384,16 @@ public class ContractDateSetBuilder {
 		return this;
 	}
 
+	/**
+	 * Set the trade date of the <code>ContractDateSet</code> object to be
+	 * built. If the <code>TimeZone</code> of this builder is non-null, the time
+	 * zone of the builder is used; otherwise, time zone is set to the system
+	 * default.
+	 * 
+	 * @param tradeDate trade date to be used
+	 * @return this builder instance
+	 * @throws IllegalArgumentException if argument is <code>null</code>
+	 */
 	public ContractDateSetBuilder setTradeDate(Date tradeDate) {
 		if (null == tradeDate) {
 			throw new IllegalArgumentException("argument 'tradeDate' cannot be null");
@@ -196,6 +403,16 @@ public class ContractDateSetBuilder {
 		return this.setTradeDate(tdCal);
 	}
 
+	/**
+	 * Set the trade date of the <code>ContractDateSet</code> object to be
+	 * built. If the <code>TimeZone</code> of this builder is non-null, the time
+	 * zone of the builder is used; otherwise, time zone is set to the system
+	 * default.
+	 * 
+	 * @param tradeDate trade date to be used
+	 * @return this builder instance
+	 * @throws IllegalArgumentException if argument is <code>null</code>
+	 */
 	public ContractDateSetBuilder setTradeDate(String tradeDate) {
 		if (null == tradeDate) {
 			throw new IllegalArgumentException("argument 'tradeDate' cannot be null");
@@ -203,6 +420,14 @@ public class ContractDateSetBuilder {
 		return this.setTradeDate(parseDate(tradeDate));
 	}
 
+	/**
+	 * Set the time zone for all dates of the <code>ContractDateSet</code>
+	 * object to be built.
+	 * 
+	 * @param timeZone time zone for all explicit and calculated dates
+	 * @return this builder instance
+	 * @throws IllegalArgumentException if argument is <code>null</code>
+	 */
 	public ContractDateSetBuilder setTimeZone(TimeZone timeZone) {
 		if (null == timeZone) {
 			throw new IllegalArgumentException("argument 'timeZone' cannot be null");
@@ -214,15 +439,35 @@ public class ContractDateSetBuilder {
 		return this;
 	}
 
+	/**
+	 * Enable / disable use of IMM roll convention in calculation of trade
+	 * maturity date.
+	 * 
+	 * @param useIMMRoll boolean flag to enable / disable IMM roll convention
+	 *                   use
+	 * @return this builder instance
+	 */
 	public ContractDateSetBuilder setIMMRoll(boolean useIMMRoll) {
 		this.useIMMRoll = useIMMRoll;
 		return this;
 	}
 
+	/**
+	 * Enable use of IMM roll convention in calculation of trade maturity date.
+	 * 
+	 * @return this builder instance
+	 */
 	public ContractDateSetBuilder setIMMRoll() {
 		return this.setIMMRoll(true);
 	}
 
+	/**
+	 * Build the <code>ContractDateSet</code> object, calculating the requested
+	 * dates as necessary. This method should always be called <b>last</b> on
+	 * this builder instance.
+	 * 
+	 * @return constructed <code>ContractDateSet</code> instance
+	 */
 	public ContractDateSet build() {
 		Calendar referenceDate = (Calendar)this.tradeDate.clone();
 		HolidayCalendar<?> hc = null;
