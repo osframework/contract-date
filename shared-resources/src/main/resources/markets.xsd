@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns="http://osframework.org/contract-date/markets"
+	targetNamespace="http://osframework.org/contract-date/markets"
+	elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
+	<xsd:complexType name="marketsType">
+		<xsd:annotation>
+			<xsd:documentation>Root document element type</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="market" type="marketType" minOccurs="1" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="marketType">
+		<xsd:annotation>
+			<xsd:documentation>Financial market calendar definition</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="currencies" minOccurs="1" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="currency" type="currencyType" minOccurs="1" maxOccurs="unbounded" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" use="required" />
+	</xsd:complexType>
+
+	<xsd:simpleType name="currencyType">
+		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="2" />
+			<xsd:maxLength value="3" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:element name="markets" type="marketsType" />
+</xsd:schema>

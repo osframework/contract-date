@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<markets xmlns="http://osframework.org/contract-date/markets"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://osframework.org/contract-date/markets ../../markets.xsd ">
+	<market id="ECU">
+		<description>Eurpean Currency Unit bank holidays</description>
+		<currencies>
+			<currency>EUR</currency>
+		</currencies>
+	</market>
+	<market id="LnB">
+		<description>London bank holidays</description>
+		<currencies>
+			<currency>GBP</currency>
+		</currencies>
+	</market>
+	<market id="NYB">
+		<description>New York bank holidays</description>
+		<currencies>
+			<currency>USD</currency>
+		</currencies>
+	</market>
+	<market id="TARGET">
+		<description>TARGET bank holidays</description>
+		<currencies>
+			<currency>EUR</currency>
+		</currencies>
+	</market>
+	<market id="TkB">
+		<description>Tokyo bank holidays</description>
+		<currencies>
+			<currency>JPY</currency>
+		</currencies>
+	</market>
+</markets>
