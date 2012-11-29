@@ -18,7 +18,9 @@
 package org.osframework.contract.date.holiday;
 
 import org.osframework.contract.date.holiday.expression.HolidayExpression;
+import org.osframework.contract.date.holiday.expression.HolidayExpressionCalculatedImpl;
 import org.osframework.contract.date.holiday.expression.HolidayExpressionFixedImpl;
+import org.osframework.contract.date.holiday.expression.HolidayExpressionOneTimeImpl;
 import org.osframework.contract.date.holiday.expression.HolidayExpressionRelativeImpl;
 
 /**
@@ -55,7 +57,7 @@ public enum HolidayType {
 	 */
 	CALCULATED(new HolidayExpressionStrategy() {
 		public HolidayExpression toExpression(String ruleExpression) {
-			throw new UnsupportedOperationException("Not implemented yet");
+			return new HolidayExpressionCalculatedImpl(ruleExpression);
 		};
 	}),
 
@@ -64,8 +66,7 @@ public enum HolidayType {
 	 */
 	ONETIME(new HolidayExpressionStrategy() {
 		public HolidayExpression toExpression(String ruleExpression) {
-			//return new FixedHolidayRule(ruleExpression);
-			return null;
+			return new HolidayExpressionOneTimeImpl(ruleExpression);
 		};
 	});
 
@@ -82,6 +83,7 @@ public enum HolidayType {
 	 * @param expression string to be converted
 	 * @return expression of this type which can produce the holiday date for a
 	 *         given year
+	 * @throws IllegalArgumentException if expression is null or invalid
 	 */
 	public HolidayExpression toExpression(final String expression) {
 		return this.strategy.toExpression(expression);
