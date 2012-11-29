@@ -18,6 +18,8 @@
 package org.osframework.contract.date.holiday;
 
 import org.osframework.contract.date.holiday.expr.HolidayExpression;
+import org.osframework.contract.date.holiday.expr.HolidayExpressionFixedImpl;
+import org.osframework.contract.date.holiday.expr.HolidayExpressionRelativeImpl;
 
 /**
  * Enumeration of holiday types. Given a valid expression, a
@@ -34,8 +36,7 @@ public enum HolidayType {
 	 */
 	FIXED(new HolidayExpressionStrategy() {
 		public HolidayExpression toExpression(String ruleExpression) {
-			//return new FixedHolidayRule(ruleExpression);
-			return null;
+			return new HolidayExpressionFixedImpl(ruleExpression);
 		};
 	}),
 
@@ -44,8 +45,7 @@ public enum HolidayType {
 	 */
 	RELATIVE(new HolidayExpressionStrategy() {
 		public HolidayExpression toExpression(String ruleExpression) {
-			//return new FixedHolidayRule(ruleExpression);
-			return null;
+			return new HolidayExpressionRelativeImpl(ruleExpression);
 		};
 	}),
 
@@ -76,7 +76,7 @@ public enum HolidayType {
 	}
 
 	/**
-	 * Convert the specified string an expression of this
+	 * Factory method to convert the specified string to an expression of this
 	 * <code>HolidayType</code>.
 	 * 
 	 * @param expression string to be converted
