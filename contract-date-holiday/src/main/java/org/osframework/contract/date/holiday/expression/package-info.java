@@ -1,7 +1,7 @@
-/**
- * File: HolidayExpression.java
+/*
+ * File: package-info.java
  * 
- * Copyright 2012 David A. Joyce
+ * Copyright 2012 OSFramework Project.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.holiday.expr;
-
-import java.util.Date;
-
 /**
- * Behavior exposed by objects that produce the date of a holiday through
- * evaluation of some logic.
+ * Expression classes for creation of a particular type of holiday date for a
+ * given year.
  *
  * @author <a href="mailto:david.joyce13@gmail.com">Dave Joyce</a>
- * @since 0.0.1
+ * @see org.osframework.contract.date.holiday.HolidayType
  */
-public interface HolidayExpression {
-
-	/**
-	 * Produce the date of a defined holiday for the specified year.
-	 * 
-	 * @param year year for which this expression must produce the holiday date
-	 * @return date of a defined holiday in the given year
-	 */
-	public Date evaluate(int year);
-
-}
+package org.osframework.contract.date.holiday.expression;

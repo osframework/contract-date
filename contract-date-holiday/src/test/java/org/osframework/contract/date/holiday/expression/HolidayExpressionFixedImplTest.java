@@ -1,18 +1,19 @@
-package org.osframework.contract.date.holiday.expr;
+package org.osframework.contract.date.holiday.expression;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 import java.util.Calendar;
 import java.util.Date;
 
+import org.osframework.contract.date.holiday.expression.HolidayExpressionFixedImpl;
 import org.testng.annotations.Test;
 import org.testng.annotations.DataProvider;
 
-public class HolidayExpressionRelativeImplTest {
+public class HolidayExpressionFixedImplTest {
 
 	@Test(dataProvider = "dp")
 	public void testEvaluate(String e, int y, Date check) {
-		HolidayExpressionRelativeImpl expr = new HolidayExpressionRelativeImpl(e);
+		HolidayExpressionFixedImpl expr = new HolidayExpressionFixedImpl(e);
 		Date result = expr.evaluate(y);
 		Calendar actual = Calendar.getInstance(),
 				 expected = (Calendar)actual.clone();
@@ -25,16 +26,16 @@ public class HolidayExpressionRelativeImplTest {
 
 	@DataProvider
 	public Object[][] dp() {
-		String expression = "NOVEMBER/THURSDAY/4";
+		String expression = "DECEMBER/25";
 		int year = 2012;
 		Calendar c = Calendar.getInstance();
-		c.set(2012, Calendar.NOVEMBER, 22);
+		c.set(2012, Calendar.DECEMBER, 25);
 		Date check = c.getTime();
 		Object[] set1 = new Object[] { expression, year, check };
 		
-		expression = "SEPTEMBER/MONDAY/1";
+		expression = "JANUARY/1";
 		year = 2010;
-		c.set(2010, Calendar.SEPTEMBER, 6);
+		c.set(2010, Calendar.JANUARY, 1);
 		check = c.getTime();
 		Object[] set2 = new Object[] { expression, year, check };
 		

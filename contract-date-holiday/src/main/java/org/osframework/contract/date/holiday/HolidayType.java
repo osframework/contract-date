@@ -17,9 +17,9 @@
  */
 package org.osframework.contract.date.holiday;
 
-import org.osframework.contract.date.holiday.expr.HolidayExpression;
-import org.osframework.contract.date.holiday.expr.HolidayExpressionFixedImpl;
-import org.osframework.contract.date.holiday.expr.HolidayExpressionRelativeImpl;
+import org.osframework.contract.date.holiday.expression.HolidayExpression;
+import org.osframework.contract.date.holiday.expression.HolidayExpressionFixedImpl;
+import org.osframework.contract.date.holiday.expression.HolidayExpressionRelativeImpl;
 
 /**
  * Enumeration of holiday types. Given a valid expression, a
