@@ -17,6 +17,7 @@
  */
 package org.osframework.contract.date.holiday.expression.algorithm;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -49,8 +50,34 @@ public class WesternEaster implements HolidayAlgorithm {
 	 * @return date of Easter Sunday in the given year
 	 */
 	public Date compute(int year) {
-		// TODO Auto-generated method stub
-		return null;
+		int a, b, c, d, e, f, g, h, i, j, k, l;
+		int easterMonth, pfm, easterDayOfMonth;
+		
+		a = year % 19;
+		b = year / 100;
+		c = year % 100;
+		d = b / 4;
+		e = b % 4;
+		f = (b + 8) / 25;
+		g = (b - f + 1) / 3;
+		h = (19 * a + b - d - g + 15) % 30;
+		i = c / 4;
+		j = c % 4;
+		k = (32 + 2 * e + 2 * i - h - j) % 7;
+		l = (a + 11 * h + 22 * k) / 451;
+		
+		// 1-based index of Easter month
+		easterMonth = (h + k - 7 * l + 114) / 31;
+		pfm = (h + k - 7 * l + 114) % 31;
+		
+		// Day in Easter month
+		easterDayOfMonth = pfm + 1;
+		
+		Calendar easter = Calendar.getInstance();
+		easter.set(Calendar.YEAR, year);
+		easter.set(Calendar.MONTH, (easterMonth - 1));
+		easter.set(Calendar.DAY_OF_MONTH, easterDayOfMonth);
+		return easter.getTime();
 	}
 
 }
