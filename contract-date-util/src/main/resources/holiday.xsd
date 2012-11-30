@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://osframework.org/schema/contract-date/holiday"
+            xmlns="http://osframework.org/schema/contract-date/holiday"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+
+	<xsd:complexType name="HolidayDefinitionType">
+		<xsd:annotation>
+			<xsd:documentation>Data type for a financial holiday definition</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="observance" minOccurs="1" maxOccurs="1" >
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:NCName">
+						<xsd:enumeration value="CALCULATED" />
+						<xsd:enumeration value="FIXED" />
+						<xsd:enumeration value="ONETIME" />
+						<xsd:enumeration value="RELATIVE" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="expression" type="xsd:string" minOccurs="1" maxOccurs="1" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" use="required" />
+	</xsd:complexType>
+
+	<xsd:element name="holidays">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="holiday" type="HolidayDefinitionType" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+</xsd:schema>

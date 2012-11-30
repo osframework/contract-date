@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<holidays xmlns="http://osframework.org/schema/contract-date/holiday"
+	      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	      xsi:schemaLocation="http://osframework.org/schema/contract-date/holiday ../../main/resources/holiday.xsd ">
+
+	<!-- US Federal Reserve bank holidays -->
+	<holiday id="NewYearsDay">
+		<name>New Year's Day</name>
+		<description>First day of the Gregorian calendar year</description>
+		<observance>FIXED</observance>
+		<expression>JANUARY/1</expression>
+	</holiday>
+	<holiday id="MartinLutherKingJrDay">
+		<name>Martin Luther King, Jr. Day</name>
+		<description>Birthday of Martin Luther King, Jr.</description>
+		<observance>RELATIVE</observance>
+		<expression>JANUARY/MONDAY/3</expression>
+	</holiday>
+	<holiday id="WashingtonsBirthday">
+		<name>Washington's Birthday</name>
+		<description>Birthday of George Washington</description>
+		<observance>RELATIVE</observance>
+		<expression>FEBRUARY/MONDAY/3</expression>
+	</holiday>
+	<holiday id="MemorialDay">
+		<name>Memorial Day</name>
+		<description>US national day honoring military veterans</description>
+		<observance>RELATIVE</observance>
+		<expression>MAY/MONDAY/4</expression>
+	</holiday>
+	<holiday id="IndependenceDay">
+		<name>Independence Day</name>
+		<description>US national celebration of Declaration of Independence</description>
+		<observance>FIXED</observance>
+		<expression>JULY/4</expression>
+	</holiday>
+	<holiday id="LaborDay">
+		<name>Labor Day</name>
+		<observance>RELATIVE</observance>
+		<expression>SEPTEMBER/MONDAY/1</expression>
+	</holiday>
+	<holiday id="ColumbusDay">
+		<name>Columbus Day</name>
+		<observance>RELATIVE</observance>
+		<expression>OCTOBER/MONDAY/2</expression>
+	</holiday>
+	<holiday id="VeteransDay">
+		<name>VeteransDay</name>
+		<observance>FIXED</observance>
+		<expression>NOVEMBER/11</expression>
+	</holiday>
+	<holiday id="Thanksgiving">
+		<name>Thanksgiving Day</name>
+		<observance>RELATIVE</observance>
+		<expression>NOVEMBER/THURSDAY/4</expression>
+	</holiday>
+	<holiday id="Christmas">
+		<name>Christmas Day</name>
+		<observance>FIXED</observance>
+		<expression>DECEMBER/25</expression>
+	</holiday>
+
+	<!-- UK Bank of England bank holidays (not already defined above) -->
+	<holiday id="GoodFriday">
+		<name>Good Friday</name>
+		<observance>CALCULATED</observance>
+		<expression>EASTER-2</expression>
+	</holiday>
+	<holiday id="EasterMonday">
+		<name>Easter Monday</name>
+		<observance>CALCULATED</observance>
+		<expression>EASTER+1</expression>
+	</holiday>
+	<holiday id="EarlyMayBankHoliday">
+		<name>Early May Bank Holiday</name>
+		<observance>RELATIVE</observance>
+		<expression>MAY/MONDAY/1</expression>
+	</holiday>
+	<holiday id="SpringBankHoliday">
+		<name>Spring Bank Holiday</name>
+		<observance>RELATIVE</observance>
+		<expression>JUNE/MONDAY/1</expression>
+	</holiday>
+	<holiday id="QueensDiamondJubilee">
+		<name>The Queen's Diamond Jubilee</name>
+		<observance>ONETIME</observance>
+		<expression>2012-06-05</expression>
+	</holiday>
+	<holiday id="SummerBankHoliday">
+		<name>Summer Bank Holiday</name>
+		<observance>RELATIVE</observance>
+		<expression>AUGUST/MONDAY/4</expression>
+	</holiday>
+	<holiday id="BoxingDay">
+		<name>Boxing Day</name>
+		<observance>FIXED</observance>
+		<expression>DECEMBER/26</expression>
+	</holiday>
+</holidays>
