@@ -48,9 +48,7 @@
 	</properties>
 
 	<modules>
-		<module>shared-resources</module>
 		<module>contract-date-util</module>
-		<module>contract-date-holiday</module>
 	</modules>
 
 	<dependencyManagement>
