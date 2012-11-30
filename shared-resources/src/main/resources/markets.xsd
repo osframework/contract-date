@@ -4,38 +4,65 @@
 	targetNamespace="http://osframework.org/contract-date/markets"
 	elementFormDefault="qualified"
 	attributeFormDefault="unqualified">
-	<xsd:complexType name="marketsType">
-		<xsd:annotation>
-			<xsd:documentation>Root document element type</xsd:documentation>
-		</xsd:annotation>
-		<xsd:sequence>
-			<xsd:element name="market" type="marketType" minOccurs="1" maxOccurs="unbounded" />
-		</xsd:sequence>
-	</xsd:complexType>
 
-	<xsd:complexType name="marketType">
-		<xsd:annotation>
-			<xsd:documentation>Financial market calendar definition</xsd:documentation>
-		</xsd:annotation>
-		<xsd:sequence>
-			<xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1" />
-			<xsd:element name="currencies" minOccurs="1" maxOccurs="1">
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element name="currency" type="currencyType" minOccurs="1" maxOccurs="unbounded" />
-					</xsd:sequence>
-				</xsd:complexType>
-			</xsd:element>
-		</xsd:sequence>
-		<xsd:attribute name="id" type="xsd:ID" use="required" />
-	</xsd:complexType>
-
-	<xsd:simpleType name="currencyType">
+	<xsd:simpleType name="CurrencyType">
 		<xsd:restriction base="xsd:string">
 			<xsd:minLength value="2" />
 			<xsd:maxLength value="3" />
 		</xsd:restriction>
 	</xsd:simpleType>
 
-	<xsd:element name="markets" type="marketsType" />
+	<xsd:attributeGroup name="IdCurrencyAttributes">
+		<xsd:attribute name="id" type="xsd:ID" use="required" />
+		<xsd:attribute name="currency" type="CurrencyType" use="required" />
+	</xsd:attributeGroup>
+
+	<xsd:complexType name="FinancialInstitutionType">
+		<xsd:annotation>
+			<xsd:documentation>Supertype of financial institution definitions</xsd:documentation>
+		</xsd:annotation>
+		<xsd:choice>
+			<xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1" />
+		</xsd:choice>
+		<xsd:attributeGroup ref="IdCurrencyAttributes" />
+	</xsd:complexType>
+
+	<xsd:complexType name="CentralBankType">
+		<xsd:annotation>
+			<xsd:documentation>Data type of central bank (currency issuer) definitions</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="FinancialInstitutionType">
+				<xsd:attribute name="holiday-rules" type="xsd:boolean" use="optional" default="false">
+					<xsd:annotation>
+						<xsd:documentation>Flag indicating whether this central bank publishes holiday observance rules</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="MarketType">
+		<xsd:annotation>
+			<xsd:documentation>Data type of world financial market definitions</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="FinancialInstitutionType">
+			
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:element name="institution" abstract="true" type="FinancialInstitutionType" />
+	<xsd:element name="central-bank" substitutionGroup="institution" type="CentralBankType" />
+	<xsd:element name="market" substitutionGroup="institution" type="MarketType" />
+
+	<xsd:element name="markets">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="institution" maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
 </xsd:schema>
