@@ -29,7 +29,7 @@ public class HolidayKey implements Serializable {
 	private static final long serialVersionUID = 2433761068755065660L;
 
 	private int date;
-	private String financialCalendarDefinitionId = null;
+	private String financialCalendarId = null;
 
 	public HolidayKey() {}
 
@@ -52,19 +52,19 @@ public class HolidayKey implements Serializable {
 	/**
 	 * @return ID of financial calendar to which the holiday belongs
 	 */
-	public String getFinancialCalendarDefinitionId() {
-		return financialCalendarDefinitionId;
+	public String getFinancialCalendarId() {
+		return financialCalendarId;
 	}
 
 	/**
 	 * Set financial calendar ID of the identified <code>Holiday</code>
 	 * instance.
 	 * 
-	 * @param financialCalendarDefinitionId ID of financial calendar to which
+	 * @param financialCalendarId ID of financial calendar to which
 	 *        the holiday belongs
 	 */
-	public void setFinancialCalendarDefinitionId(String financialCalendarDefinitionId) {
-		this.financialCalendarDefinitionId = financialCalendarDefinitionId;
+	public void setFinancialCalendarId(String financialCalendarDefinitionId) {
+		this.financialCalendarId = financialCalendarDefinitionId;
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class HolidayKey implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + date;
-		result = prime * result + ((financialCalendarDefinitionId == null) ? 0 : financialCalendarDefinitionId.hashCode());
+		result = prime * result + ((financialCalendarId == null) ? 0 : financialCalendarId.hashCode());
 		return result;
 	}
 
@@ -82,7 +82,7 @@ public class HolidayKey implements Serializable {
 		if (!(obj instanceof HolidayKey)) return false;
 		HolidayKey other = (HolidayKey) obj;
 		return ((date == other.date) &&
-				(null == financialCalendarDefinitionId ? null == other.financialCalendarDefinitionId : financialCalendarDefinitionId.equals(other.financialCalendarDefinitionId)));
+				(null == financialCalendarId ? null == other.financialCalendarId : financialCalendarId.equals(other.financialCalendarId)));
 	}
 
 }
