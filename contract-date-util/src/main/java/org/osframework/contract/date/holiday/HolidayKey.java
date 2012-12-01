@@ -1,7 +1,7 @@
 /**
- * File: HolidayId.java
+ * File: HolidayKey.java
  * 
- * Copyright 2012 David A. Joyce, OSFramework Project.
+ * Copyright 2012 OSFramework Project.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,14 +24,14 @@ import java.io.Serializable;
  *
  * @author <a href="mailto:david.joyce13@gmail.com">Dave Joyce</a>
  */
-public class HolidayId implements Serializable {
+public class HolidayKey implements Serializable {
 
-	private static final long serialVersionUID = 4300354685200808447L;
+	private static final long serialVersionUID = 2433761068755065660L;
 
 	private int date;
-	private String marketId = null;
+	private String financialCalendarDefinitionId = null;
 
-	public HolidayId() {}
+	public HolidayKey() {}
 
 	/**
 	 * @return compact integer notation of holiday date
@@ -50,19 +50,21 @@ public class HolidayId implements Serializable {
 	}
 
 	/**
-	 * @return ID of market to which the holiday belongs
+	 * @return ID of financial calendar to which the holiday belongs
 	 */
-	public String getMarketId() {
-		return marketId;
+	public String getFinancialCalendarDefinitionId() {
+		return financialCalendarDefinitionId;
 	}
 
 	/**
-	 * Set Market ID of the identified <code>Holiday</code> instance.
+	 * Set financial calendar ID of the identified <code>Holiday</code>
+	 * instance.
 	 * 
-	 * @param marketId ID of market to which the holiday belongs
+	 * @param financialCalendarDefinitionId ID of financial calendar to which
+	 *        the holiday belongs
 	 */
-	public void setMarketId(String marketId) {
-		this.marketId = marketId;
+	public void setFinancialCalendarDefinitionId(String financialCalendarDefinitionId) {
+		this.financialCalendarDefinitionId = financialCalendarDefinitionId;
 	}
 
 	@Override
@@ -70,17 +72,17 @@ public class HolidayId implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + date;
-		result = prime * result + ((marketId == null) ? 0 : marketId.hashCode());
+		result = prime * result + ((financialCalendarDefinitionId == null) ? 0 : financialCalendarDefinitionId.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
-		if (obj == null || getClass() != obj.getClass()) return false;
-		HolidayId other = (HolidayId) obj;
+		if (!(obj instanceof HolidayKey)) return false;
+		HolidayKey other = (HolidayKey) obj;
 		return ((date == other.date) &&
-				(null == marketId ? null == other.marketId : marketId.equals(other.marketId)));
+				(null == financialCalendarDefinitionId ? null == other.financialCalendarDefinitionId : financialCalendarDefinitionId.equals(other.financialCalendarDefinitionId)));
 	}
 
 }

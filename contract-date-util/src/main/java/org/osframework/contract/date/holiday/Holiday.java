@@ -25,116 +25,49 @@ import java.io.Serializable;
  *
  * @author <a href="mailto:david.joyce13@gmail.com">Dave Joyce</a>
  */
-public class Holiday implements Serializable {
+public class Holiday extends HolidayKey implements Serializable {
 
-	private static final long serialVersionUID = -6888162151807801798L;
+	private static final long serialVersionUID = -6646079945376287380L;
 
-	private HolidayId id = new HolidayId();
-	private HolidayDefinition definition = null;
-	private HolidayType type = null;
+	private String holidayDefinitionId = null;
 
 	public Holiday() {}
 
 	/**
-	 * @return the id
+	 * @return the key
 	 */
-	public HolidayId getId() {
-		return id;
+	public HolidayKey getKey() {
+		return (HolidayKey)this;
 	}
 
 	/**
-	 * @param id the id to set
+	 * @return the holidayDefinitionId
 	 */
-	public void setId(HolidayId id) {
-		this.id = id;
+	public String getHolidayDefinitionId() {
+		return holidayDefinitionId;
 	}
 
 	/**
-	 * @return
-	 * @see org.osframework.contract.date.holiday.HolidayId#getDate()
+	 * @param holidayDefinitionId the holidayDefinitionId to set
 	 */
-	public int getDate() {
-		return id.getDate();
-	}
-
-	/**
-	 * @param date
-	 * @see org.osframework.contract.date.holiday.HolidayId#setDate(int)
-	 */
-	public void setDate(int date) {
-		id.setDate(date);
-	}
-
-	/**
-	 * @return the definition
-	 */
-	public HolidayDefinition getDefinition() {
-		return definition;
-	}
-
-	/**
-	 * @param definition the definition to set
-	 */
-	public void setDefinition(HolidayDefinition definition) {
-		this.definition = definition;
-	}
-
-	/**
-	 * @return
-	 * @see org.osframework.contract.date.holiday.HolidayId#getMarketId()
-	 */
-	public String getMarketId() {
-		return id.getMarketId();
-	}
-
-	/**
-	 * @param marketId
-	 * @see org.osframework.contract.date.holiday.HolidayId#setMarketId(java.lang.String)
-	 */
-	public void setMarketId(String marketId) {
-		id.setMarketId(marketId);
-	}
-
-	/**
-	 * @return the type
-	 */
-	public HolidayType getType() {
-		return type;
-	}
-
-	/**
-	 * @param type the type to set
-	 */
-	public void setType(HolidayType type) {
-		this.type = type;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder buf = new StringBuilder(id.getDate())
-		                        .append(" (").append(id.getMarketId()).append(") ")
-		                        .append((null != definition) ? definition.getName() : "UNKNOWN");
-		return buf.toString();
+	public void setHolidayDefinitionId(String holidayDefinitionId) {
+		this.holidayDefinitionId = holidayDefinitionId;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		result = prime * result + ((definition == null) ? 0 : definition.hashCode());
+		int result = super.hashCode();
+		result = prime * result + ((holidayDefinitionId == null) ? 0 : holidayDefinitionId.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
-		if (obj == null || getClass() != obj.getClass()) return false;
+		if (!super.equals(obj) || getClass() != obj.getClass()) return false;
 		Holiday other = (Holiday) obj;
-		return ((null == id ? null == other.id : id.equals(other.id)) &&
-				(type == other.type) &&
-				(null == definition ? null == other.definition : definition.equals(other.definition)));
+		return (null == holidayDefinitionId ? null == other.holidayDefinitionId : holidayDefinitionId.equals(other.holidayDefinitionId));
 	}
 
 }

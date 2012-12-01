@@ -19,44 +19,39 @@ package org.osframework.contract.date.holiday;
 
 import java.io.Serializable;
 
+import org.osframework.contract.date.holiday.expression.HolidayExpression;
+
 /**
- * Named definition of a holiday observed in one or more <code>Market</code>s.
+ * Named definition of a holiday observed in one or more financial markets.
  *
  * @author <a href="mailto:david.joyce13@gmail.com">Dave Joyce</a>
  */
 public class HolidayDefinition implements Serializable {
 
-	private static final long serialVersionUID = 14144410960932768L;
+	private static final long serialVersionUID = -3704327069665737827L;
 
-	private int id;
+	private String id;
 	private String name = null;
 	private String description = null;
+	private HolidayType observance = null;
+	private String expression = null;
 
 	/**
-	 * 
+	 * Constructor.
 	 */
 	public HolidayDefinition() {}
-
-	public HolidayDefinition(String name) {
-		this(name, null);
-	}
-
-	public HolidayDefinition(String name, String description) {
-		this.name = name;
-		this.description = description;
-	}
 
 	/**
 	 * @return the id
 	 */
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -88,13 +83,60 @@ public class HolidayDefinition implements Serializable {
 		this.description = description;
 	}
 
+	/**
+	 * @return the observance
+	 */
+	public HolidayType getObservance() {
+		return observance;
+	}
+
+	/**
+	 * @param observance the observance to set
+	 */
+	public void setObservance(HolidayType observance) {
+		this.observance = observance;
+	}
+
+	/**
+	 * @return the expression
+	 */
+	public String getExpression() {
+		return expression;
+	}
+
+	/**
+	 * @param expression the expression to set
+	 */
+	public void setExpression(String expression) {
+		this.expression = expression;
+	}
+
+	public HolidayExpression createHolidayExpression() {
+		if (null == observance || null == expression) {
+			throw new IllegalStateException("Object not in required state for invocation of method: createHolidayExpression");
+		}
+		return observance.toExpression(expression);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder buf = new StringBuilder("HolidayDefinition[id='")
+		                        .append(id).append("', name='")
+		                        .append(name).append("'")
+		                        .append((null != description) ? (", description='" + description + "'") : "")
+		                        .append("]");
+		return buf.toString();
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + id;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((observance == null) ? 0 : observance.hashCode());
+		result = prime * result + ((expression == null) ? 0 : expression.hashCode());
 		return result;
 	}
 
@@ -103,9 +145,11 @@ public class HolidayDefinition implements Serializable {
 		if (this == obj) return true;
 		if (obj == null || getClass() != obj.getClass()) return false;
 		HolidayDefinition other = (HolidayDefinition) obj;
-		return ((id == other.id) &&
+		return ((null == id ? null == other.id : id.equals(other.id)) &&
 				(null == name ? null == other.name : name.equals(other.name)) &&
-				(null == description ? null == other.description : description.equals(other.description)));
+				(null == description ? null == other.description : description.equals(other.description)) &&
+				(observance == other.observance) &&
+				(null == expression ? null == other.expression : expression.equals(other.expression)));
 	}
 
 }
