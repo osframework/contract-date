@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://osframework.org/schema/contract-date-fincal"
+	xmlns="http://osframework.org/schema/contract-date-fincal"
+	elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
+
+	<xsd:complexType name="IdentifiedType" abstract="true">
+		<xsd:attribute name="id" type="xsd:ID" use="required" />
+	</xsd:complexType>
+
+	<xsd:simpleType name="DescriptionType">
+		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="1" />
+			<xsd:maxLength value="255" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="CurrencyType">
+		<xsd:restriction base="xsd:NCName">
+			<xsd:pattern value="[A-Z]{2,3}" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="CentralBank">
+		<xsd:complexContent>
+			<xsd:extension base="IdentifiedType">
+				<xsd:sequence>
+					<xsd:element name="name" type="DescriptionType" minOccurs="1" maxOccurs="1" />
+					<xsd:element name="currency" type="CurrencyType" minOccurs="1" maxOccurs="1" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:element name="centralBank" type="CentralBank" />
+
+	<xsd:complexType name="Holiday">
+		<xsd:complexContent>
+			<xsd:extension base="IdentifiedType">
+				<xsd:sequence>
+					<xsd:element name="name" type="DescriptionType" minOccurs="1" maxOccurs="1" />
+					<xsd:element name="description" type="DescriptionType" minOccurs="0" maxOccurs="1" />
+					<xsd:element name="observance" minOccurs="1" maxOccurs="1">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:NCName">
+								<xsd:enumeration value="CALCULATED" />
+								<xsd:enumeration value="FIXED" />
+								<xsd:enumeration value="ONETIME" />
+								<xsd:enumeration value="RELATIVE" />
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="expression" type="xsd:string" minOccurs="1" maxOccurs="1" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:element name="holiday" type="Holiday" />
+
+	<xsd:complexType name="Calendar">
+		<xsd:complexContent>
+			<xsd:extension base="IdentifiedType">
+				<xsd:sequence>
+					<xsd:element name="description" type="DescriptionType" minOccurs="0" maxOccurs="1" />
+					<xsd:choice minOccurs="1" maxOccurs="1">
+						<xsd:element ref="centralBank" />
+						<xsd:element name="ref">
+							<xsd:complexType>
+								<xsd:attribute name="centralBank" type="xsd:IDREF" use="required" />
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:choice>
+					<xsd:element name="holidays">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:choice minOccurs="0" maxOccurs="unbounded">
+									<xsd:element ref="holiday" />
+									<xsd:element name="ref">
+										<xsd:complexType>
+											<xsd:attribute name="holiday" type="xsd:IDREF" use="required" />
+										</xsd:complexType>
+									</xsd:element>
+								</xsd:choice>
+							</xsd:sequence>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+</xsd:schema>
