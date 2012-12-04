@@ -94,6 +94,11 @@ public class DateUtil {
 		return formatDate(d, DATE_US_REVERSE);
 	}
 
+	public static int toInt(Date d) {
+		String s = formatDateToISO8601(d);
+		return Integer.parseInt(s.replace("-", ""));
+	}
+
 	private static int findArrayIndex(String s) {
 		int idx = -1;
 		for (int i = 0; i < PATTERN_ARRAY.length; i++) {
