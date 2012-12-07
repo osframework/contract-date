@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://osframework.org/schema/contract-date-fincal"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://osframework.org/schema/contract-date-fincal org/osframework/contract/date/fincal/config/xml/contract-date-fincal.xsd">
+	<centralBanks>
+		<centralBank id="USFR">
+			<name>United States Federal Reserve</name>
+			<currency>USD</currency>
+		</centralBank>
+		<centralBank id="BoE">
+			<name>Bank of England</name>
+			<currency>GBP</currency>
+		</centralBank>
+		<centralBank id="SNB">
+			<name>Swiss National Bank</name>
+			<currency>CHF</currency>
+		</centralBank>
+		<centralBank id="ECB">
+			<name>European Central Bank</name>
+			<currency>EUR</currency>
+		</centralBank>
+	</centralBanks>
+	<holidays>
+		<holiday id="NewYearsDay">
+			<name>New Year's Day</name>
+			<observance>FIXED</observance>
+			<expression>JANUARY/01</expression>
+		</holiday>
+		<holiday id="MLKBirthday">
+			<name>Martin Luther King Jr.'s Birthday</name>
+			<observance>RELATIVE</observance>
+			<expression>JANUARY/MONDAY/3</expression>
+		</holiday>
+	</holidays>
+	<calendars>
+		<calendar id="NYB">
+			<description>New York bank holidays</description>
+			<centralBank refid="USFR" />
+			<holidays>
+				<holiday refid="NewYearsDay" />
+				<holiday refid="MLKBirthday" />
+			</holidays>
+		</calendar>
+	</calendars>
+</definitions>

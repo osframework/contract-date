@@ -6,44 +6,53 @@
 	attributeFormDefault="unqualified">
 
 	<xsd:complexType name="IdentifiedType" abstract="true">
-		<xsd:attribute name="id" type="xsd:ID" use="required" />
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en"><![CDATA[Describe here]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="id" type="xsd:token" use="required" />
 	</xsd:complexType>
 
-	<xsd:simpleType name="DescriptionType">
-		<xsd:restriction base="xsd:string">
-			<xsd:minLength value="1" />
-			<xsd:maxLength value="255" />
-		</xsd:restriction>
-	</xsd:simpleType>
-
 	<xsd:simpleType name="CurrencyType">
-		<xsd:restriction base="xsd:NCName">
+		<xsd:restriction base="xsd:token">
 			<xsd:pattern value="[A-Z]{2,3}" />
 		</xsd:restriction>
 	</xsd:simpleType>
 
-	<xsd:complexType name="CentralBank">
+	<xsd:complexType name="CentralBankType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en"><![CDATA[Describe here]]></xsd:documentation>
+		</xsd:annotation>
 		<xsd:complexContent>
 			<xsd:extension base="IdentifiedType">
 				<xsd:sequence>
-					<xsd:element name="name" type="DescriptionType" minOccurs="1" maxOccurs="1" />
+					<xsd:element name="name" type="xsd:token" minOccurs="1" maxOccurs="1" />
 					<xsd:element name="currency" type="CurrencyType" minOccurs="1" maxOccurs="1" />
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
 
-	<xsd:element name="centralBank" type="CentralBank" />
+	<xsd:complexType name="CentralBanksType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en"><![CDATA[Describe here]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="centralBank" type="CentralBankType" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
 
-	<xsd:complexType name="Holiday">
+	<xsd:complexType name="HolidayType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en"><![CDATA[Describe here]]></xsd:documentation>
+		</xsd:annotation>
 		<xsd:complexContent>
 			<xsd:extension base="IdentifiedType">
 				<xsd:sequence>
-					<xsd:element name="name" type="DescriptionType" minOccurs="1" maxOccurs="1" />
-					<xsd:element name="description" type="DescriptionType" minOccurs="0" maxOccurs="1" />
+					<xsd:element name="name" type="xsd:token" minOccurs="1" maxOccurs="1" />
+					<xsd:element name="description" type="xsd:string" minOccurs="0" />
 					<xsd:element name="observance" minOccurs="1" maxOccurs="1">
 						<xsd:simpleType>
-							<xsd:restriction base="xsd:NCName">
+							<xsd:restriction base="xsd:token">
 								<xsd:enumeration value="CALCULATED" />
 								<xsd:enumeration value="FIXED" />
 								<xsd:enumeration value="ONETIME" />
@@ -51,38 +60,42 @@
 							</xsd:restriction>
 						</xsd:simpleType>
 					</xsd:element>
-					<xsd:element name="expression" type="xsd:string" minOccurs="1" maxOccurs="1" />
+					<xsd:element name="expression" type="xsd:token" minOccurs="1" maxOccurs="1" />
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
 
-	<xsd:element name="holiday" type="Holiday" />
+	<xsd:complexType name="HolidaysType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en"><![CDATA[Describe here]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="holiday" type="HolidayType" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
 
-	<xsd:complexType name="Calendar">
+	<xsd:complexType name="CalendarType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en"><![CDATA[Describe here]]></xsd:documentation>
+		</xsd:annotation>
 		<xsd:complexContent>
 			<xsd:extension base="IdentifiedType">
 				<xsd:sequence>
-					<xsd:element name="description" type="DescriptionType" minOccurs="0" maxOccurs="1" />
-					<xsd:choice minOccurs="1" maxOccurs="1">
-						<xsd:element ref="centralBank" />
-						<xsd:element name="ref">
-							<xsd:complexType>
-								<xsd:attribute name="centralBank" type="xsd:IDREF" use="required" />
-							</xsd:complexType>
-						</xsd:element>
-					</xsd:choice>
+					<xsd:element name="description" type="xsd:string" minOccurs="0" />
+					<xsd:element name="centralBank" minOccurs="0">
+						<xsd:complexType>
+							<xsd:attribute name="refid" type="xsd:token" use="required" />
+						</xsd:complexType>
+					</xsd:element>
 					<xsd:element name="holidays">
 						<xsd:complexType>
 							<xsd:sequence>
-								<xsd:choice minOccurs="0" maxOccurs="unbounded">
-									<xsd:element ref="holiday" />
-									<xsd:element name="ref">
-										<xsd:complexType>
-											<xsd:attribute name="holiday" type="xsd:IDREF" use="required" />
-										</xsd:complexType>
-									</xsd:element>
-								</xsd:choice>
+								<xsd:element name="holiday" minOccurs="1" maxOccurs="unbounded">
+									<xsd:complexType>
+										<xsd:attribute name="refid" type="xsd:token" use="required" />
+									</xsd:complexType>
+								</xsd:element>
 							</xsd:sequence>
 						</xsd:complexType>
 					</xsd:element>
@@ -90,4 +103,51 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
+
+	<xsd:complexType name="CalendarsType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en"><![CDATA[Describe here]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="calendar" type="CalendarType" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="DefinitionsType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en"><![CDATA[Describe here]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:all>
+			<xsd:element name="centralBanks" type="CentralBanksType" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="holidays" type="HolidaysType" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="calendars" type="CalendarsType" minOccurs="1" maxOccurs="1" />
+		</xsd:all>
+	</xsd:complexType>
+
+	<xsd:element name="definitions" type="DefinitionsType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en"><![CDATA[Describe here]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:key name="holidayIdKey">
+			<xsd:selector xpath="holidays/holiday" />
+			<xsd:field xpath="@id" />
+		</xsd:key>
+		<xsd:keyref name="holidayIdKeyRef" refer="holidayIdKey">
+			<xsd:selector xpath="calendars/calendar/holidays/holiday" />
+			<xsd:field xpath="@refid" />
+		</xsd:keyref>
+		<xsd:key name="centralBankIdKey">
+			<xsd:selector xpath="centralBanks/centralBank" />
+			<xsd:field xpath="@id" />
+		</xsd:key>
+		<xsd:keyref name="centralBankIdKeyRef" refer="centralBankIdKey">
+			<xsd:selector xpath="calendars/calendar/centralBank" />
+			<xsd:field xpath="@refid" />
+		</xsd:keyref>
+		<xsd:unique name="calendarIdKey">
+			<xsd:selector xpath="calendars/calendar" />
+			<xsd:field xpath="@id" />
+		</xsd:unique>
+	</xsd:element>
+
 </xsd:schema>
