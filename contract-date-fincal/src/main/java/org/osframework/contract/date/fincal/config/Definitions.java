@@ -17,12 +17,8 @@
  */
 package org.osframework.contract.date.fincal.config;
 
-import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import org.osframework.contract.date.fincal.model.CentralBank;
 import org.osframework.contract.date.fincal.model.FinancialCalendar;
@@ -42,58 +38,41 @@ public abstract class Definitions {
 	private Map<String, FinancialCalendar> financialCalendars = new HashMap<String, FinancialCalendar>();
 
 	public void addCentralBank(CentralBank centralBank) {
-		centralBanks.put(centralBank.getId(), centralBank);
-	}
-
-	public boolean containsCentralBank(CentralBank centralBank) {
-		return centralBanks.containsKey(centralBank.getId());
-	}
-
-	public Iterator<CentralBank> centralBankIterator() {
-		return Collections.unmodifiableMap(centralBanks).values().iterator();
-	}
-
-	public void addHolidayDefinition(HolidayDefinition holidayDefinition) {
-		this.addHolidayDefinition(holidayDefinition, null);
-	}
-
-	public void addHolidayDefinition(HolidayDefinition holidayDefinition, FinancialCalendar financialCalendar) {
-		String key = buildKey((null == financialCalendar ? null : financialCalendar.getId()), holidayDefinition.getId());
-		holidayDefinitions.put(key, holidayDefinition);
-	}
-
-	public boolean containsHolidayDefinition(HolidayDefinition holidayDefinition) {
-		Set<String> keys = holidayDefinitions.keySet();
-		boolean found = false;
-		for (String key : keys) {
-			if (key.endsWith(holidayDefinition.getId())) {
-				found = true;
-				break;
-			}
+		if (!centralBanks.containsKey(centralBank.getId())) {
+			centralBanks.put(centralBank.getId(), centralBank);
 		}
-		return found;
 	}
 
-	public Iterator<HolidayDefinition> holidayDefinitionIterator() {
-		return Collections.unmodifiableMap(holidayDefinitions).values().iterator();
+	public void removeCentralBank(CentralBank centralBank) {
+		if (centralBanks.containsKey(centralBank.getId())) {
+			centralBanks.remove(centralBank.getId());
+		}
 	}
 
-	public void addFinancialCalendar(FinancialCalendar financialCalendar) {
-		financialCalendars.put(financialCalendar.getId(), financialCalendar);
+	public void addHolidayDefinition(HolidayDefinition holiday) {
+		if (!holidayDefinitions.containsKey(holiday.getId())) {
+			holidayDefinitions.put(holiday.getId(), holiday);
+		}
 	}
 
-	public boolean containsFinancialCalendar(FinancialCalendar financialCalendar) {
-		return financialCalendars.containsKey(financialCalendar.getId());
+	public void removeHolidayDefinition(HolidayDefinition holiday) {
+		if (holidayDefinitions.containsKey(holiday.getId())) {
+			holidayDefinitions.remove(holiday.getId());
+		}
 	}
 
-	public Iterator<FinancialCalendar> financialCalendarIterator() {
-		return Collections.unmodifiableMap(financialCalendars).values().iterator();
+	public void addFinancialCalendar(FinancialCalendar calendar) {
+		if (!financialCalendars.containsKey(calendar.getId())) {
+			financialCalendars.put(calendar.getId(), calendar);
+		}
 	}
 
-	protected String buildKey(String prefix, String objectId) {
-		return (SCOPE_PREFIX_GLOBAL.equals(prefix)) ? objectId : (SCOPE_PREFIX_GLOBAL + "/" + objectId);
+	public void removeFinancialCalendar(FinancialCalendar calendar) {
+		if (financialCalendars.containsKey(calendar.getId())) {
+			financialCalendars.remove(calendar.getId());
+		}
 	}
 
-	protected abstract void load() throws IOException;
+	protected abstract void load() throws Exception;
 
 }

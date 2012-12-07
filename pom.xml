@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.osframework.contract-date</groupId>
@@ -30,17 +31,27 @@
 		<developerConnection>https://github.com/osframework/contract-date.git</developerConnection>
 	</scm>
 
+	<repositories>
+		<repository>
+			<id>oracleReleases</id>
+			<name>Oracle Released Java Packages</name>
+			<url>http://download.oracle.com/maven</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.build.javaVersion>1.6</project.build.javaVersion>
 		<maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
 		<build.timestamp>${maven.build.timestamp}</build.timestamp>
-		
+
 		<!-- Managed dependency versions -->
 		<commons-lang.version>2.6</commons-lang.version>
+		<je.version>3.3.75</je.version>
 		<jfin-DateMath.version>1.0.1</jfin-DateMath.version>
 		<testng.version>6.8</testng.version>
-		
+
 		<!-- Plugin versions -->
 		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
 		<maven-remote-resources-plugin.version>1.4</maven-remote-resources-plugin.version>
@@ -57,6 +68,12 @@
 				<groupId>commons-lang</groupId>
 				<artifactId>commons-lang</artifactId>
 				<version>${commons-lang.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.sleepycat</groupId>
+				<artifactId>je</artifactId>
+				<version>${je.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>

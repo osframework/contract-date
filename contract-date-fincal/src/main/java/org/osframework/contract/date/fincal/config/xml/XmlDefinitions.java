@@ -50,25 +50,25 @@ public class XmlDefinitions extends Definitions {
 
 	private final Reader reader;
 
-	public XmlDefinitions(String xmlDefinitionLocation) throws IOException {
+	public XmlDefinitions(String xmlDefinitionLocation) throws Exception {
 		this(new File(xmlDefinitionLocation));
 	}
 
-	public XmlDefinitions(File xmlDefinitionLocation) throws IOException {
+	public XmlDefinitions(File xmlDefinitionLocation) throws Exception {
 		this(new FileInputStream(xmlDefinitionLocation));
 	}
 
-	public XmlDefinitions(URL xmlDefinitionLocation) throws IOException {
+	public XmlDefinitions(URL xmlDefinitionLocation) throws Exception {
 		this(xmlDefinitionLocation.openStream());
 	}
 
-	public XmlDefinitions(InputStream xmlDefinitionStream) throws IOException {
+	public XmlDefinitions(InputStream xmlDefinitionStream) throws Exception {
 		this.reader = new BufferedReader(new InputStreamReader(xmlDefinitionStream));
 		this.load();
 	}
 
 	@Override
-	protected void load() throws IOException {
+	protected void load() throws Exception {
 		try {
 			XMLStreamReader xsr = XMLInputFactory.newInstance().createXMLStreamReader(this.reader);
 			URL xsdUrl = this.getClass().getResource(XSD_PATH);
