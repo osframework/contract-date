@@ -83,6 +83,15 @@ public class CentralBank implements Serializable {
 	}
 
 	@Override
+	public String toString() {
+		StringBuilder buf = new StringBuilder("CentralBank[id='").append(id)
+		                        .append("', name='").append(name)
+		                        .append("', currency='").append(currency)
+		                        .append("']");
+		return buf.toString();
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

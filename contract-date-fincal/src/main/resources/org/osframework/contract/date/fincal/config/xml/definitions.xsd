@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	targetNamespace="http://osframework.org/schema/contract-date-fincal"
-	xmlns="http://osframework.org/schema/contract-date-fincal"
+	targetNamespace="http://osframework.org/schema/contract-date/definitions"
+	xmlns="http://osframework.org/schema/contract-date/definitions"
 	elementFormDefault="qualified"
 	attributeFormDefault="unqualified">
 

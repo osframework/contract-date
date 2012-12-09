@@ -112,6 +112,15 @@ public class FinancialCalendar implements Iterable<HolidayDefinition>, Serializa
 	}
 
 	@Override
+	public String toString() {
+		StringBuilder buf = new StringBuilder("FinancialCalendar[id='").append(id)
+				                .append("', description='").append(description)
+				                .append("', centralBank=").append(centralBank)
+				                .append("]");
+		return buf.toString();
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

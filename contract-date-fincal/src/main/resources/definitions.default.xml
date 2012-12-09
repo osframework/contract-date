@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://osframework.org/schema/contract-date-fincal"
+<definitions xmlns="http://osframework.org/schema/contract-date/definitions"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://osframework.org/schema/contract-date-fincal org/osframework/contract/date/fincal/config/xml/contract-date-fincal.xsd">
+	xsi:schemaLocation="http://osframework.org/schema/contract-date-fincal org/osframework/contract/date/fincal/config/xml/definitions.xsd">
 	<centralBanks>
 		<centralBank id="USFR">
 			<name>United States Federal Reserve</name>
