@@ -1,13 +1,13 @@
 package org.osframework.contract.date.fincal.expression.algorithm;
 
+import static org.osframework.contract.date.testng.Assert.assertSameDate;
 import static org.testng.Assert.assertEquals;
 
 import java.util.Calendar;
 import java.util.Date;
 
-import org.osframework.contract.date.fincal.expression.algorithm.WesternEaster;
-import org.testng.annotations.Test;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
 public class WesternEasterTest {
 
@@ -15,13 +15,13 @@ public class WesternEasterTest {
 	public void testCompute(int year, Date check) {
 		WesternEaster we = new WesternEaster();
 		Date result = we.compute(year);
-		Calendar actual = Calendar.getInstance(),
-				 expected = (Calendar)actual.clone();
-		actual.setTime(result);
-		expected.setTime(check);
-		assertEquals(actual.get(Calendar.YEAR), expected.get(Calendar.YEAR));
-		assertEquals(actual.get(Calendar.MONTH), expected.get(Calendar.MONTH));
-		assertEquals(actual.get(Calendar.DAY_OF_MONTH), expected.get(Calendar.DAY_OF_MONTH));
+		
+		// Easter must be a Sunday
+		Calendar c = Calendar.getInstance();
+		c.setTime(result);
+		assertEquals(c.get(Calendar.DAY_OF_WEEK), Calendar.SUNDAY);
+		
+		assertSameDate(result, check);
 	}
 
 	@DataProvider

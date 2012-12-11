@@ -1,13 +1,12 @@
 package org.osframework.contract.date.fincal.expression;
 
-import static org.testng.Assert.*;
+import static org.osframework.contract.date.testng.Assert.assertSameDate;
 
 import java.util.Calendar;
 import java.util.Date;
 
-import org.osframework.contract.date.fincal.expression.HolidayExpressionRelativeImpl;
-import org.testng.annotations.Test;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
 public class HolidayExpressionRelativeImplTest {
 
@@ -15,13 +14,7 @@ public class HolidayExpressionRelativeImplTest {
 	public void testEvaluate(String e, int y, Date check) {
 		HolidayExpressionRelativeImpl expr = new HolidayExpressionRelativeImpl(e);
 		Date result = expr.evaluate(y);
-		Calendar actual = Calendar.getInstance(),
-				 expected = (Calendar)actual.clone();
-		actual.setTime(result);
-		expected.setTime(check);
-		assertEquals(actual.get(Calendar.YEAR), expected.get(Calendar.YEAR));
-		assertEquals(actual.get(Calendar.MONTH), expected.get(Calendar.MONTH));
-		assertEquals(actual.get(Calendar.DAY_OF_MONTH), expected.get(Calendar.DAY_OF_MONTH));
+		assertSameDate(result, check);
 	}
 
 	@DataProvider

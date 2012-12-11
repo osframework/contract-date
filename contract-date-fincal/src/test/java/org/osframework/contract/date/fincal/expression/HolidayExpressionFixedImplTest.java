@@ -1,13 +1,12 @@
 package org.osframework.contract.date.fincal.expression;
 
-import static org.testng.Assert.assertEquals;
+import static org.osframework.contract.date.testng.Assert.assertSameDate;
 
 import java.util.Calendar;
 import java.util.Date;
 
-import org.osframework.contract.date.fincal.expression.HolidayExpressionFixedImpl;
-import org.testng.annotations.Test;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
 public class HolidayExpressionFixedImplTest {
 
@@ -15,13 +14,7 @@ public class HolidayExpressionFixedImplTest {
 	public void testEvaluate(String e, int y, Date check) {
 		HolidayExpressionFixedImpl expr = new HolidayExpressionFixedImpl(e);
 		Date result = expr.evaluate(y);
-		Calendar actual = Calendar.getInstance(),
-				 expected = (Calendar)actual.clone();
-		actual.setTime(result);
-		expected.setTime(check);
-		assertEquals(actual.get(Calendar.YEAR), expected.get(Calendar.YEAR));
-		assertEquals(actual.get(Calendar.MONTH), expected.get(Calendar.MONTH));
-		assertEquals(actual.get(Calendar.DAY_OF_MONTH), expected.get(Calendar.DAY_OF_MONTH));
+		assertSameDate(result, check);
 	}
 
 	@DataProvider
@@ -33,14 +26,20 @@ public class HolidayExpressionFixedImplTest {
 		Date check = c.getTime();
 		Object[] set1 = new Object[] { expression, year, check };
 		
-		expression = "JANUARY/1";
+		expression = "JANUARY/01";
 		year = 2010;
 		c.set(2010, Calendar.JANUARY, 1);
 		check = c.getTime();
 		Object[] set2 = new Object[] { expression, year, check };
 		
+		expression = "JULY/04";
+		year = 2011;
+		c.set(2011, Calendar.JULY, 4);
+		check = c.getTime();
+		Object[] set3 = new Object[] { expression, year, check };
+		
 		return new Object[][] {
-			set1, set2, 
+			set1, set2, set3,
 		};
 	}
 
