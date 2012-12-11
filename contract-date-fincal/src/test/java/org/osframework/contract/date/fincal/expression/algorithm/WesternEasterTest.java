@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 
 public class WesternEasterTest {
 
-	@Test(dataProvider = "dp")
+	@Test(dataProvider = "dp", groups = "algorithm")
 	public void testCompute(int year, Date check) {
 		WesternEaster we = new WesternEaster();
 		Date result = we.compute(year);

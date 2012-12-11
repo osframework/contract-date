@@ -1,6 +1,6 @@
 package org.osframework.contract.date.fincal.config.xml;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertNotNull;
 
 import java.net.URL;
 
@@ -20,7 +20,7 @@ public class XMLDefinitionsTest {
 	private String expectedHoliday = "NewYearsDay";
 	private String expectedFinancialCalendar = "NCH";
 
-	@Test
+	@Test(groups = "config")
 	public void testStringContructor() throws Exception {
 		String xmlFilePath = definitionsAsFilePath();
 		logger.debug("Loaded XML filepath: {}", xmlFilePath);

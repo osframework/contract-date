@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 
 public class HolidayExpressionRelativeImplTest {
 
-	@Test(dataProvider = "dp")
+	@Test(dataProvider = "dp", groups = "expression")
 	public void testEvaluate(String e, int y, Date check) {
 		HolidayExpressionRelativeImpl expr = new HolidayExpressionRelativeImpl(e);
 		Date result = expr.evaluate(y);

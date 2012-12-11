@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 
 public class HolidayExpressionFixedImplTest {
 
-	@Test(dataProvider = "dp")
+	@Test(dataProvider = "dp", groups = "expression")
 	public void testEvaluate(String e, int y, Date check) {
 		HolidayExpressionFixedImpl expr = new HolidayExpressionFixedImpl(e);
 		Date result = expr.evaluate(y);
