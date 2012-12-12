@@ -30,6 +30,22 @@
 		<developerConnection>https://github.com/osframework/contract-date.git</developerConnection>
 	</scm>
 
+	<distributionManagement>
+		<repository>
+			<id>cloudbees-osframework-release</id>
+			<name>OSFramework Project Release Repository (CloudBees)</name>
+			<url>https://repository-osframework.forge.cloudbees.com/release/</url>
+			<layout>default</layout>
+		</repository>
+		<snapshotRepository>
+			<id>cloudbees-osframework-snapshot</id>
+			<name>OSFramework Project Snapshot Repository (CloudBees)</name>
+			<url>https://repository-osframework.forge.cloudbees.com/snapshot/</url>
+			<layout>default</layout>
+			<uniqueVersion>true</uniqueVersion>
+		</snapshotRepository>
+	</distributionManagement>
+
 	<repositories>
 		<repository>
 			<id>oracleReleases</id>
@@ -55,7 +71,8 @@
 
 		<!-- Plugin versions -->
 		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
-		<maven-remote-resources-plugin.version>1.4</maven-remote-resources-plugin.version>
+		<maven-deploy-plugin.version>2.7</maven-deploy-plugin.version>
+		<wagon-webdav-jackrabbit.version>2.2</wagon-webdav-jackrabbit.version>
 	</properties>
 
 	<modules>
@@ -104,6 +121,13 @@
 	</dependencyManagement>
 
 	<build>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-webdav-jackrabbit</artifactId>
+				<version>${wagon-webdav-jackrabbit.version}</version>
+			</extension>
+		</extensions>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -117,8 +141,8 @@
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-remote-resources-plugin</artifactId>
-					<version>${maven-remote-resources-plugin.version}</version>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>${maven-deploy-plugin.version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
