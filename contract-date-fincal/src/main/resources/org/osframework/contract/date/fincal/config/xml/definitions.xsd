@@ -5,22 +5,45 @@
 	elementFormDefault="qualified"
 	attributeFormDefault="unqualified">
 
+	<xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+
+	<xsd:annotation>
+		<xsd:documentation xml:lang="en"><![CDATA[
+		Financial Calendar Definitions Schema, version 1.0
+		Author: Dave Joyce
+		Defines a simple structure for fully specifying world holidays and
+		the combinations of holidays that comprise bank holiday calendars
+		for world financial markets.
+		]]></xsd:documentation>
+	</xsd:annotation>
+
 	<xsd:complexType name="IdentifiedType" abstract="true">
 		<xsd:annotation>
-			<xsd:documentation xml:lang="en"><![CDATA[Describe here]]></xsd:documentation>
+			<xsd:documentation xml:lang="en"><![CDATA[
+			Abstract supertype of data types for uniquely identified
+			definition entities.
+			]]></xsd:documentation>
 		</xsd:annotation>
 		<xsd:attribute name="id" type="xsd:token" use="required" />
 	</xsd:complexType>
 
 	<xsd:simpleType name="CurrencyType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en"><![CDATA[
+			Data type for a valid ISO-4217 currency.
+			]]></xsd:documentation>
+		</xsd:annotation>
 		<xsd:restriction base="xsd:token">
-			<xsd:pattern value="[A-Z]{2,3}" />
+			<xsd:pattern value="[A-Z]{3}" />
 		</xsd:restriction>
 	</xsd:simpleType>
 
 	<xsd:complexType name="CentralBankType">
 		<xsd:annotation>
-			<xsd:documentation xml:lang="en"><![CDATA[Describe here]]></xsd:documentation>
+			<xsd:documentation xml:lang="en"><![CDATA[
+			Represents a distinct world central bank. A central bank issues a
+			particular currency.
+			]]></xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexContent>
 			<xsd:extension base="IdentifiedType">
@@ -34,7 +57,9 @@
 
 	<xsd:complexType name="CentralBanksType">
 		<xsd:annotation>
-			<xsd:documentation xml:lang="en"><![CDATA[Describe here]]></xsd:documentation>
+			<xsd:documentation xml:lang="en"><![CDATA[
+			A list of uniquely identified central banks.
+			]]></xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="centralBank" type="CentralBankType" minOccurs="0" maxOccurs="unbounded" />
@@ -43,7 +68,12 @@
 
 	<xsd:complexType name="HolidayType">
 		<xsd:annotation>
-			<xsd:documentation xml:lang="en"><![CDATA[Describe here]]></xsd:documentation>
+			<xsd:documentation xml:lang="en"><![CDATA[
+			Represents a distinct holiday observed on 1 or more financial
+			calendars worldwide. Specifically, elements of this type describe
+			the method by which the holiday is produced for a given Gregorian
+			calendar year.
+			]]></xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexContent>
 			<xsd:extension base="IdentifiedType">
@@ -68,7 +98,9 @@
 
 	<xsd:complexType name="HolidaysType">
 		<xsd:annotation>
-			<xsd:documentation xml:lang="en"><![CDATA[Describe here]]></xsd:documentation>
+			<xsd:documentation xml:lang="en"><![CDATA[
+			A list of uniquely identified world holidays.
+			]]></xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="holiday" type="HolidayType" minOccurs="0" maxOccurs="unbounded" />
@@ -77,7 +109,9 @@
 
 	<xsd:complexType name="CalendarType">
 		<xsd:annotation>
-			<xsd:documentation xml:lang="en"><![CDATA[Describe here]]></xsd:documentation>
+			<xsd:documentation xml:lang="en"><![CDATA[
+			Represents a bank holiday calendar for a single financial market.
+			]]></xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexContent>
 			<xsd:extension base="IdentifiedType">
@@ -106,7 +140,9 @@
 
 	<xsd:complexType name="CalendarsType">
 		<xsd:annotation>
-			<xsd:documentation xml:lang="en"><![CDATA[Describe here]]></xsd:documentation>
+			<xsd:documentation xml:lang="en"><![CDATA[
+			A list of uniquely identified financial holiday calendars.
+			]]></xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="calendar" type="CalendarType" minOccurs="0" maxOccurs="unbounded" />

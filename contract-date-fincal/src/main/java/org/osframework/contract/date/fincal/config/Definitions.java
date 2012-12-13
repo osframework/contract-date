@@ -22,7 +22,11 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -124,6 +128,22 @@ public abstract class Definitions<S> {
 
 	public FinancialCalendar getFinancialCalendar(String id) {
 		return financialCalendars.get(id);
+	}
+
+	public List<FinancialCalendar> getFinancialCalendars() {
+		List<FinancialCalendar> calendars = new ArrayList<FinancialCalendar>();
+		for (String fcId : financialCalendars.keySet()) {
+			FinancialCalendar fc = financialCalendars.get(fcId);
+			if (null != fc) {
+				calendars.add(financialCalendars.get(fcId));
+			}
+		}
+		Collections.sort(calendars, new Comparator<FinancialCalendar>() {
+			public int compare(FinancialCalendar o1, FinancialCalendar o2) {
+				return o1.getId().compareTo(o2.getId());
+			}
+		});
+		return calendars;
 	}
 
 	public void removeFinancialCalendar(FinancialCalendar calendar) {
