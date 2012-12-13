@@ -21,11 +21,13 @@ public class XMLDefinitionsTest {
 	private String expectedFinancialCalendar = "NCH";
 
 	@Test(groups = "config")
-	public void testStringContructor() throws Exception {
+	public void testLoad() throws Exception {
 		String xmlFilePath = definitionsAsFilePath();
 		logger.debug("Loaded XML filepath: {}", xmlFilePath);
 		XMLDefinitions definitions = new XMLDefinitions(xmlFilePath);
+		definitions.load();
 		logger.debug("Loaded definitions: {}", !definitions.isEmpty());
+		logger.debug("Checksum: {}", definitions.getChecksum());
 		assertExpectedDefinitions(definitions);
 	}
 

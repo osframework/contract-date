@@ -34,6 +34,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.osframework.contract.date.fincal.config.Definitions;
 import org.osframework.contract.date.fincal.model.CentralBank;
 import org.osframework.contract.date.fincal.model.FinancialCalendar;
@@ -44,7 +45,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * Financial calendar definitions loaded from an XML document.
+ * Provides financial calendar definitions from an XML document.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
@@ -100,8 +101,6 @@ public class XMLDefinitions extends Definitions<Document> implements Constants {
 		this.centralBankExpr = xPath.compile(XPATH_CENTRALBANK);
 		this.financialCalendarExpr = xPath.compile(XPATH_CALENDAR);
 		this.holidayRefidExpr = xPath.compile(XPATH_HOLIDAY_REFID);
-		
-		this.load();
 	}
 
 	public XMLDefinitions(Definitions<?> originalDefinitions) {
@@ -109,10 +108,15 @@ public class XMLDefinitions extends Definitions<Document> implements Constants {
 	}
 
 	@Override
-	public void load() throws Exception {
+	protected void doLoad() throws Exception {
 		loadHolidayDefinitions();
 		loadCentralBanks();
 		loadFinancialCalendars();
+	}
+
+	@Override
+	protected void doStore() throws Exception {
+		throw new NotImplementedException(this.getClass());
 	}
 
 	void loadHolidayDefinitions() throws Exception {
@@ -180,17 +184,4 @@ public class XMLDefinitions extends Definitions<Document> implements Constants {
 		}
 	}
 
-/*
-	private byte[] toByteArray(InputStream xmlInputStream) throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		byte[] buf = new byte[1024];
-		int length;
-		while ((length = xmlInputStream.read(buf)) != -1) {
-			baos.write(buf, 0, length);
-		}
-		xmlInputStream.close();
-		baos.flush();
-		return baos.toByteArray();
-	}
-*/
 }
