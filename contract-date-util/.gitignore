@@ -3,3 +3,5 @@
 /.project
 /.settings
 /test-output
+/.pmd
+/.pmdruleset
