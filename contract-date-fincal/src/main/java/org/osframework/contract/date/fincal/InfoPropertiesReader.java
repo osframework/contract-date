@@ -41,7 +41,7 @@ class InfoPropertiesReader implements ProjectInfoReader {
 			try {
 				infoProperties.load(propsURL.openStream());
 			} catch (IOException ioe) {
-				
+				ioe.printStackTrace(System.err);
 			}
 		}
 	}

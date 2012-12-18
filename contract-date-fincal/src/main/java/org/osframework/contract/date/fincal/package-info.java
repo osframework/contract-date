@@ -20,4 +20,4 @@
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-package org.osframework.contract.date.fincal.cmd;
+package org.osframework.contract.date.fincal;
