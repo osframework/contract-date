@@ -9,7 +9,7 @@ public class BerkeleyDBDefinitionsTest {
 
 	private static final String DEFAULT_DEFINITIONS_PATH = BerkeleyDBDefinitions.HOME_DIRECTORY_DEFAULT;
 
-	@Test
+	@Test(groups = "config")
 	public void testLoad() throws Exception {
 		BerkeleyDBDefinitions definitions = new BerkeleyDBDefinitions(DEFAULT_DEFINITIONS_PATH);
 		definitions.load();
