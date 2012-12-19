@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -33,6 +35,13 @@ import org.apache.commons.cli.ParseException;
 import org.osframework.contract.date.ProjectInfoReader;
 import org.osframework.contract.date.fincal.config.Definitions;
 import org.osframework.contract.date.fincal.config.xml.XMLDefinitions;
+import org.osframework.contract.date.fincal.expression.HolidayExpression;
+import org.osframework.contract.date.fincal.expression.centralbank.CentralBankDecorator;
+import org.osframework.contract.date.fincal.expression.centralbank.CentralBankDecoratorLocator;
+import org.osframework.contract.date.fincal.model.CentralBank;
+import org.osframework.contract.date.fincal.model.FinancialCalendar;
+import org.osframework.contract.date.fincal.model.HolidayDefinition;
+import org.osframework.util.ClassLocator;
 
 /**
  * JAR main class; provides command-line executable driver.
@@ -186,6 +195,20 @@ public class Main {
 				             ? cl.getOptionValue(OPT_OUTPUT)
 				             : DEFAULT_OUTPUT;
 		File outputFile = new File(outputPath);
+		
+		List<FinancialCalendar> fcList = definitions.getFinancialCalendars();
+		// FIXME Refactor this + CentralBankDecoratorLocator!!
+		List<Class<? extends CentralBankDecorator>> centralBankDecorators = ClassLocator.searchProviderClasses(CentralBankDecorator.class);
+		for (int y = startYear; y <= endYear; y++) {
+			for (FinancialCalendar fc : fcList) {
+				System.out.printf("Calculating %d holidays for '%s'%n", Integer.valueOf(y), fc.getId());
+				CentralBank cb = fc.getCentralBank();
+				for (HolidayDefinition hd : fc) {
+					HolidayExpression he = CentralBankDecoratorLocator.decorate(hd.createHolidayExpression(), cb);
+					Date d = he.evaluate(y);
+				}
+			}
+		}
 	}
 
 }

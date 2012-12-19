@@ -54,6 +54,12 @@
 			<layout>default</layout>
 		</repository>
 		<repository>
+			<id>cloudbees-private-snapshot-repository</id>
+			<name>OSFramework Project Snapshot Repository (CloudBees)</name>
+			<url>https://repository-osframework.forge.cloudbees.com/snapshot/</url>
+			<layout>default</layout>
+		</repository>
+		<repository>
 			<id>oracleReleases</id>
 			<name>Oracle Released Java Packages</name>
 			<url>http://download.oracle.com/maven</url>
@@ -70,6 +76,7 @@
 		<!-- Managed dependency versions -->
 		<commons-cli.version>1.2</commons-cli.version>
 		<commons-lang.version>2.6</commons-lang.version>
+		<common-utils.version>0.0.1-SNAPSHOT</common-utils.version>
 		<je.version>3.3.75</je.version>
 		<jfin-DateMath.version>1.0.1</jfin-DateMath.version>
 		<slf4j.version>1.7.2</slf4j.version>
@@ -117,6 +124,11 @@
 				<artifactId>jFin-DateMath</artifactId>
 				<version>${jfin-DateMath.version}</version>
 				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.osframework.util</groupId>
+				<artifactId>common-utils</artifactId>
+				<version>${common-utils.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
