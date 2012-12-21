@@ -32,7 +32,11 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.IntRange;
+import org.apache.commons.lang.math.Range;
 import org.osframework.contract.date.ProjectInfoReader;
+import org.osframework.contract.date.fincal.config.ConfigurationException;
 import org.osframework.contract.date.fincal.config.Definitions;
 import org.osframework.contract.date.fincal.config.xml.XMLDefinitions;
 import org.osframework.contract.date.fincal.expression.HolidayExpression;
@@ -54,24 +58,30 @@ public class Main {
 	private static final String OPT_DEFINITIONS = "definitions";
 	private static final String OPT_YEARS = "years";
 	private static final String OPT_OUTPUT = "output";
+	private static final String DEFAULT_DEFINITIONS = "/definitions.default.xml";
 	private static final String DEFAULT_OUTPUT = System.getProperty("user.dir") + "/fincal.csv";
 
-	private static Options OPTIONS = new Options();
-	private static String jarName = null,
-			              jarVersion = null;
+	private final Options options;
+	private final String jarName, jarVersion;
 
-	private static void initJarInfo() {
+	private Definitions<?> definitions;
+	private Range yearRange;
+	private File outputFile;
+
+	private Main() {
 		ProjectInfoReader reader = InfoPropertiesReader.getInstance();
 		jarName = reader.getImplementationTitle();
 		jarVersion = reader.getImplementationVersion();
+		this.options = new Options();
+		initOptions();
 	}
 
-	private static void initOptions() {
+	private void initOptions() {
 		// Help display options
 		Option help = new Option(OPT_HELP, false, "Display this message and exit");
 		Option version = new Option(OPT_VERSION, false, "Display version information");
-		OPTIONS.addOption(help);
-		OPTIONS.addOption(version);
+		options.addOption(help);
+		options.addOption(version);
 		
 		// Configuration options
 		OptionBuilder.hasArg();
@@ -87,30 +97,43 @@ public class Main {
 		OptionBuilder.withArgName("path-to-output");
 		OptionBuilder.withDescription("Write generated holidays to path");
 		Option out = OptionBuilder.create(OPT_OUTPUT);
-		OPTIONS.addOption(definitions);
-		OPTIONS.addOption(years);
-		OPTIONS.addOption(out);
+		options.addOption(definitions);
+		options.addOption(years);
+		options.addOption(out);
 	}
 
-	private static void printError(Throwable t) {
-		System.out.println("Error: " + t.getMessage());
-		System.out.println(UNDERLINE);
-		showUsage();
+	private void setDefinitions(final Definitions<?> definitions) {
+		this.definitions = definitions;
 	}
 
-	private static void showHelp() {
+	private void setYearRange(final int startYear, final int endYear) {
+		this.yearRange = new IntRange(startYear, endYear);
+	}
+
+	private void setOutputFile(final File outputFile) {
+		this.outputFile = outputFile;
+	}
+
+	private void generateHolidays() {
+		List<FinancialCalendar> fcList = definitions.getFinancialCalendars();
+		for (FinancialCalendar fc : fcList) {
+			
+		}
+	}
+
+	private void showHelp() {
 		showUsage();
 		System.out.println(UNDERLINE);
 		HelpFormatter hf = new HelpFormatter();
-		hf.printHelp("fincal", OPTIONS, false);
+		hf.printHelp("fincal", options, false);
 	}
 
-	private static void showUsage() {
+	private void showUsage() {
 		HelpFormatter hf = new HelpFormatter();
-		hf.printUsage(new PrintWriter(System.out), UNDERLINE.length(), "fincal", OPTIONS);
+		hf.printUsage(new PrintWriter(System.out), UNDERLINE.length(), "fincal", options);
 	}
 
-	private static void showVersion() {
+	private void showVersion() {
 		StringBuilder vBuf = new StringBuilder(jarName).append(", version: ").append(jarVersion);
 		System.out.println(vBuf.toString());
 		System.out.println(UNDERLINE);
@@ -121,90 +144,73 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		initJarInfo();
-		initOptions();
+		final Main main = new Main();
 		if (0 == args.length) {
-			showUsage();
-			System.exit(0);
-		}
-		CommandLineParser clp = new GnuParser();
-		CommandLine cl = null;
-		try {
-			cl = clp.parse(OPTIONS, args);
-		} catch (ParseException pe) {
-			printError(pe);
-			System.exit(1);
-		}
-		if (cl.hasOption(OPT_HELP)) {
-			showHelp();
-			System.exit(0);
-		} else if (cl.hasOption(OPT_VERSION)) {
-			showVersion();
-			System.exit(0);
-		}
-		
-		// Definitions setup
-		Definitions<?> definitions = null;
-		try {
-			if (cl.hasOption(OPT_DEFINITIONS)) {
-				String defPath = cl.getOptionValue(OPT_DEFINITIONS);
-				File defFile = new File(defPath);
-				String absDefPath = defFile.getAbsolutePath();
-				definitions = new XMLDefinitions(absDefPath);
-			} else {
-				URL defaultDefURL = Main.class.getResource("/definitions.default.xml");
-				definitions = new XMLDefinitions(defaultDefURL);
-			}
-			definitions.load();
-		} catch (Exception e) {
-			printError(e);
-			System.exit(1);
-		}
-		
-		// Years setup
-		int minYear, maxYear, startYear, endYear;
-		if (cl.hasOption(OPT_YEARS)) {
-			String[] years = cl.getOptionValues(OPT_YEARS);
-			switch (years.length) {
-			case 0:
-				Calendar c = Calendar.getInstance();
-				minYear = c.get(Calendar.YEAR);
-				maxYear = minYear;
-				break;
-			case 1:
-				minYear = Integer.parseInt(years[0]);
-				maxYear = minYear;
-				break;
-			default:
-				minYear = Integer.parseInt(years[0]);
-				maxYear = Integer.parseInt(years[1]);
-				break;
-			}
+			main.showUsage();
 		} else {
-			Calendar c = Calendar.getInstance();
-			minYear = c.get(Calendar.YEAR);
-			maxYear = minYear;
-		}
-		startYear = Math.min(minYear, maxYear);
-		endYear = Math.max(minYear, maxYear);
-		
-		// Output setup
-		String outputPath = (cl.hasOption(OPT_OUTPUT))
-				             ? cl.getOptionValue(OPT_OUTPUT)
-				             : DEFAULT_OUTPUT;
-		File outputFile = new File(outputPath);
-		
-		List<FinancialCalendar> fcList = definitions.getFinancialCalendars();
-		for (int y = startYear; y <= endYear; y++) {
-			for (FinancialCalendar fc : fcList) {
-				System.out.printf("Calculating %d holidays for '%s'%n", Integer.valueOf(y), fc.getId());
-				CentralBank cb = fc.getCentralBank();
-				for (HolidayDefinition hd : fc) {
-					HolidayExpression he = CentralBankDecoratorLocator.decorate(hd.createHolidayExpression(), cb);
-					Date d = he.evaluate(y);
+			final CommandLineParser parser = new GnuParser();
+			final CommandLine cmdLine;
+			try {
+				cmdLine = parser.parse(main.options, args);
+			} catch (ParseException pe) {
+				throw new ConfigurationException("Invalid arguments", pe);
+			}
+			if (cmdLine.hasOption(OPT_HELP)) {
+				main.showHelp();
+			} else if (cmdLine.hasOption(OPT_VERSION)) {
+				main.showVersion();
+			} else {
+				// Definitions setup
+				final String defPath = StringUtils.defaultIfBlank(cmdLine.getOptionValue(OPT_DEFINITIONS), DEFAULT_DEFINITIONS);
+				final Definitions<?> definitions;
+				try {
+					definitions  = (DEFAULT_DEFINITIONS.equals(defPath))
+		                            ? new XMLDefinitions(Main.class.getResource(defPath))
+                                    : new XMLDefinitions(new File(defPath));
+		            definitions.load();
+		            main.setDefinitions(definitions);
+				} catch (Exception e) {
+					throw new ConfigurationException("Failed to load definitions from: " + defPath, e);
 				}
+				
+				// Years setup
+				int minYear, maxYear;
+				if (cmdLine.hasOption(OPT_YEARS)) {
+					String[] years = cmdLine.getOptionValues(OPT_YEARS);
+					
+					switch (years.length) {
+					case 0:
+						Calendar cal = Calendar.getInstance();
+						minYear = cal.get(Calendar.YEAR);
+						maxYear = minYear;
+						break;
+					case 1:
+						minYear = Integer.parseInt(years[0]);
+						maxYear = minYear;
+						break;
+					default:
+						minYear = Integer.parseInt(years[0]);
+						maxYear = Integer.parseInt(years[1]);
+						break;
+					}
+				} else {
+					Calendar cal = Calendar.getInstance();
+					minYear = cal.get(Calendar.YEAR);
+					maxYear = minYear;
+				}
+				main.setYearRange(minYear, maxYear);
+				
+				// Output file setup
+				final String outputFilePath = (cmdLine.hasOption(OPT_OUTPUT))
+						                       ? cmdLine.getOptionValue(OPT_OUTPUT)
+						                       : DEFAULT_OUTPUT;
+				main.setOutputFile(new File(outputFilePath));
+				
+				// Generate holidays
+				main.generateHolidays();
 			}
 		}
+		
 	}
 
 }
