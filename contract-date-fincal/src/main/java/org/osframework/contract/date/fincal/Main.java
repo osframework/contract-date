@@ -19,10 +19,12 @@ package org.osframework.contract.date.fincal;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.net.URL;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -39,11 +41,8 @@ import org.osframework.contract.date.ProjectInfoReader;
 import org.osframework.contract.date.fincal.config.ConfigurationException;
 import org.osframework.contract.date.fincal.config.Definitions;
 import org.osframework.contract.date.fincal.config.xml.XMLDefinitions;
-import org.osframework.contract.date.fincal.expression.HolidayExpression;
-import org.osframework.contract.date.fincal.expression.centralbank.CentralBankDecoratorLocator;
-import org.osframework.contract.date.fincal.model.CentralBank;
 import org.osframework.contract.date.fincal.model.FinancialCalendar;
-import org.osframework.contract.date.fincal.model.HolidayDefinition;
+import org.osframework.contract.date.fincal.model.Holiday;
 
 /**
  * JAR main class; provides command-line executable driver.
@@ -116,8 +115,21 @@ public class Main {
 
 	private void generateHolidays() {
 		List<FinancialCalendar> fcList = definitions.getFinancialCalendars();
+		ExecutorService service = Executors.newFixedThreadPool(fcList.size());
+		CountDownLatch startSignal = new CountDownLatch(1),
+				        doneSignal = new CountDownLatch(fcList.size());
+		ConcurrentLinkedQueue<Holiday> queue = new ConcurrentLinkedQueue<Holiday>();
 		for (FinancialCalendar fc : fcList) {
-			
+			service.execute(new FinancialCalendarHolidayProducer(fc, yearRange, queue, startSignal, doneSignal));
+		}
+		System.out.println("Starting holiday generation...");
+		startSignal.countDown();
+		try {
+			doneSignal.await();
+			System.out.println("Holidays generated.");
+			System.out.println("Writing holidays to: " + outputFile.getAbsolutePath());
+		} catch (InterruptedException ie) {
+			// TODO ???
 		}
 	}
 

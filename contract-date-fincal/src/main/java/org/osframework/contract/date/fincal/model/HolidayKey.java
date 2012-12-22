@@ -21,25 +21,35 @@ import java.io.Serializable;
 import java.util.Date;
 
 import org.osframework.contract.date.util.DateUtil;
+import org.osframework.util.EqualsUtil;
+import org.osframework.util.HashCodeUtil;
 
 /**
  * Unique composite identifier for a particular observed
  * <code>Holiday</code> on a financial calendar.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
- *
  */
 public class HolidayKey implements Serializable {
 
 	/**
 	 * Serializable UID.
 	 */
-	private static final long serialVersionUID = 9027617197436608599L;
+	private static final long serialVersionUID = -3548607801589534116L;
 
-	private FinancialCalendar financialCalendar = null;
-	private int date;
+	private final FinancialCalendar financialCalendar;
+	private final int date;
 
-	public HolidayKey() {}
+	private transient int hashCode;
+
+	public HolidayKey(final FinancialCalendar financialCalendar, final int date) {
+		this.financialCalendar = financialCalendar;
+		this.date = date;
+	}
+
+	public HolidayKey(final FinancialCalendar financialCalendar, final Date date) {
+		this(financialCalendar, DateUtil.toInt(date));
+	}
 
 	/**
 	 * @return the financialCalendar
@@ -49,49 +59,30 @@ public class HolidayKey implements Serializable {
 	}
 
 	/**
-	 * @param financialCalendar the financialCalendar to set
-	 */
-	public void setFinancialCalendar(FinancialCalendar financialCalendar) {
-		this.financialCalendar = financialCalendar;
-	}
-
-	/**
 	 * @return the date
 	 */
 	public int getDate() {
 		return date;
 	}
 
-	/**
-	 * @param date the date to set
-	 */
-	public void setDate(int date) {
-		this.date = date;
-	}
-
-	/**
-	 * @param date the date to set
-	 */
-	public void setDate(Date date) {
-		this.setDate(DateUtil.toInt(date));
-	}
-
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + date;
-		result = prime * result + ((financialCalendar == null) ? 0 : financialCalendar.hashCode());
-		return result;
+		if (0 == hashCode) {
+			int result = HashCodeUtil.SEED;
+			result = HashCodeUtil.hash(result, date);
+			result = HashCodeUtil.hash(result, financialCalendar);
+			this.hashCode = result;
+		}
+		return hashCode;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (!(obj instanceof HolidayKey)) return false;
-		HolidayKey other = (HolidayKey) obj;
-		return ((date == other.date) &&
-				(null == financialCalendar ? null == other.financialCalendar : financialCalendar.equals(other.financialCalendar)));
+		final HolidayKey other = (HolidayKey) obj;
+		return EqualsUtil.areEqual(date, other.date) &&
+			   EqualsUtil.areEqual(financialCalendar, other.financialCalendar);
 	}
 
 }

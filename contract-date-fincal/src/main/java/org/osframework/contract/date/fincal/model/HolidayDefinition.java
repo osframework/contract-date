@@ -22,7 +22,8 @@ import java.io.Serializable;
 import org.osframework.contract.date.fincal.expression.HolidayExpression;
 
 /**
- * Named definition of a holiday observed in one or more financial markets.
+ * Definition of a holiday observed in one or more financial markets.
+ * <p>Instances of this class are immutable and thread-safe.</p>
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
@@ -31,31 +32,34 @@ public class HolidayDefinition implements Serializable {
 	/**
 	 * Serializable UID.
 	 */
-	private static final long serialVersionUID = -3704327069665737827L;
+	private static final long serialVersionUID = 7746146194828405806L;
 
-	private String id;
-	private String name = null;
-	private String description = null;
-	private HolidayType observance = null;
-	private String expression = null;
+	private final String id;
+	private final String name;
+	private final String description;
+	private final HolidayType observance;
+	private final String expression;
 
 	/**
 	 * Constructor.
 	 */
-	public HolidayDefinition() {}
+	public HolidayDefinition(final String id,
+			                 final String name,
+			                 final String description,
+			                 final HolidayType observance,
+			                 final String expression) {
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.observance = observance;
+		this.expression = expression;
+	}
 
 	/**
 	 * @return the id
 	 */
 	public String getId() {
 		return id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	/**
@@ -66,24 +70,10 @@ public class HolidayDefinition implements Serializable {
 	}
 
 	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
 	 * @return the description
 	 */
 	public String getDescription() {
 		return description;
-	}
-
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 	/**
@@ -94,29 +84,15 @@ public class HolidayDefinition implements Serializable {
 	}
 
 	/**
-	 * @param observance the observance to set
-	 */
-	public void setObservance(HolidayType observance) {
-		this.observance = observance;
-	}
-
-	/**
 	 * @return the expression
 	 */
 	public String getExpression() {
 		return expression;
 	}
 
-	/**
-	 * @param expression the expression to set
-	 */
-	public void setExpression(String expression) {
-		this.expression = expression;
-	}
-
 	public HolidayExpression createHolidayExpression() {
 		if (null == observance || null == expression) {
-			throw new IllegalStateException("Object not in required state for invocation of method: createHolidayExpression");
+			throw new IllegalStateException("Not in required state for invocation of method: createHolidayExpression");
 		}
 		return observance.toExpression(expression);
 	}
@@ -126,7 +102,7 @@ public class HolidayDefinition implements Serializable {
 		StringBuilder buf = new StringBuilder("HolidayDefinition[id='")
 		                        .append(id).append("', name='")
 		                        .append(name).append("'")
-		                        .append((null != description) ? (", description='" + description + "'") : "")
+		                        .append((null == description) ? "" : (", description='" + description + "'"))
 		                        .append("]");
 		return buf.toString();
 	}

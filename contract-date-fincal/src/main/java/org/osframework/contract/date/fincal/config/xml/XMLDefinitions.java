@@ -21,7 +21,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Currency;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import javax.xml.XMLConstants;
@@ -131,13 +132,7 @@ public class XMLDefinitions extends Definitions<Document> implements Constants {
 					              : null;
 			String observance = hdEl.getElementsByTagName(ELEMENT_OBSERVANCE).item(0).getTextContent().trim();
 			String expression = hdEl.getElementsByTagName(ELEMENT_EXPRESSION).item(0).getTextContent().trim();
-			HolidayDefinition hd = new HolidayDefinition();
-			hd.setId(id);
-			hd.setName(name);
-			hd.setDescription(description);
-			hd.setObservance(HolidayType.valueOf(observance));
-			hd.setExpression(expression);
-			addHolidayDefinition(hd);
+			addHolidayDefinition(new HolidayDefinition(id, name, description, HolidayType.valueOf(observance), expression));
 		}
 	}
 
@@ -148,11 +143,7 @@ public class XMLDefinitions extends Definitions<Document> implements Constants {
 			String id = cbEl.getAttribute(ATTRIBUTE_ID);
 			String name = cbEl.getElementsByTagName(ELEMENT_NAME).item(0).getTextContent().trim();
 			String ccy = cbEl.getElementsByTagName(ELEMENT_CURRENCY).item(0).getTextContent().trim();
-			CentralBank cb = new CentralBank();
-			cb.setId(id);
-			cb.setName(name);
-			cb.setCurrency(Currency.getInstance(ccy));
-			addCentralBank(cb);
+			addCentralBank(new CentralBank(id, name, ccy));
 		}
 	}
 
@@ -173,14 +164,7 @@ public class XMLDefinitions extends Definitions<Document> implements Constants {
 		  		String hdId = hdRefs.item(j).getNodeValue();
 		  		hdArray[j] = getHolidayDefinition(hdId);
 		  	}
-		  	FinancialCalendar fc = new FinancialCalendar();
-		  	fc.setId(id);
-		  	fc.setDescription(description);
-		  	fc.setCentralBank(cb);
-		  	for (HolidayDefinition hd : hdArray) {
-		  		fc.add(hd);
-		  	}
-		  	addFinancialCalendar(fc);
+		  	addFinancialCalendar(new FinancialCalendar(id, description, cb, new HashSet<HolidayDefinition>(Arrays.asList(hdArray))));
 		}
 	}
 

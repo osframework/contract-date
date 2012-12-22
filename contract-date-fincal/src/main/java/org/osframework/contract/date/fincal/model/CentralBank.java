@@ -20,10 +20,13 @@ package org.osframework.contract.date.fincal.model;
 import java.io.Serializable;
 import java.util.Currency;
 
+import org.osframework.util.HashCodeUtil;
+
 /**
  * Public institution that manages a country's currency, money supply, and
  * interest rates. Central banks also usually oversee the commercial banking
  * system of their respective countries.
+ * <p>Instances of this class are immutable and thread-safe.</p>
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
@@ -32,26 +35,29 @@ public class CentralBank implements Serializable {
 	/**
 	 * Serializable UID.
 	 */
-	private static final long serialVersionUID = -6676682757100098452L;
+	private static final long serialVersionUID = 6631022375355172261L;
 
-	private String id = null;
-	private String name = null;
-	private Currency currency = null;
+	private final String id;
+	private final String name;
+	private final Currency currency;
 
-	public CentralBank() {}
+	private transient int hashCode;
+
+	public CentralBank(final String id, final String name, final Currency currency) {
+		this.id = id;
+		this.name = name;
+		this.currency = currency;
+	}
+
+	public CentralBank(final String id, final String name, final String currencyCode) {
+		this(id, name, Currency.getInstance(currencyCode));
+	}
 
 	/**
 	 * @return the id
 	 */
 	public String getId() {
 		return id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	/**
@@ -62,24 +68,10 @@ public class CentralBank implements Serializable {
 	}
 
 	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
 	 * @return the currency
 	 */
 	public Currency getCurrency() {
 		return currency;
-	}
-
-	/**
-	 * @param currency the currency to set
-	 */
-	public void setCurrency(Currency currency) {
-		this.currency = currency;
 	}
 
 	@Override
@@ -93,12 +85,14 @@ public class CentralBank implements Serializable {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((currency == null) ? 0 : currency.hashCode());
-		return result;
+		if (0 == hashCode) {
+			int result = HashCodeUtil.SEED;
+			result = HashCodeUtil.hash(result, this.id);
+			result = HashCodeUtil.hash(result, this.name);
+			result = HashCodeUtil.hash(result, this.currency);
+			this.hashCode = result;
+		}
+		return hashCode;
 	}
 
 	@Override

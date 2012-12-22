@@ -53,6 +53,7 @@ public class BankOfEnglandDecorator extends CentralBankDecorator {
 	@Override
 	public Date evaluate(int year) {
 		Date raw = super.evaluate(year);
+		if (null == raw) return null;
 		Calendar c = Calendar.getInstance();
 		c.setTime(raw);
 		int weekday = c.get(Calendar.DAY_OF_WEEK);

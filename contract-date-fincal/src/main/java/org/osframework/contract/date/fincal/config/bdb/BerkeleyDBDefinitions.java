@@ -18,7 +18,9 @@
 package org.osframework.contract.date.fincal.config.bdb;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Currency;
+import java.util.HashSet;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
@@ -118,10 +120,9 @@ public class BerkeleyDBDefinitions extends Definitions<Environment> {
 		while (OperationStatus.SUCCESS == c.getNext(key, data, LockMode.DEFAULT)) {
 			String cbId = StringBinding.entryToString(key);
 			TupleInput input = TupleBinding.entryToInput(data);
-			CentralBank cb = new CentralBank();
-			cb.setId(cbId);
-			cb.setName(input.readString());
-			cb.setCurrency(Currency.getInstance(input.readString()));
+			String name = input.readString();
+			Currency ccy = Currency.getInstance(input.readString());
+			CentralBank cb = new CentralBank(cbId, name, ccy);
 			addCentralBank(cb);
 		}
 		c.close();
@@ -133,12 +134,11 @@ public class BerkeleyDBDefinitions extends Definitions<Environment> {
 		while (OperationStatus.SUCCESS == c.getNext(key, data, LockMode.DEFAULT)) {
 			String hdId = StringBinding.entryToString(key);
 			TupleInput input = TupleBinding.entryToInput(data);
-			HolidayDefinition hd = new HolidayDefinition();
-			hd.setId(hdId);
-			hd.setName(input.readString());
-			hd.setDescription(input.readString());
-			hd.setObservance(HolidayType.valueOf(input.readString()));
-			hd.setExpression(input.readString());
+			String name = input.readString();
+			String desc = input.readString();
+			HolidayType type = HolidayType.valueOf(input.readString());
+			String expr = input.readString();
+			HolidayDefinition hd = new HolidayDefinition(hdId, name, desc, type, expr);
 			addHolidayDefinition(hd);
 		}
 		c.close();
@@ -150,15 +150,15 @@ public class BerkeleyDBDefinitions extends Definitions<Environment> {
 		while (OperationStatus.SUCCESS == c.getNext(key, data, LockMode.DEFAULT)) {
 			String fcId = StringBinding.entryToString(key);
 			TupleInput input = TupleBinding.entryToInput(data);
-			FinancialCalendar fc = new FinancialCalendar();
-			fc.setId(fcId);
-			fc.setDescription(input.readString());
-			fc.setCentralBank(getCentralBank(input.readString()));
+			String desc = input.readString();
+			CentralBank cb = getCentralBank(input.readString());
 			String tokenizedHdIdArray = input.readString();
 			String[] hdIdArray = StringUtils.split(tokenizedHdIdArray, ',');
-			for (String hdId : hdIdArray) {
-				fc.add(getHolidayDefinition(hdId));
+			HolidayDefinition[] hdArray = new HolidayDefinition[hdIdArray.length];
+			for (int i = 0; i < hdIdArray.length; i++) {
+				hdArray[i] = getHolidayDefinition(hdIdArray[i]);
 			}
+			FinancialCalendar fc = new FinancialCalendar(fcId, desc, cb, new HashSet<HolidayDefinition>(Arrays.asList(hdArray)));
 			addFinancialCalendar(fc);
 		}
 		c.close();

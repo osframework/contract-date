@@ -18,27 +18,43 @@
 package org.osframework.contract.date.fincal.model;
 
 import java.io.Serializable;
+import java.util.Date;
+
+import org.osframework.util.EqualsUtil;
+import org.osframework.util.HashCodeUtil;
 
 /**
  * Date of an observed <code>Holiday</code> on a financial calendar.
+ * <p>Instances of this class are immutable and thread-safe.</p>
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
- *
  */
 public class Holiday extends HolidayKey implements Serializable {
 
 	/**
 	 * Serializable UID.
 	 */
-	private static final long serialVersionUID = -4708527844688969229L;
+	private static final long serialVersionUID = 8157412688065685626L;
 
-	private HolidayDefinition holidayDefinition = null;
+	private final HolidayDefinition holidayDefinition;
+
+	private transient int hashCode;
 
 	/**
 	 * Constructor - description here.
 	 */
-	public Holiday() {
-		super();
+	public Holiday(final FinancialCalendar financialCalendar,
+			       final int date,
+			       final HolidayDefinition holidayDefinition) {
+		super(financialCalendar, date);
+		this.holidayDefinition = holidayDefinition;
+	}
+
+	public Holiday(final FinancialCalendar financialCalendar,
+			       final Date date,
+			       final HolidayDefinition holidayDefinition) {
+		super(financialCalendar, date);
+		this.holidayDefinition = holidayDefinition;
 	}
 
 	/**
@@ -48,27 +64,26 @@ public class Holiday extends HolidayKey implements Serializable {
 		return holidayDefinition;
 	}
 
-	/**
-	 * @param holidayDefinition the holidayDefinition to set
-	 */
-	public void setHolidayDefinition(HolidayDefinition holidayDefinition) {
-		this.holidayDefinition = holidayDefinition;
+	public HolidayKey getKey() {
+		return this;
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((holidayDefinition == null) ? 0 : holidayDefinition.hashCode());
-		return result;
+		if (0 == hashCode) {
+			int result = super.hashCode();
+			result = HashCodeUtil.hash(result, holidayDefinition);
+			this.hashCode = result;
+		}
+		return hashCode;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (!super.equals(obj) || getClass() != obj.getClass()) return false;
-		Holiday other = (Holiday) obj;
-		return (null == holidayDefinition ? null == other.holidayDefinition : holidayDefinition.equals(other.holidayDefinition));
+		final Holiday other = (Holiday) obj;
+		return EqualsUtil.areEqual(holidayDefinition, other.holidayDefinition);
 	}
 
 }

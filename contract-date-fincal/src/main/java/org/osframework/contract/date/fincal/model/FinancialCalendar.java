@@ -23,44 +23,54 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.osframework.util.EqualsUtil;
+import org.osframework.util.HashCodeUtil;
+
 /**
  * Holiday calendar definition for a particular financial market. An instance of
  * this class is an iterable collection of <code>HolidayDefinition</code>s
  * representing the financial ("bank") holidays observed in the associated
  * market's country or economic zone.
  * <p>
- * The {@link #id} property of a <code>FinancialCalendar</code> object
- * is not arbitrary: valid values correspond to the financial calendar codes
- * specified by <b>financialcalendar.com</b>, the <i>de facto</i> authoritative
- * source of calendar data used by financial institutions worldwide.
+ * The {@link #id} property of a <code>FinancialCalendar</code> object is not
+ * arbitrary: valid values correspond to the financial calendar codes specified
+ * by <b>financialcalendar.com</b>, the <i>de facto</i> authoritative source of
+ * calendar data used by financial institutions worldwide.
  * </p>
+ * <p>Instances of this class are immutable and thread-safe.</p>
  * 
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  * @see <a href="http://www.financialcalendar.com/Data/Holidays/Coverage">financialcalendar.com: Coverage - Financial Calendar</a>
  */
 public class FinancialCalendar implements Iterable<HolidayDefinition>, Serializable {
 
-	private static final long serialVersionUID = 2814618163030685728L;
+	/**
+	 * Serializable UID.
+	 */
+	private static final long serialVersionUID = -4226669744390855468L;
 
-	private String id = null;
-	private String description = null;
-	private CentralBank centralBank = null;
-	private Set<HolidayDefinition> holidayDefinitions = new HashSet<HolidayDefinition>();
+	private final String id;
+	private final String description;
+	private final CentralBank centralBank;
+	private final Set<HolidayDefinition> holidayDefinitions = new HashSet<HolidayDefinition>();
 
-	public FinancialCalendar() {}
+	private transient int hashCode;
+
+	public FinancialCalendar(final String id,
+			                 final String description,
+			                 final CentralBank centralBank,
+			                 final Set<HolidayDefinition> holidayDefinitions) {
+		this.id = id;
+		this.description = description;
+		this.centralBank = centralBank;
+		this.holidayDefinitions.addAll(holidayDefinitions);
+	}
 
 	/**
 	 * @return the id
 	 */
 	public String getId() {
 		return id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	/**
@@ -71,36 +81,14 @@ public class FinancialCalendar implements Iterable<HolidayDefinition>, Serializa
 	}
 
 	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	/**
 	 * @return the centralBank
 	 */
 	public CentralBank getCentralBank() {
 		return centralBank;
 	}
 
-	/**
-	 * @param centralBank the centralBank to set
-	 */
-	public void setCentralBank(CentralBank centralBank) {
-		this.centralBank = centralBank;
-	}
-
 	public Currency getCurrency() {
 		return (null == centralBank) ? null : centralBank.getCurrency();
-	}
-
-	public void add(HolidayDefinition hd) {
-		this.holidayDefinitions.add(hd);
-	}
-
-	public void remove(HolidayDefinition hd) {
-		this.holidayDefinitions.remove(hd);
 	}
 
 	public boolean contains(HolidayDefinition hd) {
@@ -108,36 +96,64 @@ public class FinancialCalendar implements Iterable<HolidayDefinition>, Serializa
 	}
 
 	public Iterator<HolidayDefinition> iterator() {
-		return holidayDefinitions.iterator();
+		return new UnmodifiableIterator();
 	}
 
 	@Override
 	public String toString() {
-		StringBuilder buf = new StringBuilder("FinancialCalendar[id='").append(id)
-				                .append("', description='").append(description)
-				                .append("', centralBank=").append(centralBank)
-				                .append("]");
+		StringBuilder buf = new StringBuilder("FinancialCalendar[id='")
+				.append(id).append("', description='").append(description)
+				.append("', centralBank=").append(centralBank).append("]");
 		return buf.toString();
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((centralBank == null) ? 0 : centralBank.hashCode());
-		return result;
+		if (0 == hashCode) {
+			int result = HashCodeUtil.SEED;
+			result = HashCodeUtil.hash(result, this.id);
+			result = HashCodeUtil.hash(result, this.description);
+			result = HashCodeUtil.hash(result, this.centralBank);
+			result = HashCodeUtil.hash(result, this.holidayDefinitions);
+			this.hashCode = result;
+		}
+		return hashCode;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
-		if (obj == null || getClass() != obj.getClass()) return false;
-		FinancialCalendar other = (FinancialCalendar) obj;
-		return ((null == id ? null == other.id : id.equals(other.id)) &&
-				(null == description ? null == other.description : description.equals(other.description)) &&
-				(null == centralBank ? null == other.centralBank : centralBank.equals(other.centralBank)));
+		if (!(obj instanceof FinancialCalendar)) return false;
+		final FinancialCalendar other = (FinancialCalendar)obj;
+		return EqualsUtil.areEqual(id, other.id) &&
+			   EqualsUtil.areEqual(description, other.description) &&
+			   EqualsUtil.areEqual(centralBank, other.centralBank) &&
+			   EqualsUtil.areEqual(holidayDefinitions, other.holidayDefinitions);
+	}
+
+	private class UnmodifiableIterator implements Iterator<HolidayDefinition> {
+
+		private final transient Iterator<HolidayDefinition> it;
+
+		private UnmodifiableIterator() {
+			this.it = holidayDefinitions.iterator();
+		}
+
+		@Override
+		public boolean hasNext() {
+			return it.hasNext();
+		}
+
+		@Override
+		public HolidayDefinition next() {
+			return it.next();
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+
 	}
 
 }
