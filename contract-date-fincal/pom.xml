@@ -34,9 +34,8 @@
 
 
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>contract-date-testng</artifactId>
-			<version>${project.version}</version>
+			<groupId>org.osframework.testng</groupId>
+			<artifactId>testng-ext</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

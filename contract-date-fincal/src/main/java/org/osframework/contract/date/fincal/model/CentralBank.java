@@ -19,8 +19,13 @@ package org.osframework.contract.date.fincal.model;
 
 import java.io.Serializable;
 import java.util.Currency;
+import java.util.Locale;
 
-import org.osframework.util.HashCodeUtil;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
  * Public institution that manages a country's currency, money supply, and
@@ -35,40 +40,91 @@ public class CentralBank implements Serializable {
 	/**
 	 * Serializable UID.
 	 */
-	private static final long serialVersionUID = 6631022375355172261L;
+	private static final long serialVersionUID = 4094026015917601847L;
 
 	private final String id;
 	private final String name;
+	private final String country;
 	private final Currency currency;
 
-	private transient int hashCode;
+	/**
+	 * Cached hash value for this instance.
+	 */
+	private volatile transient int hashCode;
 
-	public CentralBank(final String id, final String name, final Currency currency) {
+	/**
+	 * Constructor.
+	 *
+	 * @param id unique identifier for this instance
+	 * @param name name of this central bank
+	 * @param country ISO-3166 country code for this central bank
+	 * @param currency currency managed by this central bank
+	 * @throws IllegalArgumentException if any argument is null or empty, or if
+	 *         <code>country</code> is not valid ISO-3166 alpha2 code
+	 */
+	public CentralBank(final String id,
+			           final String name,
+			           final String country,
+			           final Currency currency) {
+		if (StringUtils.isBlank(id)) {
+			throw new IllegalArgumentException("Invalid blank 'id' argument");
+		}
+		if (StringUtils.isBlank(name)) {
+			throw new IllegalArgumentException("Invalid blank 'name' argument");
+		}
+		if (2 != StringUtils.length(country)) {
+			throw new IllegalArgumentException("Invalid ISO-3166 alpha2 country code");
+		}
+		if (null == currency) {
+			throw new IllegalArgumentException("Currency argument cannot be null");
+		}
 		this.id = id;
 		this.name = name;
+		this.country = StringUtils.upperCase(country, Locale.ENGLISH);
 		this.currency = currency;
 	}
 
-	public CentralBank(final String id, final String name, final String currencyCode) {
-		this(id, name, Currency.getInstance(currencyCode));
+	/**
+	 * Constructor.
+	 *
+	 * @param id unique identifier for this instance
+	 * @param name name of this central bank
+	 * @param country ISO-3166 country code for this central bank
+	 * @param currency ISO-4217 code for currency managed by this central bank
+	 * @throws IllegalArgumentException if any argument is null or empty, or if
+	 *         <code>country</code> is not valid ISO-3166 alpha2 code, or if
+	 *         <code>currencyCode</code> is not valid ISO-4217 code
+	 */
+	public CentralBank(final String id,
+			           final String name,
+			           final String country,
+			           final String currencyCode) {
+		this(id, name, country, Currency.getInstance(currencyCode));
 	}
 
 	/**
-	 * @return the id
+	 * @return unique identifier for this instance
 	 */
 	public String getId() {
 		return id;
 	}
 
 	/**
-	 * @return the name
+	 * @return name of this central bank
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @return the currency
+	 * @return ISO-3166 country code for this central bank
+	 */
+	public String getCountry() {
+		return country;
+	}
+
+	/**
+	 * @return currency managed by this central bank
 	 */
 	public Currency getCurrency() {
 		return currency;
@@ -76,33 +132,39 @@ public class CentralBank implements Serializable {
 
 	@Override
 	public String toString() {
-		StringBuilder buf = new StringBuilder("CentralBank[id='").append(id)
-		                        .append("', name='").append(name)
-		                        .append("', currency='").append(currency)
-		                        .append("']");
-		return buf.toString();
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
 	@Override
 	public int hashCode() {
 		if (0 == hashCode) {
-			int result = HashCodeUtil.SEED;
-			result = HashCodeUtil.hash(result, this.id);
-			result = HashCodeUtil.hash(result, this.name);
-			result = HashCodeUtil.hash(result, this.currency);
-			this.hashCode = result;
+			hashCode = new HashCodeBuilder()
+			               .append(id)
+			               .append(name)
+			               .append(country)
+			               .append(currency)
+			               .toHashCode();
 		}
 		return hashCode;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (obj == null || getClass() != obj.getClass()) return false;
-		CentralBank other = (CentralBank) obj;
-		return ((null == id ? null == other.id : id.equals(other.id)) &&
-				(null == name ? null == other.name : name.equals(other.name)) &&
-				(currency == other.currency));
+		boolean equals;
+		if (this == obj) {
+			equals = true;
+		} else if (obj instanceof CentralBank) {
+			final CentralBank other = (CentralBank)obj;
+			equals = new EqualsBuilder()
+			             .append(id, other.id)
+			             .append(name, other.name)
+			             .append(country, other.country)
+			             .append(currency, other.currency)
+			             .isEquals();
+		} else {
+			equals = false;
+		}
+		return equals;
 	}
 
 }

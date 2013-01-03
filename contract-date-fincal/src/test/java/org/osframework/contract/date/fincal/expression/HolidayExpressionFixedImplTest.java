@@ -1,6 +1,6 @@
 package org.osframework.contract.date.fincal.expression;
 
-import static org.osframework.contract.date.testng.Assert.assertSameDate;
+import static org.osframework.testng.Assert.assertSameDay;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -14,7 +14,7 @@ public class HolidayExpressionFixedImplTest {
 	public void testEvaluate(String e, int y, Date check) {
 		HolidayExpressionFixedImpl expr = new HolidayExpressionFixedImpl(e);
 		Date result = expr.evaluate(y);
-		assertSameDate(result, check);
+		assertSameDay(result, check);
 	}
 
 	@DataProvider

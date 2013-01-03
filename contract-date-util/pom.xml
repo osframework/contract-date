@@ -28,9 +28,11 @@
 			<groupId>org.jfin</groupId>
 			<artifactId>jFin-DateMath</artifactId>
 		</dependency>
+		
+		<!-- Test dependencies -->
 		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
+			<groupId>org.osframework.testng</groupId>
+			<artifactId>testng-ext</artifactId>
 		</dependency>
 	</dependencies>
 

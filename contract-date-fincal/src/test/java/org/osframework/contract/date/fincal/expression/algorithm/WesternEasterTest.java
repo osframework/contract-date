@@ -1,6 +1,6 @@
 package org.osframework.contract.date.fincal.expression.algorithm;
 
-import static org.osframework.contract.date.testng.Assert.assertSameDate;
+import static org.osframework.testng.Assert.assertSameDay;
 import static org.testng.Assert.assertEquals;
 
 import java.util.Calendar;
@@ -21,7 +21,7 @@ public class WesternEasterTest {
 		c.setTime(result);
 		assertEquals(c.get(Calendar.DAY_OF_WEEK), Calendar.SUNDAY);
 		
-		assertSameDate(result, check);
+		assertSameDay(result, check);
 	}
 
 	@DataProvider

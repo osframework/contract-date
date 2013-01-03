@@ -18,13 +18,16 @@
 package org.osframework.contract.date.fincal.model;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Currency;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.osframework.util.EqualsUtil;
-import org.osframework.util.HashCodeUtil;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
  * Holiday calendar definition for a particular financial market. An instance of
@@ -40,7 +43,8 @@ import org.osframework.util.HashCodeUtil;
  * <p>Instances of this class are immutable and thread-safe.</p>
  * 
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
- * @see <a href="http://www.financialcalendar.com/Data/Holidays/Coverage">financialcalendar.com: Coverage - Financial Calendar</a>
+ * @see <a href="http://www.financialcalendar.com/Data/Holidays/Coverage">
+   Coverage - Financial Calendar</a>
  */
 public class FinancialCalendar implements Iterable<HolidayDefinition>, Serializable {
 
@@ -52,108 +56,128 @@ public class FinancialCalendar implements Iterable<HolidayDefinition>, Serializa
 	private final String id;
 	private final String description;
 	private final CentralBank centralBank;
-	private final Set<HolidayDefinition> holidayDefinitions = new HashSet<HolidayDefinition>();
+	private final Set<HolidayDefinition> holidayDefinitions;
 
-	private transient int hashCode;
+	/**
+	 * Cached hash value for this instance.
+	 */
+	private volatile transient int hashCode;
 
+	/**
+	 * Constructor. Holiday definitions passed to this constructor are copied to
+	 * an new, unmodifiable collection which is safe for multi-thread concurrent
+	 * iteration.
+	 *
+	 * @param id unique identifier for this instance
+	 * @param description short description of this calendar definition
+	 * @param centralBank central bank which governs this calendar's holiday definitions
+	 * @param holidayDefinitions collection of holiday definitions which comprise this calendar
+	 * @throws IllegalArgumentException if any argument is null or empty
+	 */
 	public FinancialCalendar(final String id,
 			                 final String description,
 			                 final CentralBank centralBank,
 			                 final Set<HolidayDefinition> holidayDefinitions) {
+		if (StringUtils.isBlank(id)) {
+			throw new IllegalArgumentException("Invalid blank 'id' argument");
+		}
+		if (StringUtils.isBlank(description)) {
+			throw new IllegalArgumentException("Invalid blank 'description' argument");
+		}
+		if (null == centralBank) {
+			throw new IllegalArgumentException("CentralBank argument cannot be null");
+		}
+		if (null == holidayDefinitions) {
+			throw new IllegalArgumentException("Set argument cannot be null");
+		}
 		this.id = id;
 		this.description = description;
 		this.centralBank = centralBank;
-		this.holidayDefinitions.addAll(holidayDefinitions);
+		this.holidayDefinitions = Collections.unmodifiableSet(holidayDefinitions);
 	}
 
 	/**
-	 * @return the id
+	 * @return unique identifier for this instance
 	 */
 	public String getId() {
 		return id;
 	}
 
 	/**
-	 * @return the description
+	 * @return short description of this calendar definition
 	 */
 	public String getDescription() {
 		return description;
 	}
 
 	/**
-	 * @return the centralBank
+	 * @return central bank which governs this calendar's holiday definitions
 	 */
 	public CentralBank getCentralBank() {
 		return centralBank;
 	}
 
+	/**
+	 * @return currency with which this calendar definition is associated
+	 */
 	public Currency getCurrency() {
-		return (null == centralBank) ? null : centralBank.getCurrency();
+		return centralBank.getCurrency();
 	}
 
+	/**
+	 * Determine if this calendar contains the specified holiday definition.
+	 * 
+	 * @param hd holiday definition to be checked
+	 * @return <code>true</code> if this calendar contains the holiday
+	 *         definition, <code>false</code> otherwise
+	 */
 	public boolean contains(HolidayDefinition hd) {
-		return this.holidayDefinitions.contains(hd);
+		return holidayDefinitions.contains(hd);
 	}
 
+	/**
+	 * @return unmodifiable iterator over the holiday definitions in this
+	 *         calendar
+	 */
 	public Iterator<HolidayDefinition> iterator() {
-		return new UnmodifiableIterator();
+		return holidayDefinitions.iterator();
 	}
 
 	@Override
 	public String toString() {
-		StringBuilder buf = new StringBuilder("FinancialCalendar[id='")
-				.append(id).append("', description='").append(description)
-				.append("', centralBank=").append(centralBank).append("]");
-		return buf.toString();
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
 	@Override
 	public int hashCode() {
 		if (0 == hashCode) {
-			int result = HashCodeUtil.SEED;
-			result = HashCodeUtil.hash(result, this.id);
-			result = HashCodeUtil.hash(result, this.description);
-			result = HashCodeUtil.hash(result, this.centralBank);
-			result = HashCodeUtil.hash(result, this.holidayDefinitions);
-			this.hashCode = result;
+			hashCode = new HashCodeBuilder()
+			               .append(id)
+			               .append(description)
+			               .append(centralBank)
+			               .append(holidayDefinitions)
+			               .toHashCode();
 		}
 		return hashCode;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (!(obj instanceof FinancialCalendar)) return false;
-		final FinancialCalendar other = (FinancialCalendar)obj;
-		return EqualsUtil.areEqual(id, other.id) &&
-			   EqualsUtil.areEqual(description, other.description) &&
-			   EqualsUtil.areEqual(centralBank, other.centralBank) &&
-			   EqualsUtil.areEqual(holidayDefinitions, other.holidayDefinitions);
-	}
-
-	private class UnmodifiableIterator implements Iterator<HolidayDefinition> {
-
-		private final transient Iterator<HolidayDefinition> it;
-
-		private UnmodifiableIterator() {
-			this.it = holidayDefinitions.iterator();
+		boolean result;
+		if (this == obj) {
+			result = true;
+		} else if (obj instanceof FinancialCalendar) {
+			final FinancialCalendar other = (FinancialCalendar)obj;
+			result = new EqualsBuilder()
+			             .append(id, other.id)
+			             .append(description, other.description)
+			             .append(centralBank, other.centralBank)
+			             .append(holidayDefinitions, other.holidayDefinitions)
+			             .isEquals();
+		} else {
+			result = false;
 		}
-
-		@Override
-		public boolean hasNext() {
-			return it.hasNext();
-		}
-
-		@Override
-		public HolidayDefinition next() {
-			return it.next();
-		}
-
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
-
+		return result;
 	}
 
 }
