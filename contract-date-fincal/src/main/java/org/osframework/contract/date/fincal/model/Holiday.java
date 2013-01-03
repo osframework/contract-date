@@ -20,11 +20,13 @@ package org.osframework.contract.date.fincal.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.osframework.util.EqualsUtil;
-import org.osframework.util.HashCodeUtil;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
- * Date of an observed <code>Holiday</code> on a financial calendar.
+ * Date of an observed holiday on a financial calendar.
  * <p>Instances of this class are immutable and thread-safe.</p>
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
@@ -38,6 +40,9 @@ public class Holiday extends HolidayKey implements Serializable {
 
 	private final HolidayDefinition holidayDefinition;
 
+	/**
+	 * Cached hash value for this instance.
+	 */
 	private transient int hashCode;
 
 	/**
@@ -69,21 +74,36 @@ public class Holiday extends HolidayKey implements Serializable {
 	}
 
 	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+	}
+
+	@Override
 	public int hashCode() {
 		if (0 == hashCode) {
-			int result = super.hashCode();
-			result = HashCodeUtil.hash(result, holidayDefinition);
-			this.hashCode = result;
+			hashCode = new HashCodeBuilder()
+			               .appendSuper(super.hashCode())
+			               .append(holidayDefinition)
+			               .toHashCode();
 		}
 		return hashCode;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (!super.equals(obj) || getClass() != obj.getClass()) return false;
-		final Holiday other = (Holiday) obj;
-		return EqualsUtil.areEqual(holidayDefinition, other.holidayDefinition);
+		boolean result;
+		if (this == obj) {
+			result = true;
+		} else if (obj instanceof Holiday) {
+			final Holiday other = (Holiday)obj;
+			result = new EqualsBuilder()
+			             .appendSuper(super.equals(other))
+			             .append(holidayDefinition, other.holidayDefinition)
+			             .isEquals();
+		} else {
+			result = false;
+		}
+		return result;
 	}
 
 }
