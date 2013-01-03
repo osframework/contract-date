@@ -2,6 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
 	<groupId>org.osframework.contract-date</groupId>
 	<artifactId>contract-date</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -9,41 +15,59 @@
 
 	<name>Contract Date Calculator</name>
 	<description>Derivative contract date calculation service</description>
+	<url>http://osframework.org/projects/contract-date/</url>
 	<inceptionYear>2012</inceptionYear>
 
 	<organization>
 		<name>OSFramework Project</name>
-		<url>http://osframework.github.org/</url>
+		<url>http://osframework.org/</url>
 	</organization>
 
 	<licenses>
 		<license>
-			<name>Apache License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
 
+	<developers>
+		<developer>
+			<id>davejoyce</id>
+			<name>Dave Joyce</name>
+			<email>dave@osframework.org</email>
+			<timezone>-5</timezone>
+			<roles>
+				<role>Project Lead</role>
+			</roles>
+		</developer>
+	</developers>
+	<contributors>
+		<contributor>
+			<name>Martin Snyman</name>
+			<timezone>2</timezone>
+		</contributor>
+	</contributors>
+
 	<scm>
-		<url>https://github.com/osframework/contract-date</url>
-		<connection>git://github.com/osframework/contract-date.git</connection>
-		<developerConnection>https://github.com/osframework/contract-date.git</developerConnection>
+		<url>git@github.com/osframework/contract-date.git</url>
+		<connection>scm:git:git://github.com/osframework/contract-date.git</connection>
+		<developerConnection>scm:git:https://github.com/osframework/contract-date.git</developerConnection>
 	</scm>
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/osframework/contract-date/issues</url>
+	</issueManagement>
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>https://osframework.ci.cloudbees.com/</url>
+	</ciManagement>
 
 	<distributionManagement>
-		<repository>
-			<id>cloudbees-private-release-repository</id>
-			<name>OSFramework Project Release Repository (CloudBees)</name>
-			<url>https://repository-osframework.forge.cloudbees.com/release/</url>
-			<layout>default</layout>
-		</repository>
-		<snapshotRepository>
-			<id>cloudbees-private-snapshot-repository</id>
-			<name>OSFramework Project Snapshot Repository (CloudBees)</name>
-			<url>https://repository-osframework.forge.cloudbees.com/snapshot/</url>
-			<layout>default</layout>
-			<uniqueVersion>true</uniqueVersion>
-		</snapshotRepository>
+		<site>
+			<id>osframework-project-site</id>
+			<url>scp://osframework.org/home/osfservice/osframework.org/projects/contract-date/</url>
+		</site>
 	</distributionManagement>
 
 	<repositories>
@@ -77,7 +101,7 @@
 		<!-- Managed dependency versions -->
 		<commons-cli.version>1.2</commons-cli.version>
 		<commons-lang.version>2.6</commons-lang.version>
-		<common-utils.version>0.0.1-SNAPSHOT</common-utils.version>
+		<common-utils.version>1.0.0</common-utils.version>
 		<je.version>3.3.75</je.version>
 		<jfin-DateMath.version>1.0.1</jfin-DateMath.version>
 		<slf4j.version>1.7.2</slf4j.version>
@@ -98,7 +122,6 @@
 	<modules>
 		<module>contract-date-util</module>
 		<module>contract-date-fincal</module>
-		<module>contract-date-testng</module>
 	</modules>
 
 	<dependencyManagement>
