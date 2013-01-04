@@ -10,7 +10,7 @@
 
 	<groupId>org.osframework.contract-date</groupId>
 	<artifactId>contract-date</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Contract Date Calculator</name>
@@ -71,12 +71,14 @@
 	</distributionManagement>
 
 	<repositories>
+<!--
 		<repository>
 			<id>oracleReleases</id>
 			<name>Oracle Released Java Packages</name>
 			<url>http://download.oracle.com/maven</url>
 			<layout>default</layout>
 		</repository>
+-->
 	</repositories>
 
 	<properties>
@@ -90,11 +92,10 @@
 		<commons-cli.version>1.2</commons-cli.version>
 		<commons-lang.version>2.6</commons-lang.version>
 		<common-utils.version>1.0.0</common-utils.version>
-		<je.version>3.3.75</je.version>
 		<jfin-DateMath.version>1.0.1</jfin-DateMath.version>
 		<slf4j.version>1.7.2</slf4j.version>
 		<logback.version>1.0.9</logback.version>
-		<testng-ext.version>1.0.0-SNAPSHOT</testng-ext.version>
+		<testng-ext.version>1.0.0</testng-ext.version>
 
 		<!-- Plugin versions -->
 		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
@@ -127,12 +128,6 @@
 				<groupId>commons-lang</groupId>
 				<artifactId>commons-lang</artifactId>
 				<version>${commons-lang.version}</version>
-				<scope>compile</scope>
-			</dependency>
-			<dependency>
-				<groupId>com.sleepycat</groupId>
-				<artifactId>je</artifactId>
-				<version>${je.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
