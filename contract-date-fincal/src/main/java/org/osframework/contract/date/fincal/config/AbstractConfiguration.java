@@ -1,5 +1,5 @@
 /*
- * File: package-info.java
+ * File: AbstractConfiguration.java
  * 
  * Copyright 2012 OSFramework Project.
  * 
@@ -15,10 +15,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.osframework.contract.date.fincal.config;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 /**
- * Top-level core domain model classes and enumerations. All classes provided
- * by this package are immutable and thread-safe.
+ * Abstract convenience superclass of objects which provide the definitions used
+ * to generate financial calendar data. This class provides a logging facility
+ * for use by subclasses.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-package org.osframework.contract.date.fincal.model;
+public abstract class AbstractConfiguration implements Configuration {
+
+	protected final Logger logger;
+
+	/**
+	 * Default constructor.
+	 */
+	public AbstractConfiguration() {
+		this.logger = LoggerFactory.getLogger(this.getClass());
+	}
+
+}
