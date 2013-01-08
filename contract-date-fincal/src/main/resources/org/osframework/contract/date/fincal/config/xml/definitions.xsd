@@ -27,6 +27,17 @@
 		<xsd:attribute name="id" type="xsd:token" use="required" />
 	</xsd:complexType>
 
+	<xsd:simpleType name="CountryType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en"><![CDATA[
+			Data type for a valid ISO-3166 alpha2 country code.
+			]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:token">
+			<xsd:pattern value="[A-Z]{2}" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
 	<xsd:simpleType name="CurrencyType">
 		<xsd:annotation>
 			<xsd:documentation xml:lang="en"><![CDATA[
@@ -49,6 +60,7 @@
 			<xsd:extension base="IdentifiedType">
 				<xsd:sequence>
 					<xsd:element name="name" type="xsd:token" minOccurs="1" maxOccurs="1" />
+					<xsd:element name="country" type="CountryType" minOccurs="1" maxOccurs="1" />
 					<xsd:element name="currency" type="CurrencyType" minOccurs="1" maxOccurs="1" />
 				</xsd:sequence>
 			</xsd:extension>
