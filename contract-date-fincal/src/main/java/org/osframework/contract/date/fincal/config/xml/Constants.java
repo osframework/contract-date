@@ -30,6 +30,7 @@ public interface Constants {
 
 	public static final String ELEMENT_CALENDAR = "calendar";
 	public static final String ELEMENT_CENTRALBANK = "centralBank";
+	public static final String ELEMENT_COUNTRY = "country";
 	public static final String ELEMENT_CURRENCY = "currency";
 	public static final String ELEMENT_DEFINITIONS = "definitions";
 	public static final String ELEMENT_DESCRIPTION = "description";
