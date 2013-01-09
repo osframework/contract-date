@@ -30,13 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractConfiguration implements Configuration {
 
-	protected final Logger logger;
-
-	/**
-	 * Default constructor.
-	 */
-	public AbstractConfiguration() {
-		this.logger = LoggerFactory.getLogger(this.getClass());
-	}
+	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+	protected final ConfigurationObserverChain observer = new ConfigurationObserverChain();
 
 }

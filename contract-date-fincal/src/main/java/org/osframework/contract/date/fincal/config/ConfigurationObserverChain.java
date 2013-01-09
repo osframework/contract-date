@@ -18,7 +18,9 @@
 package org.osframework.contract.date.fincal.config;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 
 /**
@@ -40,26 +42,26 @@ public class ConfigurationObserverChain implements ConfigurationObserver {
 	private final Map<ConfigurationObserver, Object> observerList = Collections.synchronizedMap(new WeakHashMap<ConfigurationObserver, Object>());
 	private final Object present = new Object();
 
-	public synchronized void addObserver(ConfigurationObserver observer) {
+	public void addObserver(ConfigurationObserver observer) {
 		observerList.put(observer, present);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.osframework.contract.date.fincal.config.ConfigurationObserver#configurationCreated(org.osframework.contract.date.fincal.config.Configuration)
-	 */
-	@Override
 	public void configurationCreated(Configuration cfg) {
-		// TODO Auto-generated method stub
-
+		Set<ConfigurationObserver> observers = new HashSet<ConfigurationObserver>(observerList.keySet());
+		synchronized (observerList) {
+			for (ConfigurationObserver observer : observers) {
+				observer.configurationCreated(cfg);
+			}
+		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.osframework.contract.date.fincal.config.ConfigurationObserver#configurationChanged(org.osframework.contract.date.fincal.config.Configuration)
-	 */
-	@Override
 	public void configurationChanged(Configuration cfg) {
-		// TODO Auto-generated method stub
-
+		Set<ConfigurationObserver> observers = new HashSet<ConfigurationObserver>(observerList.keySet());
+		synchronized (observerList) {
+			for (ConfigurationObserver observer : observers) {
+				observer.configurationChanged(cfg);
+			}
+		}
 	}
 
 }
