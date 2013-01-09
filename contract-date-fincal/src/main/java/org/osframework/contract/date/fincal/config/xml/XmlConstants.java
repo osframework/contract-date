@@ -1,5 +1,5 @@
 /*
- * File: Constants.java
+ * File: XmlConstants.java
  * 
  * Copyright 2012 OSFramework Project.
  * 
@@ -18,15 +18,26 @@
 package org.osframework.contract.date.fincal.config.xml;
 
 /**
- * Constants description here.
+ * Utility class to contain basic XML values as constants.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public interface Constants {
+public final class XmlConstants {
 
+	/**
+	 * The financial calendar definition namespace URI.
+	 */
 	public static final String CONTRACT_DATE_FINCAL_NS_URI = "http://osframework.org/schema/contract-date/definitions";
+
+	/**
+	 * Filename of financial calendar definition XML Schema document.
+	 */
 	public static final String XSD_FILENAME = "definitions.xsd";
-	public static final String XSD_RESOURCE = Constants.class.getPackage().getName().replace('.','/') + "/" + XSD_FILENAME;
+
+	/**
+	 * Resolvable classpath of XML Schema document resource.
+	 */
+	public static final String XSD_RESOURCE = XmlConstants.class.getPackage().getName().replace('.','/') + "/" + XSD_FILENAME;
 
 	public static final String ELEMENT_CALENDAR = "calendar";
 	public static final String ELEMENT_CENTRALBANK = "centralBank";
@@ -41,5 +52,10 @@ public interface Constants {
 	
 	public static final String ATTRIBUTE_ID = "id";
 	public static final String ATTRIBUTE_REFID = "refid";
+
+	/**
+     * Private constructor to prevent instantiation.
+     */
+	private XmlConstants() {}
 
 }
