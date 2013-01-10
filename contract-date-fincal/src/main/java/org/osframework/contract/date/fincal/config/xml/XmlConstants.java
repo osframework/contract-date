@@ -39,19 +39,27 @@ public final class XmlConstants {
 	 */
 	public static final String XSD_RESOURCE = XmlConstants.class.getPackage().getName().replace('.','/') + "/" + XSD_FILENAME;
 
-	public static final String ELEMENT_CALENDAR = "calendar";
-	public static final String ELEMENT_CENTRALBANK = "centralBank";
-	public static final String ELEMENT_COUNTRY = "country";
-	public static final String ELEMENT_CURRENCY = "currency";
-	public static final String ELEMENT_DEFINITIONS = "definitions";
-	public static final String ELEMENT_DESCRIPTION = "description";
-	public static final String ELEMENT_EXPRESSION = "expression";
-	public static final String ELEMENT_HOLIDAY = "holiday";
-	public static final String ELEMENT_NAME = "name";
-	public static final String ELEMENT_OBSERVANCE = "observance";
+	/**
+	 * Default XML character encoding.
+	 */
+	public static final String DEFAULT_ENCODING = "UTF-8";
+
+	public static final String ELEMENT_CALENDAR     = "calendar";
+	public static final String ELEMENT_CALENDARS    = "calendars";
+	public static final String ELEMENT_CENTRALBANK  = "centralBank";
+	public static final String ELEMENT_CENTRALBANKS = "centralBanks";
+	public static final String ELEMENT_COUNTRY      = "country";
+	public static final String ELEMENT_CURRENCY     = "currency";
+	public static final String ELEMENT_DEFINITIONS  = "definitions";
+	public static final String ELEMENT_DESCRIPTION  = "description";
+	public static final String ELEMENT_EXPRESSION   = "expression";
+	public static final String ELEMENT_HOLIDAY      = "holiday";
+	public static final String ELEMENT_HOLIDAYS     = "holidays";
+	public static final String ELEMENT_NAME         = "name";
+	public static final String ELEMENT_OBSERVANCE   = "observance";
 	
-	public static final String ATTRIBUTE_ID = "id";
-	public static final String ATTRIBUTE_REFID = "refid";
+	public static final String ATTRIBUTE_ID         = "id";
+	public static final String ATTRIBUTE_REFID      = "refid";
 
 	/**
      * Private constructor to prevent instantiation.
