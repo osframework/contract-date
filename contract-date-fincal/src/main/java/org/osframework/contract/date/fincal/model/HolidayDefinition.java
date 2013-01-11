@@ -19,6 +19,10 @@ package org.osframework.contract.date.fincal.model;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.osframework.contract.date.fincal.expression.HolidayExpression;
 
 /**
@@ -39,6 +43,11 @@ public class HolidayDefinition implements Serializable {
 	private final String description;
 	private final HolidayType observance;
 	private final String expression;
+
+	/**
+	 * Cached hash value for this instance.
+	 */
+	private volatile transient int hashCode;
 
 	/**
 	 * Constructor.
@@ -99,36 +108,41 @@ public class HolidayDefinition implements Serializable {
 
 	@Override
 	public String toString() {
-		StringBuilder buf = new StringBuilder("HolidayDefinition[id='")
-		                        .append(id).append("', name='")
-		                        .append(name).append("'")
-		                        .append((null == description) ? "" : (", description='" + description + "'"))
-		                        .append("]");
-		return buf.toString();
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((observance == null) ? 0 : observance.hashCode());
-		result = prime * result + ((expression == null) ? 0 : expression.hashCode());
-		return result;
+		if (0 == hashCode) {
+			hashCode = new HashCodeBuilder()
+			               .append(id)
+			               .append(name)
+			               .append(description)
+			               .append(observance)
+			               .append(expression)
+			               .toHashCode();
+		}
+		return hashCode;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (obj == null || getClass() != obj.getClass()) return false;
-		HolidayDefinition other = (HolidayDefinition) obj;
-		return ((null == id ? null == other.id : id.equals(other.id)) &&
-				(null == name ? null == other.name : name.equals(other.name)) &&
-				(null == description ? null == other.description : description.equals(other.description)) &&
-				(observance == other.observance) &&
-				(null == expression ? null == other.expression : expression.equals(other.expression)));
+		boolean equals;
+		if (this == obj) {
+			equals = true;
+		} else if (obj instanceof HolidayDefinition) {
+			final HolidayDefinition other = (HolidayDefinition)obj;
+			equals = new EqualsBuilder()
+			             .append(id, other.id)
+			             .append(name, other.name)
+			             .append(description, other.description)
+			             .append(observance, other.observance)
+			             .append(expression, other.expression)
+			             .isEquals();
+		} else {
+			equals = false;
+		}
+		return equals;
 	}
 
 }

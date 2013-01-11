@@ -23,11 +23,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.URL;
-import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Currency;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLInputFactory;
@@ -47,13 +50,12 @@ import org.osframework.contract.date.fincal.model.CentralBank;
 import org.osframework.contract.date.fincal.model.FinancialCalendar;
 import org.osframework.contract.date.fincal.model.HolidayDefinition;
 import org.osframework.contract.date.fincal.model.HolidayType;
-import org.slf4j.Logger;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 /**
- * XmlConfiguration description here.
+ * Provides financial calendar definitions stored as XML document. Definitions
+ * are cached internally as they are parsed from the XML source.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
@@ -69,10 +71,6 @@ public class XmlConfiguration extends AbstractConcurrentMapConfiguration {
 		this.observer.configurationCreated(this);
 	}
 
-	/**
-	 * Constructor - description here.
-	 *
-	 */
 	public XmlConfiguration(final InputStream xmlIn) {
 		super();
 		load(xmlIn);
@@ -104,27 +102,24 @@ public class XmlConfiguration extends AbstractConcurrentMapConfiguration {
 				    parserIn    = new ByteArrayInputStream(baos.toByteArray());
 		
 		// Validate configuration XML
-		validateConfigurationXml(validatorIn);
+		validateConfiguration(validatorIn);
 		
 		// Parse configuration XML
-		parseConfigurationXml(parserIn);
+		parseConfiguration(parserIn);
 	}
 
 	protected ErrorHandler getErrorHandler() {
-		return new DefaultLoggingErrorHandler(this.logger);
+		return new DefaultErrorHandler(this.logger);
 	}
 
-	protected Reader getXMLReader(final InputStream xmlInput) {
-		return IOUtils.toBufferedReader(new InputStreamReader(xmlInput, Charset.forName(XmlConstants.DEFAULT_ENCODING)));
-	}
-
-	protected void parseConfigurationXml(final InputStream xmlIn) {
+	protected void parseConfiguration(final InputStream xmlIn) {
 		XMLInputFactory xif = XMLInputFactory.newInstance();
 		XMLStreamReader xsr = null;
 		try {
 			xsr = xif.createXMLStreamReader(xmlIn);
 			int eventType;
-			String curEl = null;
+			Deque<StackElement> elementStack = new ArrayDeque<StackElement>();
+			StackElement curEl = null;
 			Map<String, Object> constructorArgMap = new HashMap<String, Object>();
 			StringBuilder curFieldValueBuf = new StringBuilder();
 			while (xsr.hasNext()) {
@@ -132,44 +127,35 @@ public class XmlConfiguration extends AbstractConcurrentMapConfiguration {
 				eventType = xsr.getEventType();
 				switch (eventType) {
 				case XMLStreamConstants.START_ELEMENT:
-					curEl = xsr.getLocalName();
+					String elementName = xsr.getLocalName();
+					String elementId = ((1 == xsr.getAttributeCount()) && XmlConstants.ATTRIBUTE_ID.equals(xsr.getAttributeLocalName(0)))
+							            ? xsr.getAttributeValue(0)
+							            : null;
+					String elementRefId = ((1 == xsr.getAttributeCount()) && XmlConstants.ATTRIBUTE_REFID.equals(xsr.getAttributeLocalName(0)))
+							               ? xsr.getAttributeValue(0)
+							               : null;
+					curEl = new StackElement(elementName, elementId, elementRefId);
+					elementStack.push(curEl);
 					// Skip container elements
-					if (isContainerElement(curEl)) {
-						;;
-					} else if (isDefinitionEntityElement(curEl)){
+					if (isEntityElement(curEl)){
+						logger.debug("Started '{}' configuration definition", curEl.getElementName());
 						constructorArgMap.clear();
-						// On start of new financial calendar, re-initialize
-						// placeholders for constructor args to be built by
-						// reference to prior definition entities
-						if (XmlConstants.ELEMENT_CALENDAR.equals(curEl)) {
-							constructorArgMap.put(XmlConstants.ELEMENT_CENTRALBANK, null);
-							constructorArgMap.put(XmlConstants.ELEMENT_HOLIDAYS, new HashSet<HolidayDefinition>());
-						}
-						logger.debug("New '{}' configuration definition", curEl);
+						putEntityConstructorArg(XmlConstants.ATTRIBUTE_ID, curEl.getElementId(), constructorArgMap);
+					} else if (isEntityReference(curEl)) {
+						putEntityConstructorArgByRef(curEl.getElementName(), curEl.getElementRefId(), constructorArgMap);
 					}
 					break;
 				case XMLStreamConstants.END_ELEMENT:
-					curEl = xsr.getLocalName();
+					curEl = elementStack.pop();
 					// Skip container elements
-					if (isContainerElement(curEl)) {
-						;;
-					} else if (isDefinitionEntityElement(curEl)){
-						addDefinitionEntity(curEl, constructorArgMap);
-						logger.debug("Added '{}' configuration definition", curEl);
-					} else {
-						putDefinitionEntityArg(curEl, curFieldValueBuf.toString().trim(), constructorArgMap);
+					if (isEntityElement(curEl)) {
+						addEntity(curEl.getElementName(), constructorArgMap);
+						logger.debug("Ended '{}' configuration definition", curEl.getElementName());
+					} else if (!isContainerElement(curEl) && !isEntityReference(curEl)){
+						putEntityConstructorArg(curEl.getElementName(), curFieldValueBuf.toString().trim(), constructorArgMap);
 						curFieldValueBuf.setLength(0);
 					}
 					curEl = null;
-					break;
-				case XMLStreamConstants.ATTRIBUTE:
-					String attrLocalName = xsr.getAttributeLocalName(0);
-					String attrValue = xsr.getAttributeValue(0);
-					if (XmlConstants.ATTRIBUTE_ID.equals(attrLocalName)) {
-						putDefinitionEntityArg(attrLocalName, attrValue, constructorArgMap);
-					} else if (XmlConstants.ATTRIBUTE_REFID.equals(attrLocalName)) {
-						putDefinitionEntityArgByRef(curEl, attrValue, constructorArgMap);
-					}
 					break;
 				case XMLStreamConstants.CHARACTERS:
 					curFieldValueBuf.append(xsr.getText());
@@ -192,7 +178,7 @@ public class XmlConfiguration extends AbstractConcurrentMapConfiguration {
 		}
 	}
 
-	protected void validateConfigurationXml(final InputStream xmlIn) {
+	protected void validateConfiguration(final InputStream xmlIn) {
 		SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 		try {
 			Schema xsd = sf.newSchema(this.getClass().getResource(XmlConstants.XSD_FILENAME));
@@ -209,20 +195,27 @@ public class XmlConfiguration extends AbstractConcurrentMapConfiguration {
 		}
 	}
 
-	protected final boolean isContainerElement(String elLocalName) {
-		return (XmlConstants.ELEMENT_DEFINITIONS.equals(elLocalName) ||
-				XmlConstants.ELEMENT_CENTRALBANKS.equals(elLocalName) ||
-				XmlConstants.ELEMENT_HOLIDAYS.equals(elLocalName) ||
-				XmlConstants.ELEMENT_CALENDARS.equals(elLocalName));
+	private boolean isContainerElement(StackElement curEl) {
+		return (XmlConstants.ELEMENT_DEFINITIONS.equals(curEl.getElementName()) ||
+				XmlConstants.ELEMENT_CENTRALBANKS.equals(curEl.getElementName()) ||
+				XmlConstants.ELEMENT_HOLIDAYS.equals(curEl.getElementName()) ||
+				XmlConstants.ELEMENT_CALENDARS.equals(curEl.getElementName()));
 	}
 
-	protected final boolean isDefinitionEntityElement(String elLocalName) {
-		return (XmlConstants.ELEMENT_CENTRALBANK.equals(elLocalName) ||
-				XmlConstants.ELEMENT_HOLIDAY.equals(elLocalName) ||
-				XmlConstants.ELEMENT_CALENDAR.equals(elLocalName));
+	private boolean isEntityElement(StackElement curEl) {
+		return ((XmlConstants.ELEMENT_CENTRALBANK.equals(curEl.getElementName()) ||
+				 XmlConstants.ELEMENT_HOLIDAY.equals(curEl.getElementName()) ||
+				 XmlConstants.ELEMENT_CALENDAR.equals(curEl.getElementName())) &&
+				(null != curEl.getElementId()));
 	}
 
-	protected final void putDefinitionEntityArg(String elLocalName, String strValue, Map<String, Object> constructorArgMap) {
+	private boolean isEntityReference(StackElement curEl) {
+		return ((XmlConstants.ELEMENT_CENTRALBANK.equals(curEl.getElementName()) ||
+				 XmlConstants.ELEMENT_HOLIDAY.equals(curEl.getElementName())) &&
+				(null != curEl.getElementRefId()));
+	}
+
+	private void putEntityConstructorArg(String elLocalName, String strValue, Map<String, Object> constructorArgMap) {
 		Object argValue = null;
 		if (XmlConstants.ELEMENT_OBSERVANCE.equals(elLocalName)) {
 			argValue = HolidayType.valueOf(strValue);
@@ -232,22 +225,31 @@ public class XmlConfiguration extends AbstractConcurrentMapConfiguration {
 			argValue = strValue;
 		}
 		constructorArgMap.put(elLocalName, argValue);
+		logger.debug("Added constructor arg: '{}' = {}", elLocalName, argValue);
 	}
 
 	@SuppressWarnings("unchecked")
-	protected final void putDefinitionEntityArgByRef(String elLocalName, String refId, Map<String, Object> constructorArgMap) {
+	private void putEntityConstructorArgByRef(String elLocalName, String refId, Map<String, Object> constructorArgMap) {
 		if (XmlConstants.ELEMENT_CENTRALBANK.equals(elLocalName)) {
 			CentralBank cb = getCentralBank(refId);
 			constructorArgMap.put(elLocalName, cb);
+			logger.debug("Put referenced CentralBank in constructor args: {}", cb);
 		} else if (XmlConstants.ELEMENT_HOLIDAY.equals(elLocalName)) {
 			HolidayDefinition hd = getHolidayDefinition(refId);
-			((Set<HolidayDefinition>)constructorArgMap.get(XmlConstants.ELEMENT_HOLIDAYS)).add(hd);
+			Set<HolidayDefinition> holidays = (Set<HolidayDefinition>)constructorArgMap.get(XmlConstants.ELEMENT_HOLIDAYS);
+			if (null == holidays) {
+				holidays = new HashSet<HolidayDefinition>();
+			}
+			holidays.add(hd);
+			constructorArgMap.put(XmlConstants.ELEMENT_HOLIDAYS, holidays);
+			logger.debug("Added referenced HolidayDefinition to constructor args: {}", hd);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	protected final void addDefinitionEntity(String elLocalName, Map<String, Object> constructorArgMap) {
+	private void addEntity(String elLocalName, Map<String, Object> constructorArgMap) {
 		final Object[] args;
+		final Class<?>[] argTypes;
 		if (XmlConstants.ELEMENT_CENTRALBANK.equals(elLocalName)) {
 			args = new Object[] {
 				(String)constructorArgMap.get(XmlConstants.ATTRIBUTE_ID),
@@ -255,8 +257,15 @@ public class XmlConfiguration extends AbstractConcurrentMapConfiguration {
 				(String)constructorArgMap.get(XmlConstants.ELEMENT_COUNTRY),
 				(Currency)constructorArgMap.get(XmlConstants.ELEMENT_CURRENCY)
 			};
-			CentralBank cb = (CentralBank)constructDefinitionEntity(CentralBank.class, args);
+			argTypes = new Class<?>[]{
+				String.class,
+				String.class,
+				String.class,
+				Currency.class
+			};
+			CentralBank cb = (CentralBank)constructDefinitionEntity(CentralBank.class, args, argTypes);
 			addCentralBank(cb);
+			logger.debug("Added CentralBank: {}", cb);
 		} else if (XmlConstants.ELEMENT_HOLIDAY.equals(elLocalName)) {
 			args = new Object[] {
 				(String)constructorArgMap.get(XmlConstants.ATTRIBUTE_ID),
@@ -265,8 +274,16 @@ public class XmlConfiguration extends AbstractConcurrentMapConfiguration {
 				(HolidayType)constructorArgMap.get(XmlConstants.ELEMENT_OBSERVANCE),
 				(String)constructorArgMap.get(XmlConstants.ELEMENT_EXPRESSION),
 			};
-			HolidayDefinition hd = (HolidayDefinition)constructDefinitionEntity(HolidayDefinition.class, args);
+			argTypes = new Class<?>[] {
+				String.class,
+				String.class,
+				String.class,
+				HolidayType.class,
+				String.class
+			};
+			HolidayDefinition hd = (HolidayDefinition)constructDefinitionEntity(HolidayDefinition.class, args, argTypes);
 			addHolidayDefinition(hd);
+			logger.debug("Added HolidayDefinition: {}", hd);
 		} else if (XmlConstants.ELEMENT_CALENDAR.equals(elLocalName)) {
 			args = new Object[] {
 				(String)constructorArgMap.get(XmlConstants.ATTRIBUTE_ID),
@@ -274,44 +291,24 @@ public class XmlConfiguration extends AbstractConcurrentMapConfiguration {
 				(CentralBank)constructorArgMap.get(XmlConstants.ELEMENT_CENTRALBANK),
 				(Set<HolidayDefinition>)constructorArgMap.get(XmlConstants.ELEMENT_HOLIDAYS)
 			};
-			FinancialCalendar fc = (FinancialCalendar)constructDefinitionEntity(FinancialCalendar.class, args);
+			argTypes = new Class<?>[] {
+				String.class,
+				String.class,
+				CentralBank.class,
+				Set.class
+			};
+			FinancialCalendar fc = (FinancialCalendar)constructDefinitionEntity(FinancialCalendar.class, args, argTypes);
 			addFinancialCalendar(fc);
+			logger.debug("Added FinancialCalendar: {}", fc);
 		}
 	}
 
-	private Object constructDefinitionEntity(Class<?> cls, Object[] args) {
+	private Object constructDefinitionEntity(Class<?> cls, Object[] args, Class<?>[] argTypes) {
 		try {
-			return ConstructorUtils.invokeConstructor(cls, args);
+			return ConstructorUtils.invokeConstructor(cls, args, argTypes);
 		} catch (Exception e) {
 			throw new ConfigurationException("Cannot construct configuration entity of type: " + cls.getName(), e);
 		}
 	}
 
-	protected class DefaultLoggingErrorHandler implements ErrorHandler {
-	
-		private final Logger logger;
-	
-		private DefaultLoggingErrorHandler(Logger logger) {
-			this.logger = logger;
-		}
-	
-		@Override
-		public void warning(SAXParseException exception) throws SAXException {
-			logger.warn("Validation Warning", exception);
-			throw exception;
-		}
-
-		@Override
-		public void error(SAXParseException exception) throws SAXException {
-			logger.error("Validation Error", exception);
-			throw exception;
-		}
-
-		@Override
-		public void fatalError(SAXParseException exception) throws SAXException {
-			logger.error("Validation Fatal Error", exception);
-			throw exception;
-		}
-		
-	}
 }
