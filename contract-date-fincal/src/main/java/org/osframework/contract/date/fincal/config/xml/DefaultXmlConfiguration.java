@@ -1,5 +1,5 @@
 /*
- * File: XmlConfiguration.java
+ * File: DefaultXmlConfiguration.java
  * 
  * Copyright 2012 OSFramework Project.
  * 
@@ -32,14 +32,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.XMLConstants;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import org.apache.commons.io.IOUtils;
@@ -51,43 +49,78 @@ import org.osframework.contract.date.fincal.model.FinancialCalendar;
 import org.osframework.contract.date.fincal.model.HolidayDefinition;
 import org.osframework.contract.date.fincal.model.HolidayType;
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
 
 /**
- * Provides financial calendar definitions stored as XML document. Definitions
- * are cached internally as they are parsed from the XML source.
- *
+ * Default implementation of <code>Configuration</code> which loads from an XML
+ * document. Instances of this class cache definition entities as they are
+ * parsed from the XML source provided at construction.
+ * <p>
+ * This class uses the
+ * <a href="http://docs.oracle.com/cd/E17802_01/webservices/webservices/docs/1.6/tutorial/doc/SJSXP3.html">StAX API</a>
+ * for XML parsing. Subclasses may override this to employ their own parsing
+ * strategy.
+ * </p>
+ * 
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class XmlConfiguration extends AbstractConcurrentMapConfiguration {
+public class DefaultXmlConfiguration extends AbstractConcurrentMapConfiguration {
 
-	public XmlConfiguration(final File xmlFile) {
+	/**
+	 * Construct new instance of <code>DefaultXmlConfiguration</code> from an XML input
+	 * stream. Actual loading of this object from the specified input stream is
+	 * delegated to the {@link #load(InputStream)} method.
+	 *
+	 * @param xmlIn XML configuration input stream
+	 * @throws ConfigurationException if configuration fails for any reason
+	 */
+	public DefaultXmlConfiguration(final InputStream xmlIn) {
 		super();
-		try {
-			load(new FileInputStream(xmlFile));
-		} catch (IOException ioe) {
-			throw new ConfigurationException("Cannot load Configuration from XML", ioe);
-		}
-		this.observer.configurationCreated(this);
-	}
-
-	public XmlConfiguration(final InputStream xmlIn) {
-		super();
+		initializeObserverChain();
 		load(xmlIn);
-		this.observer.configurationCreated(this);
+		observer.configurationCreated(this);
 	}
 
-	public XmlConfiguration(final URL xmlUrl) {
-		super();
-		try {
-			load(xmlUrl.openStream());
-		} catch (IOException ioe) {
-			throw new ConfigurationException("Cannot load Configuration from XML", ioe);
-		}
-		this.observer.configurationCreated(this);
+	/**
+	 * Construct new instance of <code>DefaultXmlConfiguration</code> from an XML file.
+	 *  Actual loading of this object from the specified input stream is
+	 *  delegated to the {@link #load(InputStream)} method.
+	 * 
+	 * @param xmlFile XML configuration file
+	 * @throws ConfigurationException if configuration fails for any reason
+	 * @throws IOException if file cannot be opened for reading
+	 * @throws SecurityException if a security manager denies read access to the file
+	 */
+	public DefaultXmlConfiguration(final File xmlFile) throws IOException {
+		this(new FileInputStream(xmlFile));
 	}
 
-	protected void load(final InputStream xmlIn) {
+	/**
+	 * Construct new instance of <code>DefaultXmlConfiguration</code> from an XML
+	 * resource. Actual loading of this object from the specified input stream
+	 * is delegated to the {@link #load(InputStream)} method.
+	 *
+	 * @param xmlUrl URL of XML configuration resource
+	 * @throws ConfigurationException if configuration fails for any reason
+	 * @throws IOException if connection cannot be opened to URL for reading
+	 */
+	public DefaultXmlConfiguration(final URL xmlUrl) throws IOException {
+		this(xmlUrl.openStream());
+	}
+
+	/**
+	 * Load this configuration object from the specified XML input stream. This
+	 * method is responsible for the actual XML validation and parsing to which
+	 * constructors delegate responsibility.
+	 * <p>
+	 * This method is <code>final</code>; subclasses cannot override it. For
+	 * customization of XML validation and parsing, subclasses should override
+	 * the {@link #validateConfiguration(InputStream)} and
+	 * {@link #parseConfiguration(InputStream)} methods.
+	 * </p>
+	 * 
+	 * @param xmlIn XML configuration input stream
+	 */
+	protected final void load(final InputStream xmlIn) {
 		// Copy and close the given input stream
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
@@ -108,10 +141,27 @@ public class XmlConfiguration extends AbstractConcurrentMapConfiguration {
 		parseConfiguration(parserIn);
 	}
 
+	/**
+	 * Get the <code>ErrorHandler</code> object used in XML validation and/or
+	 * parsing. This implementation provides an instance of
+	 * <code>DefaultErrorHandler</code>.
+	 * <p>Subclasses may override this method.</p>
+	 * 
+	 * @return error handler or <code>null</code>
+	 * @see DefaultErrorHandler
+	 */
 	protected ErrorHandler getErrorHandler() {
 		return new DefaultErrorHandler(this.logger);
 	}
 
+	/**
+	 * Parse the XML input stream and add constructed definition entities to
+	 * this configuration as they are constructed.
+	 * <p>Subclasses may override this method.</p>
+	 * 
+	 * @param xmlIn XML configuration input stream
+	 * @throws ConfigurationException if parsing fails for any reason
+	 */
 	protected void parseConfiguration(final InputStream xmlIn) {
 		XMLInputFactory xif = XMLInputFactory.newInstance();
 		XMLStreamReader xsr = null;
@@ -178,17 +228,23 @@ public class XmlConfiguration extends AbstractConcurrentMapConfiguration {
 		}
 	}
 
+	/**
+	 * Validate the XML input stream and throw a
+	 * <code>ConfigurationException</code> if invalid. This method is called
+	 * prior to {@link #parseConfiguration(InputStream)}.
+	 * <p>Subclasses may override this method.</p>
+	 * 
+	 * @param xmlIn XML configuration input stream
+	 * @throws ConfigurationException if XML is invalid
+	 */
 	protected void validateConfiguration(final InputStream xmlIn) {
-		SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+		Schema schema = XmlConstants.getSchema();
+		Validator validator = schema.newValidator();
+		validator.setErrorHandler(getErrorHandler());
 		try {
-			Schema xsd = sf.newSchema(this.getClass().getResource(XmlConstants.XSD_FILENAME));
-			Validator validator = xsd.newValidator();
-			validator.setErrorHandler(this.getErrorHandler());
 			validator.validate(new StreamSource(xmlIn));
-		} catch (IOException ioe) {
-			throw new ConfigurationException("Configuration XML validation failure", ioe);
-		} catch (SAXException se) {
-			throw new ConfigurationException("Configuration XML validation failure", se);
+		} catch (Exception e) {
+			throw new ConfigurationException("Configuration XML validation failure", e);
 		} finally {
 			// Close XML input stream
 			IOUtils.closeQuietly(xmlIn);

@@ -25,7 +25,7 @@ package org.osframework.contract.date.fincal.config.xml;
  * </p>
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
- * @see XmlConfiguration
+ * @see DefaultXmlConfiguration
  */
 public final class StackElement {
 

@@ -33,4 +33,6 @@ public abstract class AbstractConfiguration implements Configuration {
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 	protected final ConfigurationObserverChain observer = new ConfigurationObserverChain();
 
+	protected void initializeObserverChain() {}
+
 }

@@ -46,9 +46,9 @@ public abstract class AbstractConcurrentMapConfiguration extends AbstractConfigu
 	 */
 	public AbstractConcurrentMapConfiguration() {
 		super();
-		this.centralBanks = new ConcurrentHashMap<String, CentralBank>();
-		this.holidayDefinitions = new ConcurrentHashMap<String, HolidayDefinition>();
-		this.financialCalendars = new ConcurrentHashMap<String, FinancialCalendar>();
+		centralBanks = new ConcurrentHashMap<String, CentralBank>();
+		holidayDefinitions = new ConcurrentHashMap<String, HolidayDefinition>();
+		financialCalendars = new ConcurrentHashMap<String, FinancialCalendar>();
 	}
 
 	/* (non-Javadoc)

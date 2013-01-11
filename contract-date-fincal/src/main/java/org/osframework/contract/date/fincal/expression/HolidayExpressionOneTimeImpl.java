@@ -20,7 +20,7 @@ package org.osframework.contract.date.fincal.expression;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.osframework.contract.date.util.DateUtil;
+import org.osframework.util.DateUtil;
 
 /**
  * Produce the date of a holiday occurring exactly one time. Examples of
