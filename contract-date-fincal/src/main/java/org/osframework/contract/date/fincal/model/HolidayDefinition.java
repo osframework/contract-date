@@ -18,6 +18,7 @@
 package org.osframework.contract.date.fincal.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -31,7 +32,7 @@ import org.osframework.contract.date.fincal.expression.HolidayExpression;
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class HolidayDefinition implements Serializable {
+public class HolidayDefinition implements HolidayExpression, Serializable {
 
 	/**
 	 * Serializable UID.
@@ -99,7 +100,24 @@ public class HolidayDefinition implements Serializable {
 		return expression;
 	}
 
-	public HolidayExpression createHolidayExpression() {
+	/**
+	 * Produce the date of a defined holiday for the specified year. This
+	 * implementation delegates to the object returned by the
+	 * {@link #toHolidayExpression()} method.
+	 * 
+	 * @throws IllegalStateException if this definition is missing required
+	 *                               state
+	 */
+	public Date evaluate(int year) {
+		return toHolidayExpression().evaluate(year);
+	}
+
+	/**
+	 * Returns a <code>HolidayExpression</code> representation of the object.
+	 * 
+	 * @return  a <code>HolidayExpression</code> representation of the object
+	 */
+	public HolidayExpression toHolidayExpression() {
 		if (null == observance || null == expression) {
 			throw new IllegalStateException("Not in required state for invocation of method: createHolidayExpression");
 		}
