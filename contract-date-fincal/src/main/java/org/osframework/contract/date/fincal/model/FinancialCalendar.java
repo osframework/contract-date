@@ -143,6 +143,13 @@ public class FinancialCalendar implements Iterable<HolidayDefinition>, Serializa
 		return holidayDefinitions.iterator();
 	}
 
+	/**
+	 * @return number of holiday definitions in this calendar
+	 */
+	public int size() {
+		return holidayDefinitions.size();
+	}
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);

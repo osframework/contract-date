@@ -20,6 +20,7 @@ package org.osframework.contract.date.fincal.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.osframework.util.DateUtil;
@@ -32,7 +33,7 @@ import org.osframework.util.DateUtil;
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class HolidayKey implements Serializable {
+public class HolidayKey implements Comparable<HolidayKey>, Serializable {
 
 	/**
 	 * Serializable UID.
@@ -78,6 +79,15 @@ public class HolidayKey implements Serializable {
 	 */
 	public int getDate() {
 		return date;
+	}
+
+	public int compareTo(HolidayKey o) {
+		Validate.notNull(o, "HolidayKey to be compared cannot be null");
+		int result = date - o.date;
+		if (0 == result) {
+			result = financialCalendar.getId().compareTo(o.financialCalendar.getId());
+		}
+		return result;
 	}
 
 	@Override

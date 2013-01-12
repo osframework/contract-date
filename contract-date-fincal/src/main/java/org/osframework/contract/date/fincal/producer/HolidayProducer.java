@@ -22,21 +22,23 @@ import org.osframework.contract.date.fincal.model.Holiday;
 /**
  * Core behavior of objects which produce <code>Holiday</code> objects.
  *
+ * @param <T> type of argument(s)
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public interface HolidayProducer {
+public interface HolidayProducer<T> {
 
 	/**
 	 * Produce the array of <code>Holiday</code> objects for the specified
-	 * years. This specification makes no requirements for the order of
+	 * arguments. This specification makes no requirements for the order of
 	 * elements in the returned array. It is the responsibility of an
 	 * implementor and/or its client to define whether the produced array is
 	 * sorted or unsorted.
 	 * 
-	 * @param years one or more years for which to produce holidays
+	 * @param args one or more objects which define limits of holidays to be
+	 *             produced
 	 * @return array of <code>Holiday</code> objects
 	 */
-	public Holiday[] produce(int... years);
+	public Holiday[] produce(T... args);
 
 	final Holiday[] EMPTY_ARRAY = {};
 

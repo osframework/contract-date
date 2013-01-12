@@ -1,5 +1,5 @@
-/*
- * File: SingleFinancialCalendarProducer.java
+/**
+ * File: SingleYearProducer.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -18,7 +18,9 @@
 package org.osframework.contract.date.fincal.producer;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedList;
 
 import org.apache.commons.lang.Validate;
 import org.osframework.contract.date.fincal.expression.HolidayExpression;
@@ -28,39 +30,44 @@ import org.osframework.contract.date.fincal.model.Holiday;
 import org.osframework.contract.date.fincal.model.HolidayDefinition;
 
 /**
- * Produces holidays for a single financial calendar.
+ * Produces holidays for a single year.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class SingleFinancialCalendarProducer implements HolidayProducer<Integer> {
+public class SingleYearProducer implements HolidayProducer<FinancialCalendar> {
 
-	private final FinancialCalendar calendar;
+	private final int year;
+
 
 	/**
-	 * Construct a <code>SingleFinancialCalendarProducer</code> for the
-	 * specified calendar.
+	 * Construct a <code>SingleYearCalendarProducer</code> for the
+	 * specified year.
 	 *
-	 * @param calendar financial calendar definition from which to produce
-	 *                 holidays
-	 * @throws IllegalArgumentException if calendar is <code>null</code>
+	 * @param year year for which to produce holidays
+	 * @throws IllegalArgumentException if year is <code>null</code>
 	 */
-	public SingleFinancialCalendarProducer(final FinancialCalendar calendar) {
-		Validate.notNull(calendar, "FinancialCalendar argument cannot be null");
-		this.calendar = calendar;
+	public SingleYearProducer(Integer year) {
+		Validate.notNull(year, "Integer year argument cannot be null");
+		this.year = year.intValue();
 	}
 
-	public Holiday[] produce(Integer... years) {
-		Arrays.sort(years);
-		Holiday[] holidays = new Holiday[(years.length * calendar.size())];
-		int i = 0;
-		for (Integer year : years) {
+	@Override
+	public Holiday[] produce(FinancialCalendar... calendars) {
+		// Sort calendars alphabetically by ID
+		Arrays.sort(calendars, new Comparator<FinancialCalendar>() {
+			public int compare(FinancialCalendar c1, FinancialCalendar c2) {
+				return c1.getId().compareTo(c2.getId());
+			}
+		});
+		LinkedList<Holiday> holidays = new LinkedList<Holiday>();
+		for (FinancialCalendar calendar : calendars) {
 			for (HolidayDefinition hd : calendar) {
 				HolidayExpression expr = CentralBankDecoratorLocator.decorate(hd, calendar.getCentralBank());
-				Date date = expr.evaluate(year.intValue());
-				holidays[i++] = new Holiday(calendar, date, hd);
+				Date date = expr.evaluate(year);
+				holidays.add(new Holiday(calendar, date, hd));
 			}
 		}
-		return holidays;
+		return holidays.toArray(EMPTY_ARRAY);
 	}
 
 }
