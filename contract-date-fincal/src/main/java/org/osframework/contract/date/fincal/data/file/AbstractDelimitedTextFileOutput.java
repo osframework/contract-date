@@ -23,8 +23,11 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 
+import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang.Validate;
 import org.osframework.contract.date.fincal.config.xml.XmlConstants;
 import org.osframework.contract.date.fincal.data.AbstractHolidayOutput;
+import org.osframework.contract.date.fincal.model.Holiday;
 
 /**
  * AbstractDelimitedTextFileOutput description here.
@@ -33,13 +36,58 @@ import org.osframework.contract.date.fincal.data.AbstractHolidayOutput;
  */
 public abstract class AbstractDelimitedTextFileOutput extends AbstractHolidayOutput<OutputStream, IOException> {
 
+	protected static final String LINE_SEPARATOR = SystemUtils.LINE_SEPARATOR;
+
 	protected final BufferedWriter writer;
 	protected final String delimiter;
 
+	protected int recordCount;
+
+	protected Object lock;
+
 	public AbstractDelimitedTextFileOutput(final OutputStream out, final String delimiter) throws IOException {
 		super();
+		Validate.notNull(out, "OutputStream argument cannot be null");
 		this.writer = new BufferedWriter(new OutputStreamWriter(out, Charset.forName(XmlConstants.DEFAULT_ENCODING)));
 		this.delimiter = delimiter;
+		this.recordCount = 0;
+		this.lock = out;
 	}
+
+	@Override
+	public void store(Holiday... holidays) throws IOException {
+		try {
+			synchronized (lock) {
+				for (int i = 0; i < holidays.length; i++) {
+					if (0 < recordCount++) {
+						writer.newLine();
+					}
+					writer.write(holidayToRecord(holidays[i]));
+				}
+			}
+		} catch (IOException ioe) {
+			StringBuilder exMsg = new StringBuilder("Storage failed at line [")
+                                      .append(recordCount)
+                                      .append("] with error: ")
+                                      .append(ioe.getMessage());
+			try {
+				this.close();
+			} catch (IOException ioe2) {
+				exMsg.append(LINE_SEPARATOR)
+				.append("Failed to close output stream with error: ")
+				.append(ioe2.getMessage());
+			}
+			throw new IOException(exMsg.toString(), ioe);
+		}
+	}
+
+	@Override
+	public void close() throws IOException {
+		synchronized (lock) {
+			writer.close();
+		}	
+	}
+
+	protected abstract String holidayToRecord(Holiday holiday);
 
 }

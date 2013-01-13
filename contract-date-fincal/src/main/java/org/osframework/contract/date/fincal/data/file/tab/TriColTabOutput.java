@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.data.file.csv;
+package org.osframework.contract.date.fincal.data.file.tab;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -24,15 +24,15 @@ import org.osframework.contract.date.fincal.data.file.AbstractDelimitedTextFileO
 import org.osframework.contract.date.fincal.model.Holiday;
 
 /**
- * Stores <tt>Holiday</tt> data in TriCol CSV format specified by <a
+ * Stores <tt>Holiday</tt> data in TriCol tab-delimited format specified by <a
  * href="http://www.financialcalendar.com/">financialcalendar.com</a>.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class TriColCsvOutput extends AbstractDelimitedTextFileOutput {
+public class TriColTabOutput extends AbstractDelimitedTextFileOutput {
 
-	public TriColCsvOutput(final OutputStream csvOut) throws IOException {
-		super(csvOut, ",");
+	public TriColTabOutput(final OutputStream csvOut) throws IOException {
+		super(csvOut, String.valueOf('\t'));
 	}
 
 	@Override
