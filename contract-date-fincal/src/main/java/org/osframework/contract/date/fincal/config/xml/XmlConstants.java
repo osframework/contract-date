@@ -151,7 +151,7 @@ public final class XmlConstants {
 	}
 
 	private static class XmlConstantsSingleton {
-		private static final XmlConstants INSTANCE = new XmlConstants();
+		static final XmlConstants INSTANCE = new XmlConstants();
 	}
 
 }
