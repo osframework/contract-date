@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.Date;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.lang.math.IntRange;
+import org.apache.commons.lang.math.Range;
 import org.osframework.contract.date.fincal.expression.HolidayExpression;
 import org.osframework.contract.date.fincal.expression.centralbank.CentralBankDecoratorLocator;
 import org.osframework.contract.date.fincal.model.FinancialCalendar;
@@ -51,12 +53,14 @@ public class SingleFinancialCalendarProducer implements HolidayProducer<Integer>
 
 	public Holiday[] produce(Integer... years) {
 		Arrays.sort(years);
-		Holiday[] holidays = new Holiday[(years.length * calendar.size())];
+		Range yearRange = new IntRange(years[0], years[years.length - 1]);
+		int rangeSize = (yearRange.getMaximumInteger() - yearRange.getMinimumInteger()) + 1; 
+		Holiday[] holidays = new Holiday[(rangeSize * calendar.size())];
 		int i = 0;
-		for (Integer year : years) {
+		for (int year = yearRange.getMinimumInteger(); yearRange.containsInteger(year); year++) {
 			for (HolidayDefinition hd : calendar) {
 				HolidayExpression expr = CentralBankDecoratorLocator.decorate(hd, calendar.getCentralBank());
-				Date date = expr.evaluate(year.intValue());
+				Date date = expr.evaluate(year);
 				holidays[i++] = new Holiday(calendar, date, hd);
 			}
 		}
