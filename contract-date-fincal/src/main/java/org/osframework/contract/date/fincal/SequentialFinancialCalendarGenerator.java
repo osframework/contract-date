@@ -28,21 +28,30 @@ import org.osframework.contract.date.fincal.producer.HolidayProducer;
 import org.osframework.contract.date.fincal.producer.SingleFinancialCalendarProducer;
 
 /**
- * SequentialFinancialCalendarGenerator description here.
+ * Provides generation of financial calendar holidays by sequential production
+ * of holidays from an array of <code>FinancialCalendar</code> objects.
+ * Instances of this class perform holiday production and storage in a single
+ * thread.
+ * <p>Both this class and its single constructor method are package-private;
+ * instantiation of this class is performed via the
+ * {@link FinancialCalendarGeneratorBuilder#build()} method.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
 class SequentialFinancialCalendarGenerator extends AbstractFinancialCalendarGenerator {
 
 	/**
-	 * Constructor - description here.
+	 * Construct a sequential, single-threaded financial calendar generator.
 	 *
-	 * @param builder
+	 * @param builder builder which constructs this object
 	 */
 	SequentialFinancialCalendarGenerator(FinancialCalendarGeneratorBuilder builder) {
 		super(builder);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void generateHolidays(HolidayOutput<?, ?> output) throws FinancialCalendarException {
 		List<Holiday> holidayQueue = new LinkedList<Holiday>();

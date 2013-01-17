@@ -20,26 +20,36 @@ package org.osframework.contract.date.fincal;
 import org.osframework.contract.date.fincal.data.HolidayOutput;
 
 /**
- * ConcurrentFinancialCalendarGenerator description here.
+ * Provides generation of financial calendar holidays by concurrent production
+ * of holidays from an array of <code>FinancialCalendar</code> objects.
+ * Instances of this class perform holiday production and storage in separate
+ * threads.
+ * <p>Instances of this class are used in scenarios where a large number of
+ * calendars and/or range of years has been requested. Holiday production for
+ * each <code>FinancialCalendar</code> object is performed in a dedicated thread
+ * from a fixed-size pool, with produced <code>Holiday</code> objects tranferred
+ * to an output thread.</p> 
+ * <p>Both this class and its single constructor method are package-private;
+ * instantiation of this class is performed via the
+ * {@link FinancialCalendarGeneratorBuilder#build()} method.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
 class ConcurrentFinancialCalendarGenerator extends AbstractFinancialCalendarGenerator {
 
+
 	/**
-	 * Constructor - description here.
+	 * Construct a concurrent, multi-threaded financial calendar generator.
 	 *
-	 * @param builder
+	 * @param builder builder which constructs this object
 	 */
 	ConcurrentFinancialCalendarGenerator(FinancialCalendarGeneratorBuilder builder) {
 		super(builder);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void generateHolidays(HolidayOutput<?, ?> output) throws FinancialCalendarException {
-		// TODO Write concurrent generation implementation
-
+		// TODO Write this
 	}
 
 }
