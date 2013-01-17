@@ -131,7 +131,11 @@ public final class XmlConstants {
 	 *         <code>definitions.xsd</code>.
 	 */
 	public static Schema getSchema() {
-		return XmlConstantsSingleton.INSTANCE.schema;
+		return XmlConstantsSingleton.INSTANCE.getSingletonSchema();
+	}
+
+	Schema getSingletonSchema() {
+		return this.schema;
 	}
 
 	private final Schema schema;
