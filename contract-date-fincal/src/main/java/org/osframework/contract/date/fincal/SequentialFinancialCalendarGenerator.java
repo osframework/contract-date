@@ -59,13 +59,10 @@ class SequentialFinancialCalendarGenerator extends AbstractFinancialCalendarGene
 		for (FinancialCalendar calendar : calendars) {
 			holidayQueue.addAll(
 				Arrays.asList(
-					new SingleFinancialCalendarProducer(calendar).produce(this.firstYear, this.lastYear)
+					new SingleFinancialCalendarProducer(calendar, weekends).produce(this.firstYear, this.lastYear)
 				)
 			);
 		}
-		
-		// TODO Handle weekend generation
-		
 		Collections.sort(holidayQueue);
 		
 		logger.debug("Storing {} total holidays generated for {} financial calendars",

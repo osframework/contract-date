@@ -26,7 +26,8 @@ import org.apache.commons.lang.Validate;
 import org.osframework.contract.date.fincal.config.Configuration;
 
 /**
- * FinancialCalendarGeneratorBuilder description here.
+ * Builds an appropriate <code>FinancialCalendarGenerator</code> object from
+ * incrementally specified parameters.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */

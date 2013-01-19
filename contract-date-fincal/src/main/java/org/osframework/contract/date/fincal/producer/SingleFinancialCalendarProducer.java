@@ -18,7 +18,10 @@
 package org.osframework.contract.date.fincal.producer;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.math.IntRange;
@@ -37,34 +40,67 @@ import org.osframework.contract.date.fincal.model.HolidayDefinition;
 public class SingleFinancialCalendarProducer implements HolidayProducer<Integer> {
 
 	private final FinancialCalendar calendar;
+	private final boolean weekendsAsHolidays;
 
 	/**
 	 * Construct a <code>SingleFinancialCalendarProducer</code> for the
-	 * specified calendar.
+	 * specified calendar, enabling or disabling inclusion of weekend days as
+	 * holidays.
+	 *
+	 * @param calendar financial calendar definition from which to produce
+	 *                 holidays
+	 * @param weekendsAsHolidays flag indicating inclusion/exclusion of weekend
+	 *                           days as holidays
+	 * @throws IllegalArgumentException if calendar is <code>null</code>
+	 */
+	public SingleFinancialCalendarProducer(final FinancialCalendar calendar, final boolean weekendsAsHolidays) {
+		Validate.notNull(calendar, "FinancialCalendar argument cannot be null");
+		this.calendar = calendar;
+		this.weekendsAsHolidays = weekendsAsHolidays;
+	}
+
+	/**
+	 * Construct a <code>SingleFinancialCalendarProducer</code> for the
+	 * specified calendar. Excludes weekend days.
 	 *
 	 * @param calendar financial calendar definition from which to produce
 	 *                 holidays
 	 * @throws IllegalArgumentException if calendar is <code>null</code>
 	 */
 	public SingleFinancialCalendarProducer(final FinancialCalendar calendar) {
-		Validate.notNull(calendar, "FinancialCalendar argument cannot be null");
-		this.calendar = calendar;
+		this(calendar, false);
+	}
+
+	public boolean includesWeekends() {
+		return weekendsAsHolidays;
 	}
 
 	public Holiday[] produce(Integer... years) {
 		Arrays.sort(years);
-		Range yearRange = new IntRange(years[0], years[years.length - 1]);
-		int rangeSize = (yearRange.getMaximumInteger() - yearRange.getMinimumInteger()) + 1; 
-		Holiday[] holidays = new Holiday[(rangeSize * calendar.size())];
-		int i = 0;
+		Range yearRange = new IntRange(years[0], years[years.length - 1]); 
+		List<Holiday> holidays = new LinkedList<Holiday>();
 		for (int year = yearRange.getMinimumInteger(); yearRange.containsInteger(year); year++) {
 			for (HolidayDefinition hd : calendar) {
 				HolidayExpression expr = CentralBankDecoratorLocator.decorate(hd, calendar.getCentralBank());
 				Date date = expr.evaluate(year);
-				holidays[i++] = new Holiday(calendar, date, hd);
+				holidays.add(new Holiday(calendar, date, hd));
+			}
+			if (weekendsAsHolidays) {
+				this.addWeekends(year, holidays);
 			}
 		}
-		return holidays;
+		return holidays.toArray(EMPTY_ARRAY);
+	}
+
+	private void addWeekends(int year, List<Holiday> holidays) {
+		Calendar c = Calendar.getInstance();
+		c.set(year, Calendar.JANUARY, 1);
+		while (c.get(Calendar.YEAR) == year) {
+			if (Calendar.SATURDAY == c.get(Calendar.DAY_OF_WEEK) ||
+				Calendar.SUNDAY == c.get(Calendar.DAY_OF_WEEK)) {
+				holidays.add(new Holiday(calendar, c.getTime(), WEEKEND_HOLIDAY_DEFINITION));
+			}
+		}
 	}
 
 }

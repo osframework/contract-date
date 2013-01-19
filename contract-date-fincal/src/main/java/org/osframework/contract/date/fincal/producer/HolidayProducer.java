@@ -18,6 +18,7 @@
 package org.osframework.contract.date.fincal.producer;
 
 import org.osframework.contract.date.fincal.model.Holiday;
+import org.osframework.contract.date.fincal.model.HolidayDefinition;
 
 /**
  * Core behavior of objects which produce <code>Holiday</code> objects.
@@ -40,6 +41,24 @@ public interface HolidayProducer<T> {
 	 */
 	public Holiday[] produce(T... args);
 
-	final Holiday[] EMPTY_ARRAY = {};
+	/**
+	 * Determine if this holiday producer includes weekend days (Saturday,
+	 * Sunday) as holidays.
+	 * 
+	 * @return <code>true</code> if weekend days are included as holidays,
+	 *         <code>false</code> otherwise
+	 */
+	public boolean includesWeekends();
+
+	/**
+	 * Special holiday definition for weekend "holidays".
+	 */
+	public static final HolidayDefinition WEEKEND_HOLIDAY_DEFINITION = new HolidayDefinition("weekend", "Weekend", "Weekend", null, null);
+
+	/**
+	 * Empty <code>Holiday</code> array. Used in conversion of collections
+	 * to type arrays.
+	 */
+	public static final Holiday[] EMPTY_ARRAY = {};
 
 }

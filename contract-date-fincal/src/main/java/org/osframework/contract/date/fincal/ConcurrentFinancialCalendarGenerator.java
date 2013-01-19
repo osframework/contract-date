@@ -17,7 +17,6 @@
  */
 package org.osframework.contract.date.fincal;
 
-import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.BlockingQueue;
@@ -31,6 +30,7 @@ import java.util.concurrent.SynchronousQueue;
 import org.osframework.contract.date.fincal.data.HolidayOutput;
 import org.osframework.contract.date.fincal.model.FinancialCalendar;
 import org.osframework.contract.date.fincal.model.Holiday;
+import org.osframework.contract.date.fincal.model.HolidayDefinition;
 import org.osframework.contract.date.fincal.producer.HolidayProducer;
 import org.osframework.contract.date.fincal.producer.SingleYearProducer;
 
@@ -62,6 +62,9 @@ class ConcurrentFinancialCalendarGenerator extends AbstractFinancialCalendarGene
 		super(builder);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void generateHolidays(HolidayOutput<?, ?> output) throws FinancialCalendarException {
 		// Load calendar array from configuration
@@ -80,13 +83,26 @@ class ConcurrentFinancialCalendarGenerator extends AbstractFinancialCalendarGene
 		final BlockingQueue<Holiday> producedChannel = new LinkedBlockingQueue<Holiday>();
 		final BlockingQueue<Holiday> outputChannel = new SynchronousQueue<Holiday>();
 		
-		// TODO Start consumer for storage to output
+		consumerService.execute(new ConsumerWorker(outputChannel, output));
+		
+		boolean readyForShutdown = false;
 		
 		// CyclicBarrier sync point for all producer threads
 		final CyclicBarrier producerSyncPoint = new CyclicBarrier(producerCount, getSequencer(producedChannel, outputChannel));
 		for (int year = firstYear; year <= lastYear; year++) {
 			for (int producerNumber = 0; producerNumber < producerCount; producerNumber++) {
-				producerService.execute(new ProducerWorker(calendars[producerNumber], year, producedChannel, producerSyncPoint));
+				producerService.execute(new ProducerWorker(calendars[producerNumber], year, weekends, producedChannel, producerSyncPoint));
+			}
+			readyForShutdown = (lastYear == year);
+		}
+		if (readyForShutdown) {
+			try {
+				outputChannel.put(createPoisonHoliday(calendars[0]));
+			} catch (InterruptedException ie) {
+				throw new FinancialCalendarException("Thread " + Thread.currentThread().getName() + " interrupted", ie);
+			} finally {
+				producerService.shutdown();
+				consumerService.shutdown();
 			}
 		}
 	}
@@ -109,20 +125,26 @@ class ConcurrentFinancialCalendarGenerator extends AbstractFinancialCalendarGene
 		};
 	}
 
+	private Holiday createPoisonHoliday(final FinancialCalendar fakeCalendar) {
+		return new Holiday(fakeCalendar, -1, new HolidayDefinition(
+				"endOfData", "End of holiday data", null, null, null
+			)
+		);
+	}
+
 	private class ProducerWorker implements Runnable {
 		private final FinancialCalendar calendar;
 		private final HolidayProducer<FinancialCalendar> producer;
 		private final BlockingQueue<Holiday> targetChannel;
 		private final CyclicBarrier syncPoint;
-	
-		private volatile Throwable error;
-	
+
 		ProducerWorker(final FinancialCalendar calendar,
 				       final int year,
+				       final boolean includeWeekends,
 				       final BlockingQueue<Holiday> targetChannel,
 				       final CyclicBarrier syncPoint) {
 			this.calendar = calendar;
-			this.producer = new SingleYearProducer(year);
+			this.producer = new SingleYearProducer(year, includeWeekends);
 			this.targetChannel = targetChannel;
 			this.syncPoint = syncPoint;
 		}
@@ -130,21 +152,61 @@ class ConcurrentFinancialCalendarGenerator extends AbstractFinancialCalendarGene
 		public void run() {
 			try {
 				Holiday[] holidays = producer.produce(calendar);
-				// TODO Produce weekends here
 				for (Holiday holiday : holidays) {
 					targetChannel.put(holiday);
 				}
-				syncPoint.await();
+				int count = syncPoint.await();
+				if (0 == count) {
+					syncPoint.reset();
+				}
 			} catch (InterruptedException ie) {
 				// Don't care; controller thread will get BrokenBarrierException
 			} catch (BrokenBarrierException bbe) {
 				// Don't care; controller thread will get BrokenBarrierException
 			} catch (Throwable t) {
 				// Some other exception occurred during our task
-				error = t;
+				// error = t;
 				Thread.currentThread().interrupt();
 				try {
 					syncPoint.await();
+				} catch (Exception e) {}
+			}
+		}
+	}
+
+	private class ConsumerWorker implements Runnable {
+		private final BlockingQueue<Holiday> sourceChannel;
+		private final HolidayOutput<?, ?> output;
+	
+		private volatile boolean running;
+	
+		ConsumerWorker(final BlockingQueue<Holiday> sourceChannel,
+				       final HolidayOutput<?, ?> output) {
+			this.sourceChannel = sourceChannel;
+			this.output = output;
+			this.running = true;
+		}
+	
+		public void run() {
+			try {
+				while (running) {
+					Holiday holiday = sourceChannel.take();
+					if (-1 == holiday.getDate()) {
+						running = false;
+					} else {
+						output.store(holiday);
+					}
+				}
+			} catch (InterruptedException ie) {
+				running = false;
+			} catch (Throwable t) {
+				running = false;
+				
+				// Some other exception occurred during our task
+				Thread.currentThread().interrupt();
+			} finally {
+				try {
+					output.close();
 				} catch (Exception e) {}
 			}
 		}
