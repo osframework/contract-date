@@ -17,7 +17,22 @@
  */
 package org.osframework.contract.date.fincal;
 
+import java.util.Iterator;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.SynchronousQueue;
+
 import org.osframework.contract.date.fincal.data.HolidayOutput;
+import org.osframework.contract.date.fincal.model.FinancialCalendar;
+import org.osframework.contract.date.fincal.model.Holiday;
+import org.osframework.contract.date.fincal.producer.HolidayProducer;
+import org.osframework.contract.date.fincal.producer.SingleYearProducer;
 
 /**
  * Provides generation of financial calendar holidays by concurrent production
@@ -49,7 +64,90 @@ class ConcurrentFinancialCalendarGenerator extends AbstractFinancialCalendarGene
 
 	@Override
 	public void generateHolidays(HolidayOutput<?, ?> output) throws FinancialCalendarException {
-		// TODO Write this
+		// Load calendar array from configuration
+		final FinancialCalendar[] calendars = new FinancialCalendar[calendarIds.length];
+		int i;
+		for (i = 0; i < calendarIds.length; i++) {
+			calendars[i] = configuration.getFinancialCalendar(calendarIds[i]);
+			if (null == calendars[i]) {
+				throw new FinancialCalendarException("Unexpected null financial calendar: " + calendarIds[i]);
+			}
+		}
+		
+		final int producerCount = calendars.length;
+		final ExecutorService producerService = Executors.newFixedThreadPool(producerCount),
+				              consumerService = Executors.newSingleThreadExecutor();
+		final BlockingQueue<Holiday> producedChannel = new LinkedBlockingQueue<Holiday>();
+		final BlockingQueue<Holiday> outputChannel = new SynchronousQueue<Holiday>();
+		
+		// TODO Start consumer for storage to output
+		
+		// CyclicBarrier sync point for all producer threads
+		final CyclicBarrier producerSyncPoint = new CyclicBarrier(producerCount, getSequencer(producedChannel, outputChannel));
+		for (int year = firstYear; year <= lastYear; year++) {
+			for (int producerNumber = 0; producerNumber < producerCount; producerNumber++) {
+				producerService.execute(new ProducerWorker(calendars[producerNumber], year, producedChannel, producerSyncPoint));
+			}
+		}
+	}
+
+	private Runnable getSequencer(final BlockingQueue<Holiday> inChannel,
+			                      final BlockingQueue<Holiday> outChannel) {
+		return new Runnable() {
+			public void run() {
+				final SortedSet<Holiday> sortBuffer = new TreeSet<Holiday>();
+				inChannel.drainTo(sortBuffer);
+				for (Holiday holiday : sortBuffer) {
+					try {
+						outChannel.put(holiday);
+					} catch (InterruptedException ie) {
+						// If put is interrupted, ensure this thread interrupts
+						Thread.currentThread().interrupt();
+					}
+				}
+			}
+		};
+	}
+
+	private class ProducerWorker implements Runnable {
+		private final FinancialCalendar calendar;
+		private final HolidayProducer<FinancialCalendar> producer;
+		private final BlockingQueue<Holiday> targetChannel;
+		private final CyclicBarrier syncPoint;
+	
+		private volatile Throwable error;
+	
+		ProducerWorker(final FinancialCalendar calendar,
+				       final int year,
+				       final BlockingQueue<Holiday> targetChannel,
+				       final CyclicBarrier syncPoint) {
+			this.calendar = calendar;
+			this.producer = new SingleYearProducer(year);
+			this.targetChannel = targetChannel;
+			this.syncPoint = syncPoint;
+		}
+	
+		public void run() {
+			try {
+				Holiday[] holidays = producer.produce(calendar);
+				// TODO Produce weekends here
+				for (Holiday holiday : holidays) {
+					targetChannel.put(holiday);
+				}
+				syncPoint.await();
+			} catch (InterruptedException ie) {
+				// Don't care; controller thread will get BrokenBarrierException
+			} catch (BrokenBarrierException bbe) {
+				// Don't care; controller thread will get BrokenBarrierException
+			} catch (Throwable t) {
+				// Some other exception occurred during our task
+				error = t;
+				Thread.currentThread().interrupt();
+				try {
+					syncPoint.await();
+				} catch (Exception e) {}
+			}
+		}
 	}
 
 }

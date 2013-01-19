@@ -23,8 +23,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.osframework.contract.date.fincal.data.HolidayOutput;
+import org.osframework.contract.date.fincal.model.FinancialCalendar;
 import org.osframework.contract.date.fincal.model.Holiday;
-import org.osframework.contract.date.fincal.producer.HolidayProducer;
 import org.osframework.contract.date.fincal.producer.SingleFinancialCalendarProducer;
 
 /**
@@ -54,12 +54,14 @@ class SequentialFinancialCalendarGenerator extends AbstractFinancialCalendarGene
 	 */
 	@Override
 	public void generateHolidays(HolidayOutput<?, ?> output) throws FinancialCalendarException {
-		List<Holiday> holidayQueue = new LinkedList<Holiday>();
-		Arrays.sort(calendarIds);
-		HolidayProducer<Integer> producer;
-		for (String calendarId : calendarIds) {
-			producer = new SingleFinancialCalendarProducer(configuration.getFinancialCalendar(calendarId));
-			holidayQueue.addAll(Arrays.asList(producer.produce(this.firstYear, this.lastYear)));
+		final FinancialCalendar[] calendars = getFinancialCalendars();
+		final List<Holiday> holidayQueue = new LinkedList<Holiday>();
+		for (FinancialCalendar calendar : calendars) {
+			holidayQueue.addAll(
+				Arrays.asList(
+					new SingleFinancialCalendarProducer(calendar).produce(this.firstYear, this.lastYear)
+				)
+			);
 		}
 		
 		// TODO Handle weekend generation
@@ -69,7 +71,7 @@ class SequentialFinancialCalendarGenerator extends AbstractFinancialCalendarGene
 		logger.debug("Storing {} total holidays generated for {} financial calendars",
 				     String.valueOf(holidayQueue.size()), String.valueOf(calendarIds.length));
 		try {
-			Holiday[] allSorted = holidayQueue.toArray(new Holiday[0]);
+			Holiday[] allSorted = holidayQueue.toArray(EMPTY_HOLIDAY_ARRAY);
 			int totalSize = allSorted.length;
 			output.store(allSorted);
 			logger.info("Stored {} total holidays; closing output", String.valueOf(totalSize));

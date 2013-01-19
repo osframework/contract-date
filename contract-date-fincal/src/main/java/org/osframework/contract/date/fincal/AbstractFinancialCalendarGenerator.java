@@ -17,7 +17,11 @@
  */
 package org.osframework.contract.date.fincal;
 
+import java.util.Arrays;
+
 import org.osframework.contract.date.fincal.config.Configuration;
+import org.osframework.contract.date.fincal.model.FinancialCalendar;
+import org.osframework.contract.date.fincal.model.Holiday;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +32,8 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractFinancialCalendarGenerator implements FinancialCalendarGenerator {
 
-	private static final String[] EMPTY_STRING_ARRAY = {};
+	protected static final Holiday[] EMPTY_HOLIDAY_ARRAY = {};
+	protected static final String[] EMPTY_STRING_ARRAY = {};
 
 	protected final Configuration configuration;
 	protected final String[] calendarIds;
@@ -47,6 +52,18 @@ public abstract class AbstractFinancialCalendarGenerator implements FinancialCal
 		this.firstYear = builder.firstYear;
 		this.lastYear = builder.lastYear;
 		this.weekends = builder.weekends;
+	}
+
+	protected final FinancialCalendar[] getFinancialCalendars() throws FinancialCalendarException {
+		Arrays.sort(calendarIds);
+		final FinancialCalendar[] calendars = new FinancialCalendar[calendarIds.length];
+		for (int i = 0; i < calendarIds.length; i++) {
+			calendars[i] = configuration.getFinancialCalendar(calendarIds[i]);
+			if (null == calendars[i]) {
+				throw new FinancialCalendarException("Unexpected null financial calendar: " + calendarIds[i]);
+			}
+		}
+		return calendars;
 	}
 
 }
