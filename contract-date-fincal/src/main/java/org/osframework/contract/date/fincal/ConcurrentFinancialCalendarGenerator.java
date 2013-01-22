@@ -68,14 +68,7 @@ class ConcurrentFinancialCalendarGenerator extends AbstractFinancialCalendarGene
 	@Override
 	public void generateHolidays(HolidayOutput<?, ?> output) throws FinancialCalendarException {
 		// Load calendar array from configuration
-		final FinancialCalendar[] calendars = new FinancialCalendar[calendarIds.length];
-		int i;
-		for (i = 0; i < calendarIds.length; i++) {
-			calendars[i] = configuration.getFinancialCalendar(calendarIds[i]);
-			if (null == calendars[i]) {
-				throw new FinancialCalendarException("Unexpected null financial calendar: " + calendarIds[i]);
-			}
-		}
+		final FinancialCalendar[] calendars = getFinancialCalendars();
 		
 		final int producerCount = calendars.length;
 		final ExecutorService producerService = Executors.newFixedThreadPool(producerCount),
