@@ -66,4 +66,12 @@ public abstract class AbstractFinancialCalendarGenerator implements FinancialCal
 		return calendars;
 	}
 
+	protected final int[] getYears() {
+		int[] years = new int[(lastYear - firstYear) + 1];
+		for (int i = 0, j = firstYear; j <= lastYear; i++, j++) {
+			years[i] = j;
+		}
+		return years;
+	}
+
 }

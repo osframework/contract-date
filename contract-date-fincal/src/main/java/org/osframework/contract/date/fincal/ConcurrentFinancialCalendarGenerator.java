@@ -17,13 +17,13 @@
  */
 package org.osframework.contract.date.fincal;
 
+import java.util.Arrays;
+import java.util.Random;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.SynchronousQueue;
 
@@ -54,6 +54,73 @@ class ConcurrentFinancialCalendarGenerator extends AbstractFinancialCalendarGene
 
 
 	/**
+	 * ProducerWorker description here.
+	 *
+	 * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
+	 */
+	class ProducerWorker implements Runnable {
+		private final FinancialCalendar[] calendars;
+		private final int[] years;
+		private final boolean weekends;
+		private final BlockingQueue<Holiday> targetChannel;
+		private final CyclicBarrier barrier;
+	
+		ProducerWorker(final FinancialCalendar[] calendars,
+				       final int[] years,
+				       final boolean weekends,
+				       final BlockingQueue<Holiday> targetChannel,
+				       final CyclicBarrier barrier) {
+			this.calendars = calendars;
+			this.years = years;
+			this.weekends = weekends;
+			this.targetChannel = targetChannel;
+			this.barrier = barrier;
+		}
+	
+		@Override
+		public void run() {
+			Arrays.sort(years);
+			HolidayProducer<FinancialCalendar> producer = null;
+			try {
+				for (int i = 0; i < years.length; i++) {
+					producer = new SingleYearProducer(years[i], weekends);
+					Holiday[] produced = producer.produce(calendars);
+					for (Holiday h : produced) {
+						targetChannel.put(h);
+					}
+				}
+				// Done; await at barrier
+				barrier.await();
+			} catch (BrokenBarrierException bbe) {
+				
+			} catch (InterruptedException ie) {
+				
+			} catch (Throwable t) {
+				try {
+					barrier.await();
+				} catch (Exception e) {}
+				throw new RuntimeException(t);
+			}
+		}
+	}
+
+	static enum WorkDivider {
+		CALENDAR,
+		YEAR;
+	
+		public static WorkDivider coinToss() {
+			Random r = new Random();
+			int ordinal = r.nextInt(2);
+			for (WorkDivider wd : values()) {
+				if (wd.ordinal() == ordinal) {
+					return wd;
+				}
+			}
+			throw new Error("Coin toss produced invalid ordinal");
+		}
+	}
+
+	/**
 	 * Construct a concurrent, multi-threaded financial calendar generator.
 	 *
 	 * @param builder builder which constructs this object
@@ -67,35 +134,37 @@ class ConcurrentFinancialCalendarGenerator extends AbstractFinancialCalendarGene
 	 */
 	@Override
 	public void generateHolidays(HolidayOutput<?, ?> output) throws FinancialCalendarException {
-		// Load calendar array from configuration
-		final FinancialCalendar[] calendars = getFinancialCalendars();
-		
-		final int producerCount = calendars.length;
-		final ExecutorService producerService = Executors.newFixedThreadPool(producerCount),
-				              consumerService = Executors.newSingleThreadExecutor();
+		// Channels
 		final BlockingQueue<Holiday> producedChannel = new LinkedBlockingQueue<Holiday>();
 		final BlockingQueue<Holiday> outputChannel = new SynchronousQueue<Holiday>();
 		
-		consumerService.execute(new ConsumerWorker(outputChannel, output));
+		// Allocate 1 thread per processor
+		final int threadCount = Runtime.getRuntime().availableProcessors();
+		final CyclicBarrier barrier = new CyclicBarrier((threadCount + 1), getSequencer(producedChannel, outputChannel));
 		
-		boolean readyForShutdown = false;
-		
-		// CyclicBarrier sync point for all producer threads
-		final CyclicBarrier producerSyncPoint = new CyclicBarrier(producerCount, getSequencer(producedChannel, outputChannel));
-		for (int year = firstYear; year <= lastYear; year++) {
-			for (int producerNumber = 0; producerNumber < producerCount; producerNumber++) {
-				producerService.execute(new ProducerWorker(calendars[producerNumber], year, weekends, producedChannel, producerSyncPoint));
-			}
-			readyForShutdown = (lastYear == year);
+		final ProducerWorker[] producers = createProducerWorkers(threadCount, producedChannel, barrier);
+		Thread t = null;
+		for (ProducerWorker producer : producers) {
+			t = new Thread(producer);
+			t.start();
 		}
-		if (readyForShutdown) {
+		try {
+			barrier.await();
+			Holiday h = null;
+			while (true) {
+				h = outputChannel.take();
+				if (-1 == h.getDate()) {
+					break;
+				}
+				output.store(h);
+			}
+		} catch (Exception e) {
+			throw new FinancialCalendarException("Holiday output failed", e);
+		} finally {
 			try {
-				outputChannel.put(createPoisonHoliday(calendars[0]));
-			} catch (InterruptedException ie) {
-				throw new FinancialCalendarException("Thread " + Thread.currentThread().getName() + " interrupted", ie);
-			} finally {
-				producerService.shutdown();
-				consumerService.shutdown();
+				output.close();
+			} catch (Exception e) {
+				throw new FinancialCalendarException("Cannot close holiday output target", e);
 			}
 		}
 	}
@@ -106,13 +175,15 @@ class ConcurrentFinancialCalendarGenerator extends AbstractFinancialCalendarGene
 			public void run() {
 				final SortedSet<Holiday> sortBuffer = new TreeSet<Holiday>();
 				inChannel.drainTo(sortBuffer);
-				for (Holiday holiday : sortBuffer) {
-					try {
+				try {
+					for (Holiday holiday : sortBuffer) {
 						outChannel.put(holiday);
-					} catch (InterruptedException ie) {
-						// If put is interrupted, ensure this thread interrupts
-						Thread.currentThread().interrupt();
 					}
+				} catch (InterruptedException ie) {
+					// If put is interrupted, ensure this thread interrupts
+					Thread.currentThread().interrupt();
+				} finally {
+					// TODO Fire poison holiday (end-of-stream)
 				}
 			}
 		};
@@ -125,84 +196,54 @@ class ConcurrentFinancialCalendarGenerator extends AbstractFinancialCalendarGene
 		);
 	}
 
-	private class ProducerWorker implements Runnable {
-		private final FinancialCalendar calendar;
-		private final HolidayProducer<FinancialCalendar> producer;
-		private final BlockingQueue<Holiday> targetChannel;
-		private final CyclicBarrier syncPoint;
-
-		ProducerWorker(final FinancialCalendar calendar,
-				       final int year,
-				       final boolean includeWeekends,
-				       final BlockingQueue<Holiday> targetChannel,
-				       final CyclicBarrier syncPoint) {
-			this.calendar = calendar;
-			this.producer = new SingleYearProducer(year, includeWeekends);
-			this.targetChannel = targetChannel;
-			this.syncPoint = syncPoint;
-		}
-	
-		public void run() {
-			try {
-				Holiday[] holidays = producer.produce(calendar);
-				for (Holiday holiday : holidays) {
-					targetChannel.put(holiday);
-				}
-				int count = syncPoint.await();
-				if (0 == count) {
-					syncPoint.reset();
-				}
-			} catch (InterruptedException ie) {
-				// Don't care; controller thread will get BrokenBarrierException
-			} catch (BrokenBarrierException bbe) {
-				// Don't care; controller thread will get BrokenBarrierException
-			} catch (Throwable t) {
-				// Some other exception occurred during our task
-				// error = t;
-				Thread.currentThread().interrupt();
-				try {
-					syncPoint.await();
-				} catch (Exception e) {}
+	private ProducerWorker[] createProducerWorkers(final int threadCount,
+			                                       final BlockingQueue<Holiday> channel,
+			                                       final CyclicBarrier barrier) throws FinancialCalendarException {
+		// Create 1 producer worker per thread
+		final ProducerWorker[] workers = new ProducerWorker[threadCount];
+		
+		// Load calendar array from configuration
+		final FinancialCalendar[] calendars = getFinancialCalendars();
+		// Load full array of contiguous years (inclusive range)
+		final int[] years = getYears();
+		// Divide work by the largest range
+		final WorkDivider divideBy = (years.length > calendars.length)
+				                      ? WorkDivider.YEAR
+				                      : ((calendars.length > years.length) ? WorkDivider.CALENDAR : WorkDivider.coinToss());
+		int r, chunkSize, offset, arraySize;
+		switch (divideBy) {
+		case CALENDAR:
+			// Divide calendars into <threadCount> chunks
+			// Last segment will contain remaining calendars, if any
+			r = calendars.length % threadCount;
+			chunkSize = calendars.length / threadCount;
+			FinancialCalendar[][] calendarChunks = new FinancialCalendar[threadCount][];
+			for (int i = 0; i < threadCount; i++) {
+				offset = i * chunkSize;
+				arraySize = (i == (threadCount - 1)) ? (chunkSize + r) : chunkSize;
+				calendarChunks[i] = new FinancialCalendar[arraySize];
+				System.arraycopy(calendars, offset, calendarChunks[i], 0, arraySize);
+				workers[i] = new ProducerWorker(calendarChunks[i], years, this.weekends, channel, barrier);
 			}
-		}
-	}
-
-	private class ConsumerWorker implements Runnable {
-		private final BlockingQueue<Holiday> sourceChannel;
-		private final HolidayOutput<?, ?> output;
-	
-		private volatile boolean running;
-	
-		ConsumerWorker(final BlockingQueue<Holiday> sourceChannel,
-				       final HolidayOutput<?, ?> output) {
-			this.sourceChannel = sourceChannel;
-			this.output = output;
-			this.running = true;
-		}
-	
-		public void run() {
-			try {
-				while (running) {
-					Holiday holiday = sourceChannel.take();
-					if (-1 == holiday.getDate()) {
-						running = false;
-					} else {
-						output.store(holiday);
-					}
-				}
-			} catch (InterruptedException ie) {
-				running = false;
-			} catch (Throwable t) {
-				running = false;
-				
-				// Some other exception occurred during our task
-				Thread.currentThread().interrupt();
-			} finally {
-				try {
-					output.close();
-				} catch (Exception e) {}
+			break;
+		case YEAR:
+		default:
+			// Divide years into <threadCount> chunks
+			// Last segment will contain remaining years, if any
+			r = years.length % threadCount;
+			chunkSize = years.length / threadCount;
+			int[][] yearChunks = new int[threadCount][];
+			for (int i = 0; i < threadCount; i++) {
+				offset = i * chunkSize;
+				arraySize = (i == (threadCount - 1)) ? (chunkSize + r) : chunkSize;
+				yearChunks[i] = new int[arraySize];
+				System.arraycopy(years, offset, yearChunks[i], 0, arraySize);
+				workers[i] = new ProducerWorker(calendars, yearChunks[i], this.weekends, channel, barrier);
 			}
+			break;
 		}
+		
+		return workers;
 	}
 
 }
