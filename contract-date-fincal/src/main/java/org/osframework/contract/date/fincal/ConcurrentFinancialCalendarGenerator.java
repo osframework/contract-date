@@ -18,6 +18,7 @@
 package org.osframework.contract.date.fincal;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -25,12 +26,10 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.SynchronousQueue;
 
 import org.osframework.contract.date.fincal.data.HolidayOutput;
 import org.osframework.contract.date.fincal.model.FinancialCalendar;
 import org.osframework.contract.date.fincal.model.Holiday;
-import org.osframework.contract.date.fincal.model.HolidayDefinition;
 import org.osframework.contract.date.fincal.producer.HolidayProducer;
 import org.osframework.contract.date.fincal.producer.SingleYearProducer;
 
@@ -52,7 +51,6 @@ import org.osframework.contract.date.fincal.producer.SingleYearProducer;
  */
 class ConcurrentFinancialCalendarGenerator extends AbstractFinancialCalendarGenerator {
 
-
 	/**
 	 * ProducerWorker description here.
 	 *
@@ -64,6 +62,8 @@ class ConcurrentFinancialCalendarGenerator extends AbstractFinancialCalendarGene
 		private final boolean weekends;
 		private final BlockingQueue<Holiday> targetChannel;
 		private final CyclicBarrier barrier;
+	
+		private volatile Throwable error;
 	
 		ProducerWorker(final FinancialCalendar[] calendars,
 				       final int[] years,
@@ -92,14 +92,17 @@ class ConcurrentFinancialCalendarGenerator extends AbstractFinancialCalendarGene
 				// Done; await at barrier
 				barrier.await();
 			} catch (BrokenBarrierException bbe) {
-				
+				// Don't care -- controller thread will get
+				// BrokenBarrierException
 			} catch (InterruptedException ie) {
-				
+				// Don't care -- controller thread will get
+				// BrokenBarrierException
 			} catch (Throwable t) {
+				error = t;
+				Thread.currentThread().interrupt();
 				try {
 					barrier.await();
 				} catch (Exception e) {}
-				throw new RuntimeException(t);
 			}
 		}
 	}
@@ -120,6 +123,8 @@ class ConcurrentFinancialCalendarGenerator extends AbstractFinancialCalendarGene
 		}
 	}
 
+	private volatile RuntimeException exceptionInPostRunnable;
+
 	/**
 	 * Construct a concurrent, multi-threaded financial calendar generator.
 	 *
@@ -127,6 +132,7 @@ class ConcurrentFinancialCalendarGenerator extends AbstractFinancialCalendarGene
 	 */
 	ConcurrentFinancialCalendarGenerator(FinancialCalendarGeneratorBuilder builder) {
 		super(builder);
+		exceptionInPostRunnable = null;
 	}
 
 	/**
@@ -136,30 +142,50 @@ class ConcurrentFinancialCalendarGenerator extends AbstractFinancialCalendarGene
 	public void generateHolidays(HolidayOutput<?, ?> output) throws FinancialCalendarException {
 		// Channels
 		final BlockingQueue<Holiday> producedChannel = new LinkedBlockingQueue<Holiday>();
-		final BlockingQueue<Holiday> outputChannel = new SynchronousQueue<Holiday>();
+		final SortedSet<Holiday> sortBuffer = Collections.synchronizedSortedSet(new TreeSet<Holiday>());
 		
 		// Allocate 1 thread per processor
 		final int threadCount = Runtime.getRuntime().availableProcessors();
-		final CyclicBarrier barrier = new CyclicBarrier((threadCount + 1), getSequencer(producedChannel, outputChannel));
 		
-		final ProducerWorker[] producers = createProducerWorkers(threadCount, producedChannel, barrier);
+		final CyclicBarrier barrier = new CyclicBarrier((threadCount + 1), new Runnable() {
+			public void run() {
+				try {
+					synchronized (sortBuffer) {
+						producedChannel.drainTo(sortBuffer);
+					}
+				} catch (RuntimeException re) {
+					exceptionInPostRunnable = re;
+					throw re;
+				}
+			}
+		});
+		
+		final ProducerWorker[] producerWorkers = createProducerWorkers(threadCount, producedChannel, barrier);
 		Thread t = null;
-		for (ProducerWorker producer : producers) {
-			t = new Thread(producer);
+		for (ProducerWorker pw : producerWorkers) {
+			t = new Thread(pw);
 			t.start();
 		}
 		try {
 			barrier.await();
-			Holiday h = null;
-			while (true) {
-				h = outputChannel.take();
-				if (-1 == h.getDate()) {
-					break;
+			// Check for exceptions in worker threads
+			for (int i = 0; i < producerWorkers.length; i++) {
+				if (null != producerWorkers[i].error) {
+					throw new FinancialCalendarException("Worker[" + i + "] terminated unexpectedly", producerWorkers[i].error);
 				}
-				output.store(h);
+			}
+			// Check for exception in barrier post-action
+			if (null != exceptionInPostRunnable) {
+				throw exceptionInPostRunnable;
+			}
+			synchronized (sortBuffer) {
+				output.store(sortBuffer.toArray(EMPTY_HOLIDAY_ARRAY));
 			}
 		} catch (Exception e) {
-			throw new FinancialCalendarException("Holiday output failed", e);
+			FinancialCalendarException fce = (e instanceof FinancialCalendarException)
+					                          ? ((FinancialCalendarException)e)
+					                          : new FinancialCalendarException("Holiday output failed", e);
+			throw fce;
 		} finally {
 			try {
 				output.close();
@@ -167,33 +193,6 @@ class ConcurrentFinancialCalendarGenerator extends AbstractFinancialCalendarGene
 				throw new FinancialCalendarException("Cannot close holiday output target", e);
 			}
 		}
-	}
-
-	private Runnable getSequencer(final BlockingQueue<Holiday> inChannel,
-			                      final BlockingQueue<Holiday> outChannel) {
-		return new Runnable() {
-			public void run() {
-				final SortedSet<Holiday> sortBuffer = new TreeSet<Holiday>();
-				inChannel.drainTo(sortBuffer);
-				try {
-					for (Holiday holiday : sortBuffer) {
-						outChannel.put(holiday);
-					}
-				} catch (InterruptedException ie) {
-					// If put is interrupted, ensure this thread interrupts
-					Thread.currentThread().interrupt();
-				} finally {
-					// TODO Fire poison holiday (end-of-stream)
-				}
-			}
-		};
-	}
-
-	private Holiday createPoisonHoliday(final FinancialCalendar fakeCalendar) {
-		return new Holiday(fakeCalendar, -1, new HolidayDefinition(
-				"endOfData", "End of holiday data", null, null, null
-			)
-		);
 	}
 
 	private ProducerWorker[] createProducerWorkers(final int threadCount,
