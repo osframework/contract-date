@@ -1,34 +1,48 @@
+/*
+ * File: DefaultXmlConfigurationTest.java
+ * 
+ * Copyright 2013 OSFramework Project.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.osframework.contract.date.fincal.config.xml;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Iterator;
 
+import org.osframework.contract.date.fincal.ObjectMother;
 import org.osframework.contract.date.fincal.model.CentralBank;
 import org.osframework.contract.date.fincal.model.FinancialCalendar;
 import org.osframework.contract.date.fincal.model.HolidayDefinition;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
 
+/**
+ * Unit tests for <code>DefaultXmlConfiguration</code>.
+ *
+ * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
+ */
 public class DefaultXmlConfigurationTest {
 
-	private URL definitionXml = null;
 	private InputStream xmlIn = null;
 
-	@BeforeClass
-	public void beforeClass() {
-		definitionXml = this.getClass().getResource("/definitions-test.xml");
-		assertNotNull(definitionXml);
-	}
-
-	@BeforeMethod
+	@BeforeMethod(groups = {"config"})
 	public void beforeMethod() throws IOException {
-		xmlIn = definitionXml.openStream();
+		xmlIn = ObjectMother.loadDefinitionsXML().openStream();
 	}
 
 	@AfterMethod
@@ -36,7 +50,8 @@ public class DefaultXmlConfigurationTest {
 		xmlIn = null;
 	}
 
-	@Test
+	@Test(groups = {"config"},
+		  dependsOnGroups = {"model"})
 	public void testConstructorURL() {
 		DefaultXmlConfiguration config = new DefaultXmlConfiguration(xmlIn);
 		Iterator<CentralBank> cbIt = config.centralBankIterator();

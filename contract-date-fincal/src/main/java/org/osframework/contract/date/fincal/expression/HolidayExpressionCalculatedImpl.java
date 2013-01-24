@@ -50,24 +50,12 @@ public class HolidayExpressionCalculatedImpl implements HolidayExpression {
 		}
 		Pattern p = Pattern.compile(REGEX_CALCULATED_EXPRESSION);
 		Matcher m = p.matcher(expression.trim());
-		if (!m.matches() || 1 < m.groupCount()) {
+		if (!m.matches()) {
 			throw new IllegalArgumentException("Invalid argument 'expression'");
 		}
-		String algorithmName = null, operator = null, days = null;
-		switch (m.groupCount()) {
-		case 4:
-			algorithmName = m.group(1);
-			operator = m.group(3);
-			days = m.group(4);
-			break;
-		case 1:
-		default:
-			algorithmName = m.group(1);
-			operator = "+";
-			days = "0";
-			break;
-		}
-		
+		String algorithmName = m.group(1),
+			   operator = ((-1 == m.start(3)) ? "+" : m.group(3)),
+			   days = ((-1 == m.start(4)) ? "0" : m.group(4));
 		try {
 			int daysInt = Integer.parseInt(days);
 			daysFromCalculated = daysInt * (("-".equals(operator)) ? -1 : 1);

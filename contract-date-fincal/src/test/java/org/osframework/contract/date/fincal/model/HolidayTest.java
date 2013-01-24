@@ -1,19 +1,42 @@
+/*
+ * File: HolidayTest.java
+ * 
+ * Copyright 2013 OSFramework Project.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.osframework.contract.date.fincal.model;
 
+import static org.osframework.contract.date.fincal.ObjectMother.HOLIDAY_DEF_ID_MLK_DAY;
+import static org.osframework.contract.date.fincal.ObjectMother.createFinancialCalendar;
+import static org.osframework.contract.date.fincal.ObjectMother.createHolidayDefinition;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotSame;
 import static org.testng.Assert.assertTrue;
 
-import java.util.Collections;
-
 import org.testng.annotations.Test;
 
+/**
+ * Unit tests for <code>Holiday</code>.
+ *
+ * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
+ */
 public class HolidayTest {
 
-	@Test
+	@Test(groups = {"model"})
 	public void testEquals() {
-		FinancialCalendar fc = getNYBFinancialCalendar();
-		HolidayDefinition mlkDef = getMLKDayDefinition();
+		FinancialCalendar fc = createFinancialCalendar();
+		HolidayDefinition mlkDef = createHolidayDefinition(HOLIDAY_DEF_ID_MLK_DAY);
 		Holiday h1 = new Holiday(fc, mlkDef.evaluate(2012), mlkDef);
 		Holiday h2 = new Holiday(fc, mlkDef.evaluate(2012), mlkDef);
 		assertEquals(h2, h1);
@@ -25,10 +48,10 @@ public class HolidayTest {
 		assertNotSame(h2, h1);
 	}
 
-	@Test
+	@Test(groups = {"model"})
 	public void testGetKey() {
-		FinancialCalendar fc = getNYBFinancialCalendar();
-		HolidayDefinition mlkDef = getMLKDayDefinition();
+		FinancialCalendar fc = createFinancialCalendar();
+		HolidayDefinition mlkDef = createHolidayDefinition(HOLIDAY_DEF_ID_MLK_DAY);
 		Holiday h1 = new Holiday(fc, mlkDef.evaluate(2012), mlkDef),
 				h2 = new Holiday(fc, mlkDef.evaluate(2012), mlkDef);
 		HolidayKey k1 = h1.getKey(),
@@ -37,10 +60,10 @@ public class HolidayTest {
 		assertNotSame(k2, k1);
 	}
 
-	@Test
+	@Test(groups = {"model"})
 	public void testCompareTo() {
-		FinancialCalendar fc = getNYBFinancialCalendar();
-		HolidayDefinition mlkDef = getMLKDayDefinition();
+		FinancialCalendar fc = createFinancialCalendar();
+		HolidayDefinition mlkDef = createHolidayDefinition(HOLIDAY_DEF_ID_MLK_DAY);
 		Holiday h1 = new Holiday(fc, mlkDef.evaluate(2012), mlkDef),
 				h2 = new Holiday(fc, mlkDef.evaluate(2012), mlkDef);
 		int c = h1.compareTo(h2);
@@ -61,9 +84,10 @@ public class HolidayTest {
 		assertTrue(c > 0);
 	}
 
-	@Test(expectedExceptions = IllegalArgumentException.class)
+	@Test(groups = {"model"},
+		  expectedExceptions = IllegalArgumentException.class)
 	public void testConstructorNullFinancialCalendar() {
-		HolidayDefinition mlkDef = getMLKDayDefinition();
+		HolidayDefinition mlkDef = createHolidayDefinition(HOLIDAY_DEF_ID_MLK_DAY);
 		new Holiday(null, mlkDef.evaluate(2012), mlkDef);
 	}
 
@@ -79,24 +103,5 @@ public class HolidayTest {
  *
  *
  */
-
-	private HolidayDefinition getMLKDayDefinition() {
-		return new HolidayDefinition("MLKDay",
-				                     "Martin Luther King Day",
-				                     "Birthday of Martin Luther King, Jr.",
-				                     HolidayType.RELATIVE,
-				                     "JANUARY/MONDAY/3");
-	}
-
-	private FinancialCalendar getNYBFinancialCalendar() {
-		return new FinancialCalendar("NYB",
-				                     "New York bank holidays",
-				                     getCentralBank(),
-				                     Collections.singleton(getMLKDayDefinition()));
-	}
-
-	private CentralBank getCentralBank() {
-		return new CentralBank("USFR", "United States Federal Reserve", "US", "USD");
-	}
 
 }

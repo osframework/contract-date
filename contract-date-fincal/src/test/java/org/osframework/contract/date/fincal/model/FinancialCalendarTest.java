@@ -1,17 +1,44 @@
+/*
+ * File: FinancialCalendarTest.java
+ * 
+ * Copyright 2013 OSFramework Project.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.osframework.contract.date.fincal.model;
 
-import static org.testng.Assert.*;
+import static org.osframework.contract.date.fincal.ObjectMother.createCentralBank;
+import static org.osframework.contract.date.fincal.ObjectMother.createHolidayDefinitions;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotSame;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.util.Currency;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 import org.testng.annotations.Test;
 
+/**
+ * Unit tests for <code>FinancialCalendar</code>.
+ *
+ * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
+ */
 public class FinancialCalendarTest {
 
-	@Test
+	@Test(groups = {"model"})
 	public void testEquals() {
 		CentralBank cb = createCentralBank();
 		Set<HolidayDefinition> hds = createHolidayDefinitions();
@@ -21,59 +48,54 @@ public class FinancialCalendarTest {
 		assertEquals(fc1, fc2);
 	}
 
-	@Test(expectedExceptions = IllegalArgumentException.class)
+	@Test(groups = {"model"},
+		  expectedExceptions = IllegalArgumentException.class)
 	public void testConstructorBlankId() {
-		CentralBank cb = createCentralBank();
-		Set<HolidayDefinition> hds = createHolidayDefinitions();
-		new FinancialCalendar(" ", "New York bank holidays", cb, hds);
+		new FinancialCalendar(" ", "New York bank holidays", createCentralBank(), createHolidayDefinitions());
 		fail("Expected IllegalArgument exception to be thrown");
 	}
 
-	@Test(expectedExceptions = IllegalArgumentException.class)
+	@Test(groups = {"model"},
+		  expectedExceptions = IllegalArgumentException.class)
 	public void testConstructorBlankDescription() {
-		CentralBank cb = createCentralBank();
-		Set<HolidayDefinition> hds = createHolidayDefinitions();
-		new FinancialCalendar("NYB", " ", cb, hds);
+		new FinancialCalendar("NYB", " ", createCentralBank(), createHolidayDefinitions());
 		fail("Expected IllegalArgument exception to be thrown");
 	}
 
-	@Test(expectedExceptions = IllegalArgumentException.class)
+	@Test(groups = {"model"},
+		  expectedExceptions = IllegalArgumentException.class)
 	public void testConstructorNullCentralBank() {
-		Set<HolidayDefinition> hds = createHolidayDefinitions();
-		new FinancialCalendar("NYB", "New York bank holidays", null, hds);
+		new FinancialCalendar("NYB", "New York bank holidays", null, createHolidayDefinitions());
 		fail("Expected IllegalArgument exception to be thrown");
 	}
 
-	@Test(expectedExceptions = IllegalArgumentException.class)
+	@Test(groups = {"model"},
+		  expectedExceptions = IllegalArgumentException.class)
 	public void testConstructorNullHolidayDefinitions() {
-		CentralBank cb = createCentralBank();
-		new FinancialCalendar("NYB", "New York bank holidays", cb, null);
+		new FinancialCalendar("NYB", "New York bank holidays", createCentralBank(), null);
 		fail("Expected IllegalArgument exception to be thrown");
 	}
 
-	@Test
+	@Test(groups = {"model"})
 	public void testSize() {
-		CentralBank cb = createCentralBank();
 		Set<HolidayDefinition> hds = createHolidayDefinitions();
-		FinancialCalendar fc = new FinancialCalendar("NYB", "New York bank holidays", cb, hds);
+		FinancialCalendar fc = new FinancialCalendar("NYB", "New York bank holidays", createCentralBank(), hds);
 		assertEquals(fc.size(), hds.size());
 	}
 
-	@Test
+	@Test(groups = {"model"})
 	public void testContains() {
-		CentralBank cb = createCentralBank();
 		Set<HolidayDefinition> hds = createHolidayDefinitions();
-		FinancialCalendar fc = new FinancialCalendar("NYB", "New York bank holidays", cb, hds);
+		FinancialCalendar fc = new FinancialCalendar("NYB", "New York bank holidays", createCentralBank(), hds);
 		for (HolidayDefinition hd : hds) {
 			assertTrue(fc.contains(hd));
 		}
 	}
 
-	@Test
+	@Test(groups = {"model"})
 	public void testIterator() {
-		CentralBank cb = createCentralBank();
 		Set<HolidayDefinition> hds = createHolidayDefinitions();
-		FinancialCalendar fc = new FinancialCalendar("NYB", "New York bank holidays", cb, hds);
+		FinancialCalendar fc = new FinancialCalendar("NYB", "New York bank holidays", createCentralBank(), hds);
 		for (HolidayDefinition hd : fc) {
 			assertTrue(hds.contains(hd));
 		}
@@ -87,34 +109,14 @@ public class FinancialCalendarTest {
 		}
 	}
 
-	@Test
+	@Test(groups = {"model"})
 	public void testGetCurrency() {
 		CentralBank cb = createCentralBank();
-		Set<HolidayDefinition> hds = createHolidayDefinitions();
-		FinancialCalendar fc = new FinancialCalendar("NYB", "New York bank holidays", cb, hds);
+		FinancialCalendar fc = new FinancialCalendar("NYB", "New York bank holidays", cb, createHolidayDefinitions());
 		Currency c1 = cb.getCurrency();
 		Currency c2 = fc.getCurrency();
 		assertEquals(c2, c1);
 		assertSame(c2, c1);
-	}
-
-	private CentralBank createCentralBank() {
-		return new CentralBank("USFR", "United States Federal Reserve", "US", "USD");
-	}
-
-	private Set<HolidayDefinition> createHolidayDefinitions() {
-		Set<HolidayDefinition> hds = new HashSet<HolidayDefinition>();
-		hds.add(new HolidayDefinition("MLKDay",
-                                      "Martin Luther King Day",
-                                      "Birthday of Martin Luther King, Jr.",
-                                      HolidayType.RELATIVE,
-                                      "JANUARY/MONDAY/3"));
-		hds.add(new HolidayDefinition("IndependenceDay",
-				                      "Independence Day",
-				                      "Celebration of 1776 Declaration of Independence",
-				                      HolidayType.FIXED,
-				                      "JULY/01"));
-		return hds;
 	}
 
 }

@@ -17,21 +17,23 @@
  */
 package org.osframework.contract.date.fincal.data.file;
 
+import static org.osframework.contract.date.fincal.ObjectMother.HOLIDAY_DEF_ID_INDEPENDENCE_DAY;
+import static org.osframework.contract.date.fincal.ObjectMother.HOLIDAY_DEF_ID_MLK_DAY;
+import static org.osframework.contract.date.fincal.ObjectMother.createFinancialCalendar;
+import static org.osframework.contract.date.fincal.ObjectMother.createHolidayDefinition;
+
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collections;
 
-import org.osframework.contract.date.fincal.model.CentralBank;
 import org.osframework.contract.date.fincal.model.FinancialCalendar;
 import org.osframework.contract.date.fincal.model.Holiday;
 import org.osframework.contract.date.fincal.model.HolidayDefinition;
-import org.osframework.contract.date.fincal.model.HolidayType;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 
 /**
- * AbstractDelimitedTextFileOutputTest description here.
+ * Abstract superclass of concrete delimited textfile output unit tests.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
@@ -52,8 +54,8 @@ public abstract class AbstractDelimitedTextFileOutputTest {
 
 	@DataProvider
 	public Object[][] oneHoliday() {
-		FinancialCalendar fc = getNYBFinancialCalendar();
-		HolidayDefinition mlkDayDef = getMLKDayDefinition();
+		FinancialCalendar fc = createFinancialCalendar();
+		HolidayDefinition mlkDayDef = createHolidayDefinition(HOLIDAY_DEF_ID_MLK_DAY);
 		
 		Holiday h1 = new Holiday(fc, mlkDayDef.evaluate(2012), mlkDayDef);
 		String s1 = holidayToExpectedString(h1);
@@ -78,9 +80,9 @@ public abstract class AbstractDelimitedTextFileOutputTest {
 
 	@DataProvider
 	public Object[][] twoHolidays() {
-		FinancialCalendar fc = getNYBFinancialCalendar();
-		HolidayDefinition mlkDayDef = getMLKDayDefinition();
-		HolidayDefinition fourthOfJulyDef = getIndependenceDayDefinition();
+		FinancialCalendar fc = createFinancialCalendar();
+		HolidayDefinition mlkDayDef = createHolidayDefinition(HOLIDAY_DEF_ID_MLK_DAY);
+		HolidayDefinition fourthOfJulyDef = createHolidayDefinition(HOLIDAY_DEF_ID_INDEPENDENCE_DAY);
 		
 		Holiday h1a = new Holiday(fc, mlkDayDef.evaluate(2012), mlkDayDef);
 		Holiday h1b = new Holiday(fc, fourthOfJulyDef.evaluate(2012), fourthOfJulyDef);
@@ -121,33 +123,6 @@ public abstract class AbstractDelimitedTextFileOutputTest {
 		return new Object[][] {
 			set1, set2, set3, set4
 		};
-	}
-
-	protected HolidayDefinition getMLKDayDefinition() {
-		return new HolidayDefinition("MLKDay",
-				                     "Martin Luther King Day",
-				                     "Birthday of Martin Luther King, Jr.",
-				                     HolidayType.RELATIVE,
-				                     "JANUARY/MONDAY/3");
-	}
-
-	protected HolidayDefinition getIndependenceDayDefinition() {
-		return new HolidayDefinition("IndependenceDay",
-				                     "Independence Day",
-				                     "Celebration of 1776 Declaration of Independence",
-				                     HolidayType.FIXED,
-				                     "JULY/01");
-	}
-
-	protected FinancialCalendar getNYBFinancialCalendar() {
-		return new FinancialCalendar("NYB",
-				                     "New York bank holidays",
-				                     getCentralBank(),
-				                     Collections.singleton(getMLKDayDefinition()));
-	}
-
-	protected CentralBank getCentralBank() {
-		return new CentralBank("USFR", "United States Federal Reserve", "US", "USD");
 	}
 
 	protected abstract String holidayToExpectedString(Holiday h);

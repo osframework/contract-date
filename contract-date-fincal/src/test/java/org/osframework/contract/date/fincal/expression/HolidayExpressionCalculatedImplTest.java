@@ -1,5 +1,5 @@
 /*
- * File: HolidayExpressionFixedImplTest.java
+ * File: HolidayExpressionCalculatedImplTest.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -26,42 +26,47 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for <code>HolidayExpressionFixedImpl</code>.
+ * Unit tests for <code>HolidayExpressionCalculatedImpl</code>.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class HolidayExpressionFixedImplTest {
+public class HolidayExpressionCalculatedImplTest {
 
 	@Test(dataProvider = "dp", groups = "expression")
 	public void testEvaluate(String e, int y, Date check) {
-		HolidayExpressionFixedImpl expr = new HolidayExpressionFixedImpl(e);
+		HolidayExpressionCalculatedImpl expr = new HolidayExpressionCalculatedImpl(e);
 		Date result = expr.evaluate(y);
 		assertSameDay(result, check);
 	}
 
 	@DataProvider
 	public Object[][] dp() {
-		String expression = "DECEMBER/25";
+		String expression = "EASTER-2";
 		int year = 2012;
 		Calendar c = Calendar.getInstance();
-		c.set(2012, Calendar.DECEMBER, 25);
+		c.set(2012, Calendar.APRIL, 6);
 		Date check = c.getTime();
 		Object[] set1 = new Object[] { expression, year, check };
 		
-		expression = "JANUARY/01";
 		year = 2010;
-		c.set(2010, Calendar.JANUARY, 1);
+		c.set(2010, Calendar.APRIL, 2);
 		check = c.getTime();
 		Object[] set2 = new Object[] { expression, year, check };
 		
-		expression = "JULY/04";
-		year = 2011;
-		c.set(2011, Calendar.JULY, 4);
+		expression = "EASTER+50";
+		year = 2015;
+		c.set(2015, Calendar.MAY, 25);
 		check = c.getTime();
 		Object[] set3 = new Object[] { expression, year, check };
 		
+		expression = "EASTER";
+		year = 1977;
+		c.set(1977, Calendar.APRIL, 10);
+		check = c.getTime();
+		Object[] set4 = new Object[] { expression, year, check };
+		
 		return new Object[][] {
-			set1, set2, set3,
+			set1, set2, set3, set4
 		};
 	}
 
