@@ -21,6 +21,7 @@ import javax.xml.XMLConstants;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.osframework.contract.date.fincal.config.ConfigurationException;
 import org.xml.sax.SAXException;
 
 /**
@@ -145,13 +146,11 @@ public final class XmlConstants {
      */
 	private XmlConstants() {
 		SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		Schema s = null;
 		try {
-			s = sf.newSchema(this.getClass().getResource("/" + XSD_RESOURCE));
-		} catch (SAXException e) {
-			s = null;
+			this.schema = sf.newSchema(this.getClass().getResource("/" + XSD_RESOURCE));
+		} catch (SAXException se) {
+			throw new ConfigurationException("Failed to created singleton Schema object", se);
 		}
-		this.schema = s;
 	}
 
 	private static class XmlConstantsSingleton {

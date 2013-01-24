@@ -17,12 +17,14 @@
  */
 package org.osframework.contract.date.fincal.config;
 
+import org.osframework.contract.date.fincal.FinancialCalendarRuntimeException;
+
 /**
  * Base runtime exception type thrown for a configuration error.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class ConfigurationException extends RuntimeException {
+public class ConfigurationException extends FinancialCalendarRuntimeException {
 
 	/**
 	 * Serializable UID.

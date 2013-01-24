@@ -17,6 +17,8 @@
  */
 package org.osframework.contract.date.fincal.config.xml;
 
+import org.apache.commons.lang.Validate;
+
 /**
  * Simple XML element reference for use in parser stacks. An instance of
  * this class must, at minimum, provide a local element name.
@@ -36,9 +38,7 @@ public final class StackElement {
 	public StackElement(final String elementName,
 			            final String elementId,
 			            final String elementRefId) {
-		if (null == elementName) {
-			throw new IllegalArgumentException("argument 'elementName' cannot be null");
-		}
+		Validate.notEmpty(elementName, "argument 'elementName' cannot be empty");
 		this.elementName = elementName;
 		this.elementId = elementId;
 		this.elementRefId = elementRefId;
