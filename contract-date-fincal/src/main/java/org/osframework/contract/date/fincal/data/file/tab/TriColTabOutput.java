@@ -37,13 +37,13 @@ public class TriColTabOutput extends AbstractDelimitedTextFileOutput {
 
 	@Override
 	protected String holidayToRecord(Holiday holiday) {
-		StringBuilder csv = new StringBuilder()
+		StringBuilder tsv = new StringBuilder()
 		                        .append(holiday.getDate())
 		                        .append(delimiter)
 		                        .append(holiday.getFinancialCalendar().getId())
 		                        .append(delimiter)
 		                        .append(holiday.getHolidayDefinition().getName());
-		return csv.toString();
+		return tsv.toString();
 	}
 
 }
