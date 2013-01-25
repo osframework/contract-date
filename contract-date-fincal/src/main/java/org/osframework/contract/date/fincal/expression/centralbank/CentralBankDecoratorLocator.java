@@ -1,5 +1,19 @@
-/**
+/*
+ * File: CentralBankDecoratorLocator.java
  * 
+ * Copyright 2012 OSFramework Project.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.osframework.contract.date.fincal.expression.centralbank;
 
@@ -11,10 +25,18 @@ import org.osframework.contract.date.fincal.model.CentralBank;
 import org.osframework.util.ServiceClassLoader;
 
 /**
- * @author kzk55j
+ * Provides dynamic, central bank-specific decoration of a
+ * <code>HolidayExpression</code> object via lazy provider
+ * location.
  *
+ * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class CentralBankDecoratorLocator {
+public final class CentralBankDecoratorLocator {
+
+	/**
+	 * Private constructor - prevents instantiation.
+	 */
+	private CentralBankDecoratorLocator() {}
 
 	public static HolidayExpression decorate(final HolidayExpression targetExpr, CentralBank bank) {
 		HolidayExpression decoratedExpr = null;

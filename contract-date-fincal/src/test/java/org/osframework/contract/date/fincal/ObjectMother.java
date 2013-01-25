@@ -36,6 +36,7 @@ public final class ObjectMother {
 
 	public static final String CENTRAL_BANK_ID_USFR = "USFR";
 	public static final String CENTRAL_BANK_ID_BOE = "BoE";
+	public static final String CENTRAL_BANK_ID_CBOA = "CBoA";
 
 	public static final String HOLIDAY_DEF_ID_NEW_YEARS_DAY = "NewYearsDay";
 	public static final String HOLIDAY_DEF_ID_MLK_DAY = "MLKDay";
@@ -60,6 +61,8 @@ public final class ObjectMother {
 			cb = new CentralBank("BoE", "Bank of England", "UK", Currency.getInstance("GBP"));
 		} else if (CENTRAL_BANK_ID_USFR.equals(cbId)) {
 			cb = new CentralBank("USFR", "United States Federal Reserve", "US", Currency.getInstance("USD"));
+		} else if (CENTRAL_BANK_ID_CBOA.equals(cbId)) {
+			cb = new CentralBank("CBoA", "Central Bank of Argentina", "AR", Currency.getInstance("ARS"));
 		} else {
 			throw new IllegalArgumentException("Unknown central bank ID: " + cbId);
 		}
