@@ -1,0 +1,41 @@
+			--------------------
+			Introduction
+			--------------------
+			Dave Joyce
+			--------------------
+			2013-01-24
+			--------------------
+
+Summary
+
+	<<<Financial Calendar Generator>>> is an independent library for generating
+	financial calendar data. This module provides a configurable, extensible API
+	for defining, generating, and storing world financial market calendar
+	holidays.
+
+	The holiday data produced by this module is consumed by the other modules
+	in the <<contract-date>> project, but it also can be used by any Java
+	application which depends upon the excellent open source
+	{{{http://jfin.org/}jFin library}}. In other words, this library can be
+	employed separately from the rest of this project.
+
+	For a brief introduction to basic concepts involved in financial calendars,
+	see {{{./terminology.html}Terminology}}.
+
+* Limitations
+
+	While Financial Calendar Generator provides a free, open source option for
+	defining and creating holiday data, there are some limitations to its scope.
+
+	[[1]] Currently, this library <only> handles bank holiday calendar
+	      generation. In general, bank holiday calendars are the main calendars
+	      used in over-the-counter derivative trade date calculation. Other
+	      types of trades (e.g. bonds, commodities, etc.) may require additional
+	      calendars to be considered.
+
+	[[2]] It is far beyond the reach of this or any other open source project to
+	      be a comprehensive source for all financial calendar definitions and
+	      data. If you need something more than is provided by this project,
+	      please consider commercially licensed data provided by
+	      {{{http://www.financialcalendar.com}Financial Calendar\u00AE}}.
+ 

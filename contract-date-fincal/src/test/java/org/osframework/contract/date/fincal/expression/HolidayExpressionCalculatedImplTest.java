@@ -32,7 +32,9 @@ import org.testng.annotations.Test;
  */
 public class HolidayExpressionCalculatedImplTest {
 
-	@Test(dataProvider = "dp", groups = "expression")
+	@Test(groups = "expression",
+		  dependsOnGroups = "algorithm",
+		  dataProvider = "dp")
 	public void testEvaluate(String e, int y, Date check) {
 		HolidayExpressionCalculatedImpl expr = new HolidayExpressionCalculatedImpl(e);
 		Date result = expr.evaluate(y);

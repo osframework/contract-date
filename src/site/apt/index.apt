@@ -8,10 +8,10 @@
 * Summary
 
 	The <<<contract-date>>> project provides calculation of the dates used on
-	derivative contract trades across the financial world. It recognizes and
-	uses current standard market conventions employed by traders to correctly
-	calculate the dates upon which various types of contract ('products') begin,
-	settle, become eligible for exercise, or end.
+	derivative contract trades in the financial world. It recognizes uses the
+	standard market conventions employed by traders to correctly calculate the
+	dates upon which various types of contract ('products') begin, settle,
+	become eligible for exercise, or end.
 
 	The products for which <<<contract-date>>> can be used include:
 
@@ -34,3 +34,4 @@
 	      and the standard market conventions used in the derivatives trading
 	      business domain
 	[[2]] Provide a publicly consumable library and web service for integration
+	      into financial software systems

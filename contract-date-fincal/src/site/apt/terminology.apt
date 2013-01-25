@@ -1,0 +1,28 @@
+			--------------------
+			Terminology
+			--------------------
+			Dave Joyce
+			--------------------
+			2013-01-24
+			--------------------
+
+	This is a brief, introductory glossary of terms / concepts involved in
+	working with financial calendars.
+
+	[Bank Holiday] a holiday on which banks are closed for business. Cashflows
+	               and most other financial transactions cannot occur on an
+	               observed bank holiday.
+
+	[Central Bank] an institution, typically national, which issues currency,
+	               defines and governs <bank holidays>, and manages the banking
+	               industry within the borders of its respective country or zone
+	               of responsibility.
+
+	[Financial Calendar] (aka 'market calendar') a list of holidays observed in
+	                     a particular financial market. A financial calendar is
+	                     usually named for the primary financial center of a
+	                     given country. For example, in the United States, the
+	                     bank holiday calendar is the New York calendar (NYB).
+	                     The holidays listed on an financial calendar are
+	                     defined by a {{CentralBank}}.
+
