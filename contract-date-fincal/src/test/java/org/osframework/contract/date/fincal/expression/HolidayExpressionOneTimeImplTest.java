@@ -1,5 +1,5 @@
 /*
- * File: HolidayExpressionRelativeImplTest.java
+ * File: HolidayExpressionOneTimeImplTest.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -18,6 +18,7 @@
 package org.osframework.contract.date.fincal.expression;
 
 import static org.osframework.testng.Assert.assertSameDay;
+import static org.testng.Assert.assertNull;
 import static org.testng.Assert.fail;
 
 import java.util.Calendar;
@@ -27,56 +28,52 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for <code>HolidayExpressionRelativeImpl</code>.
+ * Unit tests for <code>HolidayExpressionOneTimeImpl</code>.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class HolidayExpressionRelativeImplTest {
+public class HolidayExpressionOneTimeImplTest {
 
 	@Test(groups = "expression",
 		  expectedExceptions = IllegalArgumentException.class)
 	public void testConstructorNullArg() {
-		new HolidayExpressionRelativeImpl(null);
+		new HolidayExpressionOneTimeImpl(null);
 		fail("Expected IllegalArgumentException to be thrown");
 	}
 
 	@Test(groups = "expression",
 		  expectedExceptions = IllegalArgumentException.class)
 	public void testConstructorInvalidExpression() {
-		new HolidayExpressionRelativeImpl("JANUARY/1");
+		new HolidayExpressionOneTimeImpl("JANUARY/1");
 		fail("Expected IllegalArgumentException to be thrown");
 	}
 
 	@Test(groups = "expression", dataProvider = "dp")
 	public void testEvaluate(String e, int y, Date check) {
-		HolidayExpressionRelativeImpl expr = new HolidayExpressionRelativeImpl(e);
+		HolidayExpressionOneTimeImpl expr = new HolidayExpressionOneTimeImpl(e);
 		Date result = expr.evaluate(y);
-		assertSameDay(result, check);
+		if (null == check) {
+			assertNull(result);
+		} else {
+			assertSameDay(result, check);
+		}
 	}
 
 	@DataProvider
 	public Object[][] dp() {
-		String expression = "NOVEMBER/THURSDAY/4";
+		String expression = "2012-06-05";
 		int year = 2012;
 		Calendar c = Calendar.getInstance();
-		c.set(2012, Calendar.NOVEMBER, 22);
+		c.set(2012, Calendar.JUNE, 5);
 		Date check = c.getTime();
 		Object[] set1 = new Object[] { expression, year, check };
 		
-		expression = "SEPTEMBER/MONDAY/1";
-		year = 2010;
-		c.set(2010, Calendar.SEPTEMBER, 6);
-		check = c.getTime();
+		year = 2013;
+		check = null;
 		Object[] set2 = new Object[] { expression, year, check };
 		
-		expression = "MAY/MONDAY/L";
-		year = 2001;
-		c.set(2001, Calendar.MAY, 28);
-		check = c.getTime();
-		Object[] set3 = new Object[] { expression, year, check };
-		
 		return new Object[][] {
-			set1, set2, set3
+			set1, set2
 		};
 	}
 

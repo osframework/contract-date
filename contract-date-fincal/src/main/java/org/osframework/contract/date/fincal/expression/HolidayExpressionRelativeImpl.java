@@ -30,6 +30,8 @@ import java.util.Date;
  */
 public class HolidayExpressionRelativeImpl implements HolidayExpression {
 
+	private static final String LAST = "L";
+
 	private final int calendarMonthConst, calendarWeekdayConst, weekdayNumInMonth;
 
 	/**
@@ -46,45 +48,21 @@ public class HolidayExpressionRelativeImpl implements HolidayExpression {
 		if (3 != parts.length) {
 			throw new IllegalArgumentException("Invalid argument 'expression'");
 		}
-		Class<Calendar> calClass = Calendar.class;
-		Field[] calFields = calClass.getFields();
-		String monthName   = parts[0].trim().toUpperCase(),
-			   weekdayName = parts[1].trim().toUpperCase();
-		int monthConstVal   = -1,
-			weekdayConstVal = -1;
-		for (Field f : calFields) {
-			if (!(Modifier.isPublic(f.getModifiers()) && Modifier.isStatic(f.getModifiers()))) {
-				continue;
+		this.calendarMonthConst = nameToConst(parts[0]);
+		this.calendarWeekdayConst = nameToConst(parts[1]);
+		
+		final String weekdayNumIndicator = parts[2].trim().toUpperCase();
+		if (LAST.equals(weekdayNumIndicator)) {
+			// Set to negative 'flag' value for switching
+			// in evaluate() method
+			this.weekdayNumInMonth = -1;
+		} else {
+			int intVal = Integer.parseInt(weekdayNumIndicator);
+			if (!(1 <= intVal && intVal <= 4)) {
+				throw new IllegalArgumentException("Invalid weekday count value: " + intVal);
 			}
-			if (f.getName().equals(monthName)) {
-				try {
-					monthConstVal = f.getInt(null);
-				} catch (IllegalAccessException e) {
-					throw new IllegalArgumentException("Calendar constant '" + monthName + "' not accessible", e);
-				}
-				break;
-			}
+			this.weekdayNumInMonth = intVal;
 		}
-		this.calendarMonthConst = monthConstVal;
-		for (Field f : calFields) {
-			if (!(Modifier.isPublic(f.getModifiers()) && Modifier.isStatic(f.getModifiers()))) {
-				continue;
-			}
-			if (f.getName().equals(weekdayName)) {
-				try {
-					weekdayConstVal = f.getInt(null);
-				} catch (IllegalAccessException e) {
-					throw new IllegalArgumentException("Calendar constant '" + weekdayName + "' not accessible", e);
-				}
-				break;
-			}
-		}
-		this.calendarWeekdayConst = weekdayConstVal;
-		int weekdayNumVal = Integer.parseInt(parts[2].trim());
-		if (!(1 <= weekdayNumVal && weekdayNumVal <= 4)) {
-			throw new IllegalArgumentException("Invalid " + weekdayName + " number");
-		}
-		this.weekdayNumInMonth = weekdayNumVal;
 	}
 
 	/**
@@ -94,18 +72,50 @@ public class HolidayExpressionRelativeImpl implements HolidayExpression {
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.YEAR, year);
 		c.set(Calendar.MONTH, calendarMonthConst);
-		c.set(Calendar.DAY_OF_MONTH, 1);
-		int i = 0;
-		while (i < weekdayNumInMonth) {
-			if (calendarWeekdayConst == c.get(Calendar.DAY_OF_WEEK)) {
-				i += 1;
+		switch (weekdayNumInMonth) {
+		case -1:
+			// Find last of the specified weekday in the month
+			c.set(Calendar.DAY_OF_WEEK, calendarWeekdayConst);
+			c.set(Calendar.DAY_OF_WEEK_IN_MONTH, -1);
+			break;
+		default:
+			c.set(Calendar.DAY_OF_MONTH, 1);
+			int i = 0;
+			while (i < weekdayNumInMonth) {
+				if (calendarWeekdayConst == c.get(Calendar.DAY_OF_WEEK)) {
+					i += 1;
+				}
+				// Prevent adding 1 day beyond target date
+				if (i != weekdayNumInMonth) {
+					c.add(Calendar.DAY_OF_MONTH, 1);
+				}
 			}
-			// Prevent adding 1 day beyond target date
-			if (i != weekdayNumInMonth) {
-				c.add(Calendar.DAY_OF_MONTH, 1);
-			}
+			break;
 		}
 		return c.getTime();
+	}
+
+	private int nameToConst(final String parsedName) {
+		final String name = parsedName.trim().toUpperCase();
+		final Field[] calFields = Calendar.class.getFields();
+		int constVal = Integer.MIN_VALUE;
+		for (Field f : calFields) {
+			if (!(Modifier.isPublic(f.getModifiers()) && Modifier.isStatic(f.getModifiers()))) {
+				continue;
+			}
+			if (f.getName().equals(name)) {
+				try {
+					constVal = f.getInt(null);
+					break;
+				} catch (IllegalAccessException iae) {
+					throw new IllegalArgumentException("Calendar constant '" + name + "' not accessible", iae);
+				}
+			}
+		}
+		if (Integer.MIN_VALUE == constVal) {
+			throw new IllegalArgumentException("Calendar constant '" + name + "' does not exist");
+		}
+		return constVal;
 	}
 
 }

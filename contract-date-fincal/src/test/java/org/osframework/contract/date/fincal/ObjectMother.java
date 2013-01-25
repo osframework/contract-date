@@ -34,6 +34,10 @@ import org.osframework.contract.date.fincal.model.HolidayType;
  */
 public final class ObjectMother {
 
+	public static final String CENTRAL_BANK_ID_USFR = "USFR";
+	public static final String CENTRAL_BANK_ID_BOE = "BoE";
+
+	public static final String HOLIDAY_DEF_ID_NEW_YEARS_DAY = "NewYearsDay";
 	public static final String HOLIDAY_DEF_ID_MLK_DAY = "MLKDay";
 	public static final String HOLIDAY_DEF_ID_INDEPENDENCE_DAY = "IndependenceDay";
 	public static final String HOLIDAY_DEF_ID_THANKSGIVING = "ThanksgivingUS";
@@ -47,12 +51,30 @@ public final class ObjectMother {
 	private ObjectMother() {}
 
 	public static CentralBank createCentralBank() {
-		return new CentralBank("USFR", "United States Federal Reserve", "US", Currency.getInstance("USD"));
+		return createCentralBank(CENTRAL_BANK_ID_USFR);
+	}
+
+	public static CentralBank createCentralBank(String cbId) {
+		CentralBank cb = null;
+		if (CENTRAL_BANK_ID_BOE.equals(cbId)) {
+			cb = new CentralBank("BoE", "Bank of England", "UK", Currency.getInstance("GBP"));
+		} else if (CENTRAL_BANK_ID_USFR.equals(cbId)) {
+			cb = new CentralBank("USFR", "United States Federal Reserve", "US", Currency.getInstance("USD"));
+		} else {
+			throw new IllegalArgumentException("Unknown central bank ID: " + cbId);
+		}
+		return cb;
 	}
 
 	public static HolidayDefinition createHolidayDefinition(String defId) {
 		HolidayDefinition hd = null;
-		if (HOLIDAY_DEF_ID_MLK_DAY.equals(defId)) {
+		if (HOLIDAY_DEF_ID_NEW_YEARS_DAY.equals(defId)) {
+			hd = new HolidayDefinition("NewYearsDay",
+					                   "New Year's Day",
+					                   "New Year's Day",
+					                   HolidayType.FIXED,
+					                   "JANUARY/01");
+		}else if (HOLIDAY_DEF_ID_MLK_DAY.equals(defId)) {
 			hd = new HolidayDefinition("MLKDay",
                                        "Martin Luther King Day",
                                        "Birthday of Martin Luther King, Jr.",
