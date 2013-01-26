@@ -40,6 +40,7 @@ public class SingleYearProducer implements HolidayProducer<FinancialCalendar> {
 
 	private final int year;
 	private final boolean weekendsAsHolidays;
+	private final Calendar c;
 
 	/**
 	 * Construct a <code>SingleYearCalendarProducer</code> for the
@@ -55,6 +56,7 @@ public class SingleYearProducer implements HolidayProducer<FinancialCalendar> {
 		Validate.notNull(year, "Integer year argument cannot be null");
 		this.year = year.intValue();
 		this.weekendsAsHolidays = weekendsAsHolidays;
+		this.c = Calendar.getInstance();
 	}
 
 	/**
@@ -94,13 +96,14 @@ public class SingleYearProducer implements HolidayProducer<FinancialCalendar> {
 	}
 
 	private void addWeekends(FinancialCalendar calendar, List<Holiday> holidays) {
-		Calendar c = Calendar.getInstance();
+		c.clear();
 		c.set(year, Calendar.JANUARY, 1);
 		while (c.get(Calendar.YEAR) == year) {
 			if (Calendar.SATURDAY == c.get(Calendar.DAY_OF_WEEK) ||
 				Calendar.SUNDAY == c.get(Calendar.DAY_OF_WEEK)) {
 				holidays.add(new Holiday(calendar, c.getTime(), WEEKEND_HOLIDAY_DEFINITION));
 			}
+			c.add(Calendar.DAY_OF_MONTH, 1);
 		}
 	}
 

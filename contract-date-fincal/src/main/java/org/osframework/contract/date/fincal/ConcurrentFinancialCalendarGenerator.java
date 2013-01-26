@@ -39,10 +39,9 @@ import org.osframework.contract.date.fincal.producer.SingleYearProducer;
  * Instances of this class perform holiday production and storage in separate
  * threads.
  * <p>Instances of this class are used in scenarios where a large number of
- * calendars and/or range of years has been requested. Holiday production for
- * each <code>FinancialCalendar</code> object is performed in a dedicated thread
- * from a fixed-size pool, with produced <code>Holiday</code> objects tranferred
- * to an output thread.</p> 
+ * calendars and/or range of years has been requested. Holiday production is
+ * divided approximately equally across each processor available to the JVM,
+ * with sorting and output performed by the main controller thread.</p> 
  * <p>Both this class and its single constructor method are package-private;
  * instantiation of this class is performed via the
  * {@link FinancialCalendarGeneratorBuilder#build()} method.
@@ -94,27 +93,31 @@ class ConcurrentFinancialCalendarGenerator extends AbstractFinancialCalendarGene
 			} catch (BrokenBarrierException bbe) {
 				// Don't care -- controller thread will get
 				// BrokenBarrierException
+				logger.error("Encountered exception; controller thread will get BrokenBarrierException", bbe);
 			} catch (InterruptedException ie) {
 				// Don't care -- controller thread will get
 				// BrokenBarrierException
+				logger.error("Encountered exception; controller thread will get BrokenBarrierException", ie);
 			} catch (Throwable t) {
 				error = t;
 				Thread.currentThread().interrupt();
 				try {
 					barrier.await();
-				} catch (Exception e) {}
+				} catch (Exception e) {
+					logger.error("Cannot await on barrier; thread interrupted and cause stored in error field");
+				}
 			}
 		}
 	}
 
-	static enum WorkDivider {
+	static enum ProducerType {
 		CALENDAR,
 		YEAR;
 	
-		public static WorkDivider coinToss() {
+		public static ProducerType coinToss() {
 			Random r = new Random();
 			int ordinal = r.nextInt(2);
-			for (WorkDivider wd : values()) {
+			for (ProducerType wd : values()) {
 				if (wd.ordinal() == ordinal) {
 					return wd;
 				}
@@ -206,9 +209,9 @@ class ConcurrentFinancialCalendarGenerator extends AbstractFinancialCalendarGene
 		// Load full array of contiguous years (inclusive range)
 		final int[] years = getYears();
 		// Divide work by the largest range
-		final WorkDivider divideBy = (years.length > calendars.length)
-				                      ? WorkDivider.YEAR
-				                      : ((calendars.length > years.length) ? WorkDivider.CALENDAR : WorkDivider.coinToss());
+		final ProducerType divideBy = (years.length > calendars.length)
+				                      ? ProducerType.YEAR
+				                      : ((calendars.length > years.length) ? ProducerType.CALENDAR : ProducerType.coinToss());
 		int r, chunkSize, offset, arraySize;
 		switch (divideBy) {
 		case CALENDAR:

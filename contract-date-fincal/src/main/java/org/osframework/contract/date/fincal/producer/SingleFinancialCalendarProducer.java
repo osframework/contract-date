@@ -41,6 +41,7 @@ public class SingleFinancialCalendarProducer implements HolidayProducer<Integer>
 
 	private final FinancialCalendar calendar;
 	private final boolean weekendsAsHolidays;
+	private final Calendar c;
 
 	/**
 	 * Construct a <code>SingleFinancialCalendarProducer</code> for the
@@ -57,6 +58,7 @@ public class SingleFinancialCalendarProducer implements HolidayProducer<Integer>
 		Validate.notNull(calendar, "FinancialCalendar argument cannot be null");
 		this.calendar = calendar;
 		this.weekendsAsHolidays = weekendsAsHolidays;
+		this.c = Calendar.getInstance();
 	}
 
 	/**
@@ -93,13 +95,14 @@ public class SingleFinancialCalendarProducer implements HolidayProducer<Integer>
 	}
 
 	private void addWeekends(int year, List<Holiday> holidays) {
-		Calendar c = Calendar.getInstance();
+		c.clear();
 		c.set(year, Calendar.JANUARY, 1);
 		while (c.get(Calendar.YEAR) == year) {
 			if (Calendar.SATURDAY == c.get(Calendar.DAY_OF_WEEK) ||
 				Calendar.SUNDAY == c.get(Calendar.DAY_OF_WEEK)) {
 				holidays.add(new Holiday(calendar, c.getTime(), WEEKEND_HOLIDAY_DEFINITION));
 			}
+			c.add(Calendar.DAY_OF_MONTH, 1);
 		}
 	}
 
