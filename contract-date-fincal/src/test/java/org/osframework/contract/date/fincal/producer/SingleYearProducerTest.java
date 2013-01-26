@@ -17,8 +17,9 @@
  */
 package org.osframework.contract.date.fincal.producer;
 
-import static org.testng.Assert.*;
-import static org.osframework.contract.date.fincal.ObjectMother.*;
+import static org.osframework.contract.date.fincal.ObjectMother.createFinancialCalendar;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 import org.osframework.contract.date.fincal.model.FinancialCalendar;
 import org.osframework.contract.date.fincal.model.Holiday;
@@ -36,8 +37,16 @@ public class SingleYearProducerTest {
 		  dependsOnGroups={"model","centralbank"},
 		  expectedExceptions=IllegalArgumentException.class)
 	public void testConstructorNullFinancialCalendar() {
-		new SingleYearProducer(null, false);
+		new SingleYearProducer(null);
 		fail("Expected IllegalArgumentException to be thrown");
+	}
+
+	@Test(groups="producer",
+		  dependsOnGroups={"model","centralbank"},
+		  dataProvider="weekends")
+	public void testIncludesWeekends(int year, boolean expected) {
+		SingleYearProducer syp = new SingleYearProducer(year, expected);
+		assertEquals(syp.includesWeekends(), expected);
 	}
 
 	@Test(groups="producer",
@@ -54,6 +63,16 @@ public class SingleYearProducerTest {
 		FinancialCalendar fc = createFinancialCalendar();
 		Object[] set1 = new Object[] {2012, true,  fc, (fc.size() + 105) };
 		Object[] set2 = new Object[] {2012, false, fc, fc.size() };
+		
+		return new Object[][] {
+			set1, set2
+		};
+	}
+
+	@DataProvider
+	public Object[][] weekends() {
+		Object[] set1 = new Object[] { 2012, true };
+		Object[] set2 = new Object[] { 2012, false };
 		
 		return new Object[][] {
 			set1, set2

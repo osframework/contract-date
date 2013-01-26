@@ -33,7 +33,9 @@ import org.testng.annotations.Test;
  */
 public class TriColCsvOutputTest extends AbstractDelimitedTextFileOutputTest {
 
-	@Test(dataProvider = "oneHoliday")
+	@Test(groups="data",
+		  dependsOnGroups="model",
+		  dataProvider = "oneHoliday")
 	public void testStoreOneHoliday(Holiday holiday, String expected) throws IOException {
 		TriColCsvOutput tcco = new TriColCsvOutput(out);
 		tcco.store(holiday);
@@ -42,7 +44,9 @@ public class TriColCsvOutputTest extends AbstractDelimitedTextFileOutputTest {
 		assertEquals(actual, expected);
 	}
 
-	@Test(dataProvider = "twoHolidays")
+	@Test(groups="data",
+		  dependsOnGroups="model",
+		  dataProvider = "twoHolidays")
 	public void testStoreHolidayArray(Holiday[] holidays, String[] expecteds) throws IOException {
 		TriColCsvOutput tcco = new TriColCsvOutput(out);
 		tcco.store(holidays);

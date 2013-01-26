@@ -33,7 +33,9 @@ import org.testng.annotations.Test;
  */
 public class TriColTabOutputTest extends AbstractDelimitedTextFileOutputTest {
 
-	@Test(dataProvider = "oneHoliday")
+	@Test(groups="data",
+		  dependsOnGroups="model",
+		  dataProvider = "oneHoliday")
 	public void testStoreOneHoliday(Holiday holiday, String expected) throws IOException {
 		TriColTabOutput tcto = new TriColTabOutput(out);
 		tcto.store(holiday);
@@ -42,7 +44,9 @@ public class TriColTabOutputTest extends AbstractDelimitedTextFileOutputTest {
 		assertEquals(actual, expected);
 	}
 
-	@Test(dataProvider = "twoHolidays")
+	@Test(groups="data",
+		  dependsOnGroups="model",
+		  dataProvider = "twoHolidays")
 	public void testStoreHolidayArray(Holiday[] holidays, String[] expecteds) throws IOException {
 		TriColTabOutput tcto = new TriColTabOutput(out);
 		tcto.store(holidays);
