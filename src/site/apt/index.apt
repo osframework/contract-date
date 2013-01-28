@@ -5,7 +5,8 @@
 			--------------------
 			2012-11-22
 			--------------------
-* Summary
+
+Summary
 
 	The <<<contract-date>>> project provides calculation of the dates used on
 	derivative contract trades in the financial world. It recognizes uses the
@@ -16,15 +17,21 @@
 	The products for which <<<contract-date>>> can be used include:
 
 	* Forwards
+
 	* Forward Rate Agreements (FRAs)
+
 	* Futures
+
 	* Options
+
 	* Swaps (Interest Rate and FX)
+
 	* Swaptions (American, Bermudan, European)
+
 	[]
 
 	Updated, in-depth documentation and discussion of this project is available
-	on the {{{https://github.com/osframework/contract-date/wiki}project wiki}.
+	on the {{{https://github.com/osframework/contract-date/wiki}project wiki}}.
 
 * Purpose
 
@@ -33,5 +40,6 @@
 	[[1]] Provide developers with an introduction to financial date calculation
 	      and the standard market conventions used in the derivatives trading
 	      business domain
+
 	[[2]] Provide a publicly consumable library and web service for integration
 	      into financial software systems
