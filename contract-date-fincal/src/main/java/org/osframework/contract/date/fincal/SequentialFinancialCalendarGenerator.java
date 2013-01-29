@@ -32,7 +32,7 @@ import org.osframework.contract.date.fincal.producer.SingleFinancialCalendarProd
  * of holidays from an array of <code>FinancialCalendar</code> objects.
  * Instances of this class perform holiday production and storage in a single
  * thread.
- * <p>Both this class and its single constructor method are package-private;
+ * <p>Both this class and its constructor method are package-private;
  * instantiation of this class is performed via the
  * {@link FinancialCalendarGeneratorBuilder#build()} method.
  *
@@ -54,19 +54,18 @@ class SequentialFinancialCalendarGenerator extends AbstractFinancialCalendarGene
 	 */
 	@Override
 	public void generateHolidays(HolidayOutput<?, ?> output) throws FinancialCalendarException {
-		final FinancialCalendar[] calendars = getFinancialCalendars();
 		final List<Holiday> holidayQueue = new LinkedList<Holiday>();
 		for (FinancialCalendar calendar : calendars) {
 			holidayQueue.addAll(
 				Arrays.asList(
-					new SingleFinancialCalendarProducer(calendar, weekends).produce(this.firstYear, this.lastYear)
+					new SingleFinancialCalendarProducer(calendar, weekends).produce(years)
 				)
 			);
 		}
 		Collections.sort(holidayQueue);
 		
 		logger.debug("Storing {} total holidays generated for {} financial calendars",
-				     String.valueOf(holidayQueue.size()), String.valueOf(calendarIds.length));
+				     String.valueOf(holidayQueue.size()), String.valueOf(calendars.length));
 		try {
 			Holiday[] allSorted = holidayQueue.toArray(EMPTY_HOLIDAY_ARRAY);
 			int totalSize = allSorted.length;

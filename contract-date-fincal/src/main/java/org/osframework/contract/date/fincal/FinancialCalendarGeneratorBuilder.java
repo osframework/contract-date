@@ -18,6 +18,7 @@
 package org.osframework.contract.date.fincal;
 
 import java.util.Calendar;
+import java.util.Random;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -31,7 +32,7 @@ import org.osframework.contract.date.fincal.config.Configuration;
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class FinancialCalendarGeneratorBuilder {
+public final class FinancialCalendarGeneratorBuilder {
 
 	private static final int MIN_YEAR = 1900;
 	private static final int MAX_YEAR = 4099;
@@ -89,16 +90,34 @@ public class FinancialCalendarGeneratorBuilder {
 		// construction
 		this.firstYear = Math.min(this.firstYear, this.lastYear);
 		this.lastYear = Math.max(this.firstYear, this.lastYear);
-		FinancialCalendarGenerator generator = null;
+		final FinancialCalendarGenerator generator;
 		switch (calendarIds.size()) {
 		case 1:
 			generator = new SequentialFinancialCalendarGenerator(this);
 			break;
 		default:
-			double estimatedTotal = calculateYearGeneratedAvg() * ((lastYear - firstYear) + 1);
-			generator = (THRESHOLD <= estimatedTotal)
-					    ? new ConcurrentFinancialCalendarGenerator(this)
-			            : new SequentialFinancialCalendarGenerator(this);
+			final int procCount = Runtime.getRuntime().availableProcessors();
+			final int yearsSize = (lastYear - firstYear) + 1;
+			double estimatedTotal = calculateYearGeneratedAvg() * yearsSize;
+			if (1 < procCount && THRESHOLD <= estimatedTotal) {
+				int comparison = Integer.valueOf(yearsSize).compareTo(Integer.valueOf(calendarIds.size()));
+				switch (comparison) {
+				case -1:
+					generator = new ConcurrentFinancialCalendarRangeGenerator(this);
+					break;
+				case 1:
+					generator = new ConcurrentYearRangeGenerator(this);
+					break;
+				case 0:
+				default:
+					generator = (0 == tieBreak())
+					             ? new ConcurrentYearRangeGenerator(this)
+					             : new ConcurrentFinancialCalendarRangeGenerator(this);
+					break;
+				}
+			} else {
+				generator = new SequentialFinancialCalendarGenerator(this);
+			}
 			break;
 		}
 		return generator;
@@ -133,6 +152,11 @@ public class FinancialCalendarGeneratorBuilder {
 			total += (configuration.getFinancialCalendar(calendarId).size() + adjustment);
 		}
 		return (double)(total / count);
+	}
+
+	private int tieBreak() {
+		final Random r = new Random();
+		return r.nextInt(2);
 	}
 
 }

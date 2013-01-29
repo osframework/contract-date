@@ -193,7 +193,7 @@ public class FinancialCalendarGeneratorBuilderTest {
 			2012,
 			2061,
 			true,
-			ConcurrentFinancialCalendarGenerator.class
+			ConcurrentYearRangeGenerator.class
 		};
 		Object[] set2 = new Object[] {
 			new String[] { "NYB", "LnB" },

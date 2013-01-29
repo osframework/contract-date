@@ -35,10 +35,8 @@ public abstract class AbstractFinancialCalendarGenerator implements FinancialCal
 	protected static final Holiday[] EMPTY_HOLIDAY_ARRAY = {};
 	protected static final String[] EMPTY_STRING_ARRAY = {};
 
-	protected final Configuration configuration;
-	protected final String[] calendarIds;
-	protected final int firstYear;
-	protected final int lastYear;
+	protected final FinancialCalendar[] calendars;
+	protected final Integer[] years;
 	protected final boolean weekends;
 	protected final Logger logger;
 
@@ -47,29 +45,24 @@ public abstract class AbstractFinancialCalendarGenerator implements FinancialCal
 	 */
 	protected AbstractFinancialCalendarGenerator(FinancialCalendarGeneratorBuilder builder) {
 		this.logger = LoggerFactory.getLogger(this.getClass());
-		this.configuration = builder.configuration;
-		this.calendarIds = builder.calendarIds.toArray(EMPTY_STRING_ARRAY);
-		this.firstYear = builder.firstYear;
-		this.lastYear = builder.lastYear;
+		this.calendars = getFinancialCalendars(builder.configuration, builder.calendarIds.toArray(EMPTY_STRING_ARRAY));
+		this.years = getYears(builder.firstYear, builder.lastYear);
 		this.weekends = builder.weekends;
 	}
 
-	protected final FinancialCalendar[] getFinancialCalendars() throws FinancialCalendarException {
+	private final FinancialCalendar[] getFinancialCalendars(final Configuration cfg, final String[] calendarIds) {
 		Arrays.sort(calendarIds);
 		final FinancialCalendar[] calendars = new FinancialCalendar[calendarIds.length];
 		for (int i = 0; i < calendarIds.length; i++) {
-			calendars[i] = configuration.getFinancialCalendar(calendarIds[i]);
-			if (null == calendars[i]) {
-				throw new FinancialCalendarException("Unexpected null financial calendar: " + calendarIds[i]);
-			}
+			calendars[i] = cfg.getFinancialCalendar(calendarIds[i]);
 		}
 		return calendars;
 	}
 
-	protected final int[] getYears() {
-		int[] years = new int[(lastYear - firstYear) + 1];
+	private final Integer[] getYears(final int firstYear, final int lastYear) {
+		Integer[] years = new Integer[(lastYear - firstYear) + 1];
 		for (int i = 0, j = firstYear; j <= lastYear; i++, j++) {
-			years[i] = j;
+			years[i] = Integer.valueOf(j);
 		}
 		return years;
 	}
