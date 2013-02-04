@@ -91,6 +91,11 @@ public class HolidayKey implements Comparable<HolidayKey>, Serializable {
 	}
 
 	@Override
+	public String toString() {
+		return "" + date + "|" + ((null != financialCalendar) ? financialCalendar.getId() : "???");
+	}
+
+	@Override
 	public int hashCode() {
 		if (0 == hashCode) {
 			hashCode = new HashCodeBuilder()

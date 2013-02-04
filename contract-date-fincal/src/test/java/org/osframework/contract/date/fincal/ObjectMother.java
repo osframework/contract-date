@@ -22,10 +22,14 @@ import java.util.Currency;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.osframework.contract.date.fincal.data.HolidayOutput;
 import org.osframework.contract.date.fincal.model.CentralBank;
 import org.osframework.contract.date.fincal.model.FinancialCalendar;
+import org.osframework.contract.date.fincal.model.Holiday;
 import org.osframework.contract.date.fincal.model.HolidayDefinition;
+import org.osframework.contract.date.fincal.model.HolidayKey;
 import org.osframework.contract.date.fincal.model.HolidayType;
+import org.slf4j.Logger;
 
 /**
  * Provides complex dependency construction in support of test cases.
@@ -111,6 +115,18 @@ public final class ObjectMother {
 
 	public static FinancialCalendar createFinancialCalendar() {
 		return new FinancialCalendar("NYB", "New York bank holidays", createCentralBank(), createHolidayDefinitions());
+	}
+
+	public static HolidayOutput<Logger, Exception> createLoggerHolidayOutput(final Logger logger) {
+		return new HolidayOutput<Logger, Exception>() {
+			public void store(Holiday... holidays) throws Exception {
+				for (Holiday holiday : holidays) {
+					HolidayKey key = holiday.getKey();
+					logger.debug(key.toString());
+				}
+			}
+			public void close() throws Exception {}
+		};
 	}
 
 	public static URL loadDefinitionsXML() {
