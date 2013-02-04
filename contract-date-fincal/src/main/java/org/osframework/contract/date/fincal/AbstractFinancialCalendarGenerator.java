@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public abstract class AbstractFinancialCalendarGenerator implements FinancialCalendarGenerator {
+abstract class AbstractFinancialCalendarGenerator implements FinancialCalendarGenerator {
 
 	protected static final Holiday[] EMPTY_HOLIDAY_ARRAY = {};
 	protected static final String[] EMPTY_STRING_ARRAY = {};
