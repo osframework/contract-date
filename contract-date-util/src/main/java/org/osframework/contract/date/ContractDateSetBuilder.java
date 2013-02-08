@@ -17,10 +17,11 @@
  */
 package org.osframework.contract.date;
 
-import static org.osframework.contract.date.util.DateUtil.isDate;
-import static org.osframework.contract.date.util.DateUtil.parseDate;
 import static org.osframework.contract.date.util.IMM.isIMMCode;
+import static org.osframework.contract.date.util.IMM.nextCalendar;
 import static org.osframework.contract.date.util.IMM.toCalendar;
+import static org.osframework.util.DateUtil.isDate;
+import static org.osframework.util.DateUtil.parseDate;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -31,7 +32,6 @@ import org.jfin.date.Frequency;
 import org.jfin.date.holiday.HolidayCalendar;
 import org.jfin.date.holiday.HolidayCalendarFactory;
 import org.osframework.contract.date.impl.ContractDateSetDefaultImpl;
-import org.osframework.contract.date.util.IMM;
 
 /**
  * Builder for configurable construction of a <code>ContractDateSet</code>
@@ -516,12 +516,12 @@ public class ContractDateSetBuilder {
 		case MONTH:
 			referenceDate.add(Calendar.MONTH, mtp.getAmount());
 			referenceDate.set(Calendar.DAY_OF_MONTH, 1);
-			calcMaturityDate = IMM.nextCalendar(referenceDate, false);
+			calcMaturityDate = nextCalendar(referenceDate, false);
 			break;
 		case YEAR:
 			referenceDate.add(Calendar.YEAR, mtp.getAmount());
 			referenceDate.set(Calendar.DAY_OF_MONTH, 1);
-			calcMaturityDate = IMM.nextCalendar(referenceDate, false);
+			calcMaturityDate = nextCalendar(referenceDate, false);
 			break;
 		default:
 			throw new IllegalArgumentException("Cannot calculate IMM date from time unit: " + mtp.getTimeUnit());
