@@ -1,14 +1,13 @@
 package org.osframework.contract.date.util;
 
-import static org.testng.Assert.*;
-import static org.testng.ContractDateAssert.*;
+import static org.osframework.testng.Assert.assertSameDay;
+import static org.testng.Assert.assertEquals;
 
 import java.util.Calendar;
 import java.util.Date;
 
-import org.osframework.contract.date.util.IMM;
-import org.testng.annotations.Test;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
 public class IMMTest {
 

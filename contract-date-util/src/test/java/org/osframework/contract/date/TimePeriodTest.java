@@ -21,7 +21,8 @@ public class TimePeriodTest {
 			new Object[] { "2B", 2, TimeUnit.BUSINESS_DAY },
 			new Object[] { "3M", 3, TimeUnit.MONTH },
 			new Object[] { "10Y", 10, TimeUnit.YEAR },
-			new Object[] { "-150Y", -150, TimeUnit.YEAR }
+			new Object[] { "-150Y", -150, TimeUnit.YEAR },
+			new Object[] { " -150 Y", -150, TimeUnit.YEAR },
 		};
 	}
 

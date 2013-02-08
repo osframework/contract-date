@@ -62,7 +62,7 @@ public class TimePeriod {
 	private final TimeUnit timeUnit;
 
 	public TimePeriod(String notatedTimePeriod) {
-		String ntp = (null == notatedTimePeriod) ? null : notatedTimePeriod.trim();
+		String ntp = (null == notatedTimePeriod) ? null : notatedTimePeriod.trim().replaceAll("\\s", "");
 		if (null == ntp || 2 > ntp.length()) {
 			throw new IllegalArgumentException("argument 'notatedTimePeriod' must be 2 or more non-whitespace characters");
 		}
@@ -70,9 +70,7 @@ public class TimePeriod {
 		              cBuf = new StringBuilder();
 		char[] ntpArr = ntp.toCharArray();
 		for (int i = 0; i < ntpArr.length; i++) {
-			if (Character.isWhitespace(ntpArr[i])) {
-				continue;
-			} else if ('-' == ntpArr[i]) {
+			if ('-' == ntpArr[i]) {
 				if (0 == i) {
 					iBuf.append(ntpArr[i]);
 					continue;
