@@ -103,7 +103,7 @@ public final class FinancialCalendarGeneratorBuilder {
 				int comparison = Integer.valueOf(yearsSize).compareTo(Integer.valueOf(calendarIds.size()));
 				switch (comparison) {
 				case -1:
-					generator = new ConcurrentFinancialCalendarRangeGenerator(this);
+					generator = new ConcurrentFinancialCalendarListGenerator(this);
 					break;
 				case 1:
 					generator = new ConcurrentYearRangeGenerator(this);
@@ -112,7 +112,7 @@ public final class FinancialCalendarGeneratorBuilder {
 				default:
 					generator = (0 == tieBreak())
 					             ? new ConcurrentYearRangeGenerator(this)
-					             : new ConcurrentFinancialCalendarRangeGenerator(this);
+					             : new ConcurrentFinancialCalendarListGenerator(this);
 					break;
 				}
 			} else {
