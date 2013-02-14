@@ -1,5 +1,5 @@
 /*
- * File: HolidayOutput.java
+ * File: InfoOutput.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -17,19 +17,26 @@
  */
 package org.osframework.contract.date.fincal.data;
 
-import org.osframework.contract.date.fincal.model.Holiday;
+import org.osframework.contract.date.fincal.model.FinancialCalendar;
 
 /**
- * Defines behavior of objects which store <code>Holiday</code> objects to a
- * <i>holiday data</i> location, for use in combination with a corresponding
- * <i>info</i> manifest location.
+ * Defines behavior of objects which store <code>FinancialCalendar</code>
+ * objects to an <i>info</i> manifest location, for use in combination with a
+ * corresponding <i>holiday data</i> location.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public interface HolidayOutput<T, E extends Exception> {
+public interface InfoOutput<T, E extends Exception> {
 
-	public void store(Holiday... holidays) throws E;
+	public void store(FinancialCalendar... calendars) throws E;
 
 	public void close() throws E;
+
+	static final String[] COLUMNS = {
+		"CODE","CENTER","COUNTRY","CURRENCY",
+		"TYPE","ISOCOUNTRY","DEFINE1","DEFINE2"
+	};
+
+	static final String DEFAULT_DEFINE1 = "Banks will be closed for the entire day for the purpose of making payments.";
 
 }

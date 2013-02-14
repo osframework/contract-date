@@ -1,5 +1,5 @@
 /*
- * File: AbstractDelimitedTextFileOutput.java
+ * File: AbstractDelimitedTextFileHolidayOutput.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -30,11 +30,11 @@ import org.osframework.contract.date.fincal.data.AbstractHolidayOutput;
 import org.osframework.contract.date.fincal.model.Holiday;
 
 /**
- * AbstractDelimitedTextFileOutput description here.
+ * AbstractDelimitedTextFileHolidayOutput description here.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public abstract class AbstractDelimitedTextFileOutput extends AbstractHolidayOutput<OutputStream, IOException> {
+public abstract class AbstractDelimitedTextFileHolidayOutput extends AbstractHolidayOutput<OutputStream, IOException> {
 
 	protected static final String LINE_SEPARATOR = SystemUtils.LINE_SEPARATOR;
 
@@ -45,7 +45,7 @@ public abstract class AbstractDelimitedTextFileOutput extends AbstractHolidayOut
 
 	protected Object lock;
 
-	public AbstractDelimitedTextFileOutput(final OutputStream out, final String delimiter) throws IOException {
+	public AbstractDelimitedTextFileHolidayOutput(final OutputStream out, final String delimiter) throws IOException {
 		super();
 		Validate.notNull(out, "OutputStream argument cannot be null");
 		this.writer = new BufferedWriter(new OutputStreamWriter(out, Charset.forName(XmlConstants.DEFAULT_ENCODING)));

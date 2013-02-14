@@ -82,7 +82,7 @@
 		<commons-cli.version>1.2</commons-cli.version>
 		<commons-io.version>2.4</commons-io.version>
 		<commons-lang.version>2.6</commons-lang.version>
-		<common-utils.version>1.0.0</common-utils.version>
+		<common-utils.version>1.0.1</common-utils.version>
 		<jfin-DateMath.version>1.0.1</jfin-DateMath.version>
 		<slf4j.version>1.7.2</slf4j.version>
 		<logback.version>1.0.9</logback.version>

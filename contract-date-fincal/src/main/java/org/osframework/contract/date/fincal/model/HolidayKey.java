@@ -18,12 +18,12 @@
 package org.osframework.contract.date.fincal.model;
 
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.osframework.util.DateUtil;
 
 
 /**
@@ -64,7 +64,7 @@ public class HolidayKey implements Comparable<HolidayKey>, Serializable {
 	 * @throws IllegalArgumentException if any argument is null or empty
 	 */
 	public HolidayKey(final FinancialCalendar financialCalendar, final Date date) {
-		this(financialCalendar, dateToInt(date));
+		this(financialCalendar, DateUtil.formatDateToInt(date));
 	}
 
 	/**
@@ -121,19 +121,6 @@ public class HolidayKey implements Comparable<HolidayKey>, Serializable {
 			result = false;
 		}
 		return result;
-	}
-
-	private static int dateToInt(final Date d) {
-		final Calendar c = Calendar.getInstance();
-		c.setTime(d);
-		final int year = c.get(Calendar.YEAR),
-			      month = (c.get(Calendar.MONTH) + 1),
-			      day = c.get(Calendar.DAY_OF_MONTH);
-		final StringBuilder buf = new StringBuilder()
-		                              .append(year)
-		                              .append((10 > month) ? "0" : "").append(month)
-		                              .append((10 > day) ? "0" : "").append(day);
-		return Integer.parseInt(buf.toString());
 	}
 
 }

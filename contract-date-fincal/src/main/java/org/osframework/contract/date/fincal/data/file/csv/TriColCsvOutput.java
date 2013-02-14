@@ -20,7 +20,7 @@ package org.osframework.contract.date.fincal.data.file.csv;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.osframework.contract.date.fincal.data.file.AbstractDelimitedTextFileOutput;
+import org.osframework.contract.date.fincal.data.file.AbstractDelimitedTextFileHolidayOutput;
 import org.osframework.contract.date.fincal.model.Holiday;
 
 /**
@@ -29,7 +29,7 @@ import org.osframework.contract.date.fincal.model.Holiday;
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class TriColCsvOutput extends AbstractDelimitedTextFileOutput {
+public class TriColCsvOutput extends AbstractDelimitedTextFileHolidayOutput {
 
 	public TriColCsvOutput(final OutputStream csvOut) throws IOException {
 		super(csvOut, ",");
