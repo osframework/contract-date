@@ -17,8 +17,7 @@
  */
 package org.osframework.contract.date.fincal.data;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.osframework.contract.date.fincal.model.FinancialCalendar;
 
 /**
  * Abstract convenience superclass of objects which store
@@ -27,15 +26,11 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public abstract class AbstractInfoOutput<T, E extends Exception> implements InfoOutput<T, E> {
+public abstract class AbstractInfoOutput<T, E extends Exception>
+	extends AbstractOutput<FinancialCalendar, T, E> implements InfoOutput<T, E> {
 
-	protected final Logger logger;
-
-	/**
-	 * Constructor. Initializes logging facility.
-	 */
 	public AbstractInfoOutput() throws E {
-		this.logger = LoggerFactory.getLogger(this.getClass());
+		super();
 	}
 
 }

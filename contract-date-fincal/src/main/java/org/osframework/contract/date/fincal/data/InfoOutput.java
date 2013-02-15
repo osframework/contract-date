@@ -24,13 +24,12 @@ import org.osframework.contract.date.fincal.model.FinancialCalendar;
  * objects to an <i>info</i> manifest location, for use in combination with a
  * corresponding <i>holiday data</i> location.
  *
+ * @param <T> Output destination type
+ * @param <E> Base exception class thrown by operations on output
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public interface InfoOutput<T, E extends Exception> {
-
-	public void store(FinancialCalendar... calendars) throws E;
-
-	public void close() throws E;
+public interface InfoOutput<T, E extends Exception>
+	extends Output<FinancialCalendar, T, E> {
 
 	static final String[] COLUMNS = {
 		"CODE","CENTER","COUNTRY","CURRENCY",

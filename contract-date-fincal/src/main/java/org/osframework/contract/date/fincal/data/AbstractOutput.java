@@ -1,5 +1,5 @@
-/*
- * File: HolidayOutput.java
+/**
+ * File: AbstractOutput.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -17,16 +17,23 @@
  */
 package org.osframework.contract.date.fincal.data;
 
-import org.osframework.contract.date.fincal.model.Holiday;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Defines behavior of objects which store <code>Holiday</code> objects to a
- * <i>holiday data</i> location, for use in combination with a corresponding
- * <i>info</i> manifest location.
+ * AbstractOutput description here.
  *
- * @param <T> Output destination type
- * @param <E> Base exception class thrown by operations on output
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public interface HolidayOutput<T, E extends Exception>
-	extends Output<Holiday, T, E> {}
+public abstract class AbstractOutput<M, T, E extends Exception> implements Output<M, T, E> {
+
+	protected final Logger logger;
+
+	/**
+	 * Constructor. Initializes logging facility.
+	 */
+	public AbstractOutput() throws E {
+		this.logger = LoggerFactory.getLogger(this.getClass());
+	}
+
+}

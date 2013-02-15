@@ -1,5 +1,5 @@
 /*
- * File: HolidayOutput.java
+ * File: Output.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -17,16 +17,19 @@
  */
 package org.osframework.contract.date.fincal.data;
 
-import org.osframework.contract.date.fincal.model.Holiday;
-
 /**
- * Defines behavior of objects which store <code>Holiday</code> objects to a
- * <i>holiday data</i> location, for use in combination with a corresponding
- * <i>info</i> manifest location.
+ * Defines basic behavior of objects which store financial calendar domain
+ * model objects to an output destination.
  *
+ * @param <M> Domain model type
  * @param <T> Output destination type
  * @param <E> Base exception class thrown by operations on output
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public interface HolidayOutput<T, E extends Exception>
-	extends Output<Holiday, T, E> {}
+public interface Output<M, T, E extends Exception> {
+
+	public void store(M... m) throws E;
+
+	public void close() throws E;
+
+}
