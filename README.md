@@ -12,7 +12,7 @@ Modules
 -------
 
 * contract-date-fincal - Configurable, extensible financial calendar generator
-* contract-date-util - Utility library for contract date calculation
+* contract-date-calc - Calculates contract dates
 * contract-date-ws - Date calculation web service(s) for remote client integration
 
 License

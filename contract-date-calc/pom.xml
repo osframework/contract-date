@@ -9,11 +9,11 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>contract-date-util</artifactId>
+	<artifactId>contract-date-calc</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Contract Date Calculator - Utilities</name>
-	<description>Core utility classes for calculation of dates</description>
+	<name>Contract Date Calculator</name>
+	<description>Calculates contract dates from standard market convention parameters and bank holiday calendars</description>
 
 	<properties>
 	</properties>
