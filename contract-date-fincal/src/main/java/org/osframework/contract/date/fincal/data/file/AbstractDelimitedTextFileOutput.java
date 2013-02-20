@@ -65,7 +65,15 @@ public abstract class AbstractDelimitedTextFileOutput<M> extends AbstractTextFil
 		}
 	}
 
-	protected void writeHeaderRow() {}
+	@Override
+	public void close() throws IOException {
+		synchronized (lock) {
+			super.close();
+			logger.debug("Wrote {} records to file", Integer.valueOf(recordCount));
+		}
+	}
+
+	protected void writeHeaderRow() throws IOException {}
 
 	protected abstract String objectToRow(M modelObj);
 

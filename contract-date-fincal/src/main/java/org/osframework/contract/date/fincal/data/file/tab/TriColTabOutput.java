@@ -20,7 +20,8 @@ package org.osframework.contract.date.fincal.data.file.tab;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.osframework.contract.date.fincal.data.file.AbstractDelimitedTextFileHolidayOutput;
+import org.osframework.contract.date.fincal.data.HolidayOutput;
+import org.osframework.contract.date.fincal.data.file.AbstractDelimitedTextFileOutput;
 import org.osframework.contract.date.fincal.model.Holiday;
 
 /**
@@ -29,14 +30,14 @@ import org.osframework.contract.date.fincal.model.Holiday;
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class TriColTabOutput extends AbstractDelimitedTextFileHolidayOutput {
+public class TriColTabOutput extends AbstractDelimitedTextFileOutput<Holiday>
+	implements HolidayOutput<OutputStream, IOException> {
 
 	public TriColTabOutput(final OutputStream csvOut) throws IOException {
 		super(csvOut, String.valueOf('\t'));
 	}
 
-	@Override
-	protected String holidayToRecord(Holiday holiday) {
+	protected String objectToRow(Holiday holiday) {
 		StringBuilder tsv = new StringBuilder()
 		                        .append(holiday.getDate())
 		                        .append(delimiter)

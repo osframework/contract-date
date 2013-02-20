@@ -20,7 +20,9 @@ package org.osframework.contract.date.fincal.data.file.tab;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.osframework.contract.date.fincal.data.file.AbstractDelimitedTextFileInfoOutput;
+import org.apache.commons.lang.StringUtils;
+import org.osframework.contract.date.fincal.data.InfoOutput;
+import org.osframework.contract.date.fincal.data.file.AbstractDelimitedTextFileOutput;
 import org.osframework.contract.date.fincal.model.FinancialCalendar;
 
 
@@ -30,14 +32,20 @@ import org.osframework.contract.date.fincal.model.FinancialCalendar;
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class InfoTabOutput extends AbstractDelimitedTextFileInfoOutput {
+public class InfoTabOutput extends AbstractDelimitedTextFileOutput<FinancialCalendar>
+	implements InfoOutput<OutputStream, IOException> {
 
 	public InfoTabOutput(OutputStream out) throws IOException {
 		super(out, String.valueOf('\t'));
 	}
 
 	@Override
-	protected String calendarToRecord(FinancialCalendar calendar) {
+	protected void writeHeaderRow() throws IOException {
+		writer.write(StringUtils.join(COLUMNS, delimiter));
+		writer.newLine();
+	}
+
+	protected String objectToRow(FinancialCalendar calendar) {
 		StringBuilder csv = new StringBuilder()
 		                        .append(calendar.getId())
 		                        .append(delimiter)

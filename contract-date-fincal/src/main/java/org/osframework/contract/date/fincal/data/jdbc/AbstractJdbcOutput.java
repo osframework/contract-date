@@ -1,5 +1,5 @@
-/*
- * File: AbstractHolidayOutput.java
+/**
+ * File: AbstractJdbcOutput.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -15,27 +15,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.data;
+package org.osframework.contract.date.fincal.data.jdbc;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
+import org.osframework.contract.date.fincal.data.AbstractOutput;
 
 /**
- * Abstract convenience superclass of objects which store produced financial
- * calendar <tt>Holiday</tt> data to a destination. This class provides a
- * logging facility for use by subclasses.
+ * AbstractJdbcOutput description here.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public abstract class AbstractHolidayOutput<T, E extends Exception> implements HolidayOutput<T, E> {
+public abstract class AbstractJdbcOutput<M> extends AbstractOutput<M, DataSource, SQLException> {
 
-	protected final Logger logger;
+	protected final DataSource dataSource;
 
-	/**
-	 * Constructor. Initializes logging facility.
-	 */
-	public AbstractHolidayOutput() throws E {
-		this.logger = LoggerFactory.getLogger(this.getClass());
+	public AbstractJdbcOutput(final DataSource dataSource) throws SQLException {
+		super();
+		this.dataSource = dataSource;
 	}
 
 }
