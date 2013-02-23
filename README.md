@@ -11,9 +11,11 @@ standard market conventions and formulae.
 Modules
 -------
 
-* contract-date-fincal - Configurable, extensible financial calendar generator
-* contract-date-calc - Calculates contract dates
-* contract-date-ws - Date calculation web service(s) for remote client integration
+* calc: Calculates contract dates
+* fincal-core: Configurable, extensible financial calendar generator
+* fincal-file: Extension for file-based configuration and storage of financial calendars
+* fincal-jdbc: Extension for relational database configuration and storage of financial calendars
+* ws: Date calculation web service(s) for remote client integration
 
 License
 -------
