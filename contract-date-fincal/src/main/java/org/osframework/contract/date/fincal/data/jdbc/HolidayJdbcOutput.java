@@ -1,5 +1,5 @@
 /*
- * File: package-info.java
+ * File: HolidayJdbcOutput.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -15,10 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.osframework.contract.date.fincal.data.jdbc;
+
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
+import org.osframework.contract.date.fincal.model.Holiday;
+
 /**
- * Provides output classes for storing <tt>FinancialCalendar</tt> and
- * <tt>Holiday</tt> objects to tab-separated value (TSV) files.
+ * HolidayJdbcOutput description here.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-package org.osframework.contract.date.fincal.data.file.tab;
+public class HolidayJdbcOutput extends AbstractJdbcOutput<Holiday> {
+
+	public HolidayJdbcOutput(final DataSource dataSource,
+			                 final JdbcOutputDelegate<Holiday> delegate) throws SQLException {
+		super(dataSource, delegate);
+	}
+
+}

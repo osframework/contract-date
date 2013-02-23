@@ -1,5 +1,5 @@
 /*
- * File: package-info.java
+ * File: JdbcOutputDelegate.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -15,10 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.osframework.contract.date.fincal.data.jdbc;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
 /**
- * Provides output classes for storing <tt>FinancialCalendar</tt> and
- * <tt>Holiday</tt> objects to tab-separated value (TSV) files.
+ * JdbcOutputDelegate description here.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-package org.osframework.contract.date.fincal.data.file.tab;
+public interface JdbcOutputDelegate<M> {
+
+	public int storeInDatabase(Connection connection, M... modelObjs) throws SQLException;
+
+}

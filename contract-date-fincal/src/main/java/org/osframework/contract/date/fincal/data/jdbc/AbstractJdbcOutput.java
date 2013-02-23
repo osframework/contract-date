@@ -17,6 +17,7 @@
  */
 package org.osframework.contract.date.fincal.data.jdbc;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
@@ -31,10 +32,41 @@ import org.osframework.contract.date.fincal.data.AbstractOutput;
 public abstract class AbstractJdbcOutput<M> extends AbstractOutput<M, DataSource, SQLException> {
 
 	protected final DataSource dataSource;
+	protected final JdbcOutputDelegate<M> delegate;
 
-	public AbstractJdbcOutput(final DataSource dataSource) throws SQLException {
+	private volatile boolean closed;
+
+	public AbstractJdbcOutput(final DataSource dataSource,
+			                  final JdbcOutputDelegate<M> delegate) throws SQLException {
 		super();
 		this.dataSource = dataSource;
+		this.delegate = delegate;
+		this.closed = false;
+	}
+
+	@Override
+	public void store(M... m) throws SQLException {
+		if (closed) {
+			throw new SQLException("Cannot perform storage after invocation of close method");
+		}
+		Connection connection = null;
+		try {
+			connection = dataSource.getConnection();
+			delegate.storeInDatabase(connection, m);
+		} catch (SQLException se) {
+			if (null != connection) {
+				connection.rollback();
+			}
+			throw se;
+		} finally {
+			if (null != connection) {
+				connection.close();
+			}
+		}
+	}
+
+	public void close() throws SQLException {
+		closed = true;	
 	}
 
 }

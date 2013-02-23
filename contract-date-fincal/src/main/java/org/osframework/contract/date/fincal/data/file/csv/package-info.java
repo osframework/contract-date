@@ -16,8 +16,8 @@
  * limitations under the License.
  */
 /**
- * Provides output classes for storing <tt>Holiday</tt> objects to
- * comma-separated value (CSV) files.
+ * Provides output classes for storing <tt>FinancialCalendar</tt> and
+ * <tt>Holiday</tt> objects to comma-separated value (CSV) files.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */

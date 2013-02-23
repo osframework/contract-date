@@ -16,7 +16,8 @@
  * limitations under the License.
  */
 /**
- * package-info description here.
+ * Provides output classes for storing <tt>FinancialCalendar</tt> and
+ * <tt>Holiday</tt> objects to relational database via JDBC.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
