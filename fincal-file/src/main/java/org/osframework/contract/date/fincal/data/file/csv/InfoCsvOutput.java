@@ -17,6 +17,7 @@
  */
 package org.osframework.contract.date.fincal.data.file.csv;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -35,8 +36,8 @@ import org.osframework.contract.date.fincal.model.FinancialCalendar;
 public class InfoCsvOutput extends AbstractDelimitedTextFileOutput<FinancialCalendar>
 	implements InfoOutput<OutputStream, IOException> {
 
-	public InfoCsvOutput(OutputStream out) throws IOException {
-		super(out, ",");
+	public InfoCsvOutput(final File csvFile) throws IOException {
+		super(csvFile, ",");
 	}
 
 	@Override

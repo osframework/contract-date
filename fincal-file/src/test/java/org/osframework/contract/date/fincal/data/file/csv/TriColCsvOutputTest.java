@@ -37,10 +37,10 @@ public class TriColCsvOutputTest extends AbstractDelimitedTextFileOutputTest {
 		  dependsOnGroups="model",
 		  dataProvider = "oneHoliday")
 	public void testStoreOneHoliday(Holiday holiday, String expected) throws IOException {
-		TriColCsvOutput tcco = new TriColCsvOutput(out);
+		TriColCsvOutput tcco = new TriColCsvOutput(file);
 		tcco.store(holiday);
 		tcco.close();
-		String actual = out.toString();
+		String actual = actualFileContent(file);
 		assertEquals(actual, expected);
 	}
 
@@ -48,10 +48,10 @@ public class TriColCsvOutputTest extends AbstractDelimitedTextFileOutputTest {
 		  dependsOnGroups="model",
 		  dataProvider = "twoHolidays")
 	public void testStoreHolidayArray(Holiday[] holidays, String[] expecteds) throws IOException {
-		TriColCsvOutput tcco = new TriColCsvOutput(out);
+		TriColCsvOutput tcco = new TriColCsvOutput(file);
 		tcco.store(holidays);
 		tcco.close();
-		String actual = out.toString();
+		String actual = actualFileContent(file);
 		String[] actuals = actual.split(SystemUtils.LINE_SEPARATOR);
 		for (int i = 0; i < expecteds.length; i++) {
 			assertEquals(actuals[i], expecteds[i]);

@@ -22,9 +22,12 @@ import static org.osframework.contract.date.fincal.ObjectMother.HOLIDAY_DEF_ID_M
 import static org.osframework.contract.date.fincal.ObjectMother.createFinancialCalendar;
 import static org.osframework.contract.date.fincal.ObjectMother.createHolidayDefinition;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.OutputStream;
 
+import org.apache.commons.lang.SystemUtils;
 import org.osframework.contract.date.fincal.model.FinancialCalendar;
 import org.osframework.contract.date.fincal.model.Holiday;
 import org.osframework.contract.date.fincal.model.HolidayDefinition;
@@ -39,17 +42,17 @@ import org.testng.annotations.DataProvider;
  */
 public abstract class AbstractDelimitedTextFileOutputTest {
 
-	protected OutputStream out;
+	protected File file;
 
 	@BeforeMethod
-	public void createOutputStream() {
-		this.out = new StringBufferOutputStream();
+	public void createOutputStream() throws IOException {
+		this.file = File.createTempFile("output-test", null);
 	}
 
 	@AfterMethod
 	public void destroyOutputStream() throws IOException {
-		this.out.close();
-		this.out = null;
+		this.file.delete();
+		this.file = null;
 	}
 
 	@DataProvider
@@ -123,6 +126,20 @@ public abstract class AbstractDelimitedTextFileOutputTest {
 		return new Object[][] {
 			set1, set2, set3, set4
 		};
+	}
+
+	protected String actualFileContent(File file) throws IOException {
+		StringBuilder buf = new StringBuilder();
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		String line = null;
+		try {
+			while ((line = reader.readLine()) != null) {
+				buf.append(line).append(SystemUtils.LINE_SEPARATOR);
+			}
+		} finally {
+			reader.close();
+		}
+		return buf.toString().trim();
 	}
 
 	protected abstract String holidayToExpectedString(Holiday h);

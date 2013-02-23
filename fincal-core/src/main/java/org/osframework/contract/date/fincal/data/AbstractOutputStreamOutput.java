@@ -1,5 +1,5 @@
 /*
- * File: AbstractTextFileOutput.java
+ * File: AbstractOutputStreamOutput.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -15,24 +15,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.data.file;
+package org.osframework.contract.date.fincal.data;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.BufferedWriter;
 import java.io.IOException;
-
-import org.osframework.contract.date.fincal.data.AbstractOutputStreamOutput;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 
 /**
- * Abstract superclass of <code>Output</code> objects that store data to a
- * a text file.
+ * AbstractOutputStreamOutput description here.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public abstract class AbstractTextFileOutput<M> extends AbstractOutputStreamOutput<M> {
+public abstract class AbstractOutputStreamOutput<M> extends AbstractOutput<M, OutputStream, IOException> {
 
-	public AbstractTextFileOutput(final File textFile) throws IOException {
-		super(new FileOutputStream(textFile));
+	protected final BufferedWriter writer;
+
+	public AbstractOutputStreamOutput(final OutputStream out) throws IOException {
+		super();
+		this.writer = new BufferedWriter(new OutputStreamWriter(out, Charset.forName("UTF-8")));
+	}
+
+	public void close() throws IOException {
+		synchronized (writer) {
+			writer.close();
+		}
 	}
 
 }

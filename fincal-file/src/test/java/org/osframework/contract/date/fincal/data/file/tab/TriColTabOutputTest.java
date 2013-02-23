@@ -37,10 +37,10 @@ public class TriColTabOutputTest extends AbstractDelimitedTextFileOutputTest {
 		  dependsOnGroups="model",
 		  dataProvider = "oneHoliday")
 	public void testStoreOneHoliday(Holiday holiday, String expected) throws IOException {
-		TriColTabOutput tcto = new TriColTabOutput(out);
+		TriColTabOutput tcto = new TriColTabOutput(file);
 		tcto.store(holiday);
 		tcto.close();
-		String actual = out.toString();
+		String actual = actualFileContent(file);
 		assertEquals(actual, expected);
 	}
 
@@ -48,10 +48,10 @@ public class TriColTabOutputTest extends AbstractDelimitedTextFileOutputTest {
 		  dependsOnGroups="model",
 		  dataProvider = "twoHolidays")
 	public void testStoreHolidayArray(Holiday[] holidays, String[] expecteds) throws IOException {
-		TriColTabOutput tcto = new TriColTabOutput(out);
+		TriColTabOutput tcto = new TriColTabOutput(file);
 		tcto.store(holidays);
 		tcto.close();
-		String actual = out.toString();
+		String actual = actualFileContent(file);
 		String[] actuals = actual.split(SystemUtils.LINE_SEPARATOR);
 		for (int i = 0; i < expecteds.length; i++) {
 			assertEquals(actuals[i], expecteds[i]);

@@ -1,5 +1,5 @@
 /*
- * File: FinancialCalendarJdbcOutput.java
+ * File: InfoJdbcOutput.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -25,14 +25,14 @@ import org.osframework.contract.date.fincal.data.InfoOutput;
 import org.osframework.contract.date.fincal.model.FinancialCalendar;
 
 /**
- * FinancialCalendarJdbcOutput description here.
+ * InfoJdbcOutput description here.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class FinancialCalendarJdbcOutput extends AbstractJdbcOutput<FinancialCalendar>
+public class InfoJdbcOutput extends AbstractJdbcOutput<FinancialCalendar>
 	implements InfoOutput<DataSource, SQLException> {
 
-	public FinancialCalendarJdbcOutput(final DataSource dataSource,
+	public InfoJdbcOutput(final DataSource dataSource,
 			              final JdbcOutputDelegate<FinancialCalendar> delegate) throws SQLException {
 		super(dataSource, delegate);
 	}

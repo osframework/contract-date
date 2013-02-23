@@ -17,6 +17,7 @@
  */
 package org.osframework.contract.date.fincal.data.file.tab;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -35,8 +36,8 @@ import org.osframework.contract.date.fincal.model.FinancialCalendar;
 public class InfoTabOutput extends AbstractDelimitedTextFileOutput<FinancialCalendar>
 	implements InfoOutput<OutputStream, IOException> {
 
-	public InfoTabOutput(OutputStream out) throws IOException {
-		super(out, String.valueOf('\t'));
+	public InfoTabOutput(final File tabFile) throws IOException {
+		super(tabFile, String.valueOf('\t'));
 	}
 
 	@Override

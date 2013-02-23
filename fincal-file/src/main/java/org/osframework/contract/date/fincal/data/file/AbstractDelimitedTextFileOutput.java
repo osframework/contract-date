@@ -17,8 +17,8 @@
  */
 package org.osframework.contract.date.fincal.data.file;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 
 /**
  * Abstract superclass of <code>Output</code> that store data to a text file as
@@ -31,15 +31,15 @@ public abstract class AbstractDelimitedTextFileOutput<M> extends AbstractTextFil
 	protected final String delimiter;
 	protected int recordCount;
 
-	public AbstractDelimitedTextFileOutput(final OutputStream out, final String delimiter) throws IOException {
-		super(out);
+	public AbstractDelimitedTextFileOutput(final File textFile, final String delimiter) throws IOException {
+		super(textFile);
 		this.delimiter = delimiter;
 		this.recordCount = 0;
 	}
 
 	public void store(M... m) throws IOException {
 		try {
-			synchronized (lock) {
+			synchronized (writer) {
 				if (0 == recordCount) {
 					writeHeaderRow();
 				}
@@ -67,7 +67,7 @@ public abstract class AbstractDelimitedTextFileOutput<M> extends AbstractTextFil
 
 	@Override
 	public void close() throws IOException {
-		synchronized (lock) {
+		synchronized (writer) {
 			super.close();
 			logger.debug("Wrote {} records to file", Integer.valueOf(recordCount));
 		}

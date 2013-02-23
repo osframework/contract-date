@@ -83,6 +83,7 @@
 		<commons-lang.version>2.6</commons-lang.version>
 		<common-utils.version>1.0.1</common-utils.version>
 		<jfin-DateMath.version>1.0.1</jfin-DateMath.version>
+		<jooq.version>3.0.0-RC1</jooq.version>
 		<slf4j.version>1.7.2</slf4j.version>
 		<logback.version>1.0.9</logback.version>
 		<testng-ext.version>1.0.0</testng-ext.version>
@@ -147,6 +148,12 @@
 			</dependency>
 
 			<!-- Test dependencies -->
+			<dependency>
+				<groupId>org.jooq</groupId>
+				<artifactId>jooq</artifactId>
+				<version>${jooq.version}</version>
+				<scope>test</scope>
+			</dependency>
 			<dependency>
 				<groupId>org.osframework.testng</groupId>
 				<artifactId>testng-ext</artifactId>

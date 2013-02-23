@@ -17,6 +17,7 @@
  */
 package org.osframework.contract.date.fincal.data.file.tab;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -33,8 +34,8 @@ import org.osframework.contract.date.fincal.model.Holiday;
 public class TriColTabOutput extends AbstractDelimitedTextFileOutput<Holiday>
 	implements HolidayOutput<OutputStream, IOException> {
 
-	public TriColTabOutput(final OutputStream csvOut) throws IOException {
-		super(csvOut, String.valueOf('\t'));
+	public TriColTabOutput(final File tabFile) throws IOException {
+		super(tabFile, String.valueOf('\t'));
 	}
 
 	protected String objectToRow(Holiday holiday) {
