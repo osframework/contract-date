@@ -21,6 +21,7 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.osframework.contract.date.fincal.data.HolidayOutput;
 import org.osframework.contract.date.fincal.model.Holiday;
 
 /**
@@ -28,7 +29,8 @@ import org.osframework.contract.date.fincal.model.Holiday;
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class HolidayJdbcOutput extends AbstractJdbcOutput<Holiday> {
+public class HolidayJdbcOutput extends AbstractJdbcOutput<Holiday>
+	implements HolidayOutput<DataSource, SQLException> {
 
 	public HolidayJdbcOutput(final DataSource dataSource,
 			                 final JdbcOutputDelegate<Holiday> delegate) throws SQLException {
