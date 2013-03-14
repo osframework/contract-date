@@ -16,8 +16,9 @@
  * limitations under the License.
  */
 /**
- * package-info description here.
+ * Interfaces and classes which support production of
+ * {@link org.osframework.contract.date.fincal.holiday.Holiday} objects.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-package org.osframework.contract.date.fincal.data;
+package org.osframework.contract.date.fincal.holiday.producer;

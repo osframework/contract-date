@@ -1,5 +1,5 @@
 /*
- * File: package-info.java
+ * File: Output.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -15,10 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.osframework.contract.date.fincal.output;
+
 /**
- * Interfaces and classes which support production of
- * {@link org.osframework.contract.date.fincal.holiday.Holiday} objects.
+ * Defines basic behavior of objects which store financial calendar domain
+ * model objects to an output destination.
  *
+ * @param <M> Domain model type
+ * @param <T> Output destination type
+ * @param <E> Base exception class thrown by operations on output
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-package org.osframework.contract.date.fincal.producer;
+public interface Output<M, T, E extends Exception> {
+
+	public void store(M... m) throws E;
+
+	public void close() throws E;
+
+}

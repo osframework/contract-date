@@ -1,5 +1,5 @@
-/**
- * File: AbstractOutput.java
+/*
+ * File: package-info.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -15,25 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.data;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
- * AbstractOutput description here.
+ * package-info description here.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public abstract class AbstractOutput<M, T, E extends Exception> implements Output<M, T, E> {
-
-	protected final Logger logger;
-
-	/**
-	 * Constructor. Initializes logging facility.
-	 */
-	public AbstractOutput() throws E {
-		this.logger = LoggerFactory.getLogger(this.getClass());
-	}
-
-}
+package org.osframework.contract.date.fincal.output;

@@ -1,5 +1,5 @@
-/*
- * File: Output.java
+/**
+ * File: AbstractOutput.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -15,21 +15,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.data;
+package org.osframework.contract.date.fincal.output;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Defines basic behavior of objects which store financial calendar domain
- * model objects to an output destination.
+ * AbstractOutput description here.
  *
- * @param <M> Domain model type
- * @param <T> Output destination type
- * @param <E> Base exception class thrown by operations on output
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public interface Output<M, T, E extends Exception> {
+public abstract class AbstractOutput<M, T, E extends Exception> implements Output<M, T, E> {
 
-	public void store(M... m) throws E;
+	protected final Logger logger;
 
-	public void close() throws E;
+	/**
+	 * Constructor. Initializes logging facility.
+	 */
+	public AbstractOutput() throws E {
+		this.logger = LoggerFactory.getLogger(this.getClass());
+	}
 
 }

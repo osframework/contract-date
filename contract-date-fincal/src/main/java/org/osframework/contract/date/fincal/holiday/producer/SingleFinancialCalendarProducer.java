@@ -1,5 +1,5 @@
-/**
- * File: SingleYearProducer.java
+/*
+ * File: SingleFinancialCalendarProducer.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -15,16 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.producer;
+package org.osframework.contract.date.fincal.holiday.producer;
 
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.lang.math.IntRange;
+import org.apache.commons.lang.math.Range;
 import org.osframework.contract.date.fincal.definition.FinancialCalendar;
 import org.osframework.contract.date.fincal.definition.HolidayDefinition;
 import org.osframework.contract.date.fincal.expression.HolidayExpression;
@@ -32,70 +33,68 @@ import org.osframework.contract.date.fincal.expression.centralbank.CentralBankDe
 import org.osframework.contract.date.fincal.holiday.Holiday;
 
 /**
- * Produces holidays for a single year.
+ * Produces holidays for a single financial calendar.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class SingleYearProducer implements HolidayProducer<FinancialCalendar> {
+public class SingleFinancialCalendarProducer implements HolidayProducer<Integer> {
 
-	private final int year;
+	private final FinancialCalendar calendar;
 	private final boolean weekendsAsHolidays;
 	private final Calendar c;
 
 	/**
-	 * Construct a <code>SingleYearCalendarProducer</code> for the
-	 * specified year, enabling or disabling inclusion of weekend days as
+	 * Construct a <code>SingleFinancialCalendarProducer</code> for the
+	 * specified calendar, enabling or disabling inclusion of weekend days as
 	 * holidays.
 	 *
-	 * @param year year for which to produce holidays
+	 * @param calendar financial calendar definition from which to produce
+	 *                 holidays
 	 * @param weekendsAsHolidays flag indicating inclusion/exclusion of weekend
 	 *                           days as holidays
-	 * @throws IllegalArgumentException if year is <code>null</code>
+	 * @throws IllegalArgumentException if calendar is <code>null</code>
 	 */
-	public SingleYearProducer(final Integer year, final boolean weekendsAsHolidays) {
-		Validate.notNull(year, "Integer year argument cannot be null");
-		this.year = year.intValue();
+	public SingleFinancialCalendarProducer(final FinancialCalendar calendar, final boolean weekendsAsHolidays) {
+		Validate.notNull(calendar, "FinancialCalendar argument cannot be null");
+		this.calendar = calendar;
 		this.weekendsAsHolidays = weekendsAsHolidays;
 		this.c = Calendar.getInstance();
 	}
 
 	/**
-	 * Construct a <code>SingleYearCalendarProducer</code> for the
-	 * specified year. Excludes weekend days.
+	 * Construct a <code>SingleFinancialCalendarProducer</code> for the
+	 * specified calendar. Excludes weekend days.
 	 *
-	 * @param year year for which to produce holidays
-	 * @throws IllegalArgumentException if year is <code>null</code>
+	 * @param calendar financial calendar definition from which to produce
+	 *                 holidays
+	 * @throws IllegalArgumentException if calendar is <code>null</code>
 	 */
-	public SingleYearProducer(final Integer year) {
-		this(year, false);
+	public SingleFinancialCalendarProducer(final FinancialCalendar calendar) {
+		this(calendar, false);
 	}
 
 	public boolean includesWeekends() {
 		return weekendsAsHolidays;
 	}
 
-	public Holiday[] produce(FinancialCalendar... calendars) {
-		// Sort calendars alphabetically by ID
-		Arrays.sort(calendars, new Comparator<FinancialCalendar>() {
-			public int compare(FinancialCalendar c1, FinancialCalendar c2) {
-				return c1.getId().compareTo(c2.getId());
-			}
-		});
-		LinkedList<Holiday> holidays = new LinkedList<Holiday>();
-		for (FinancialCalendar calendar : calendars) {
+	public Holiday[] produce(Integer... years) {
+		Arrays.sort(years);
+		Range yearRange = new IntRange(years[0], years[years.length - 1]); 
+		List<Holiday> holidays = new LinkedList<Holiday>();
+		for (int year = yearRange.getMinimumInteger(); yearRange.containsInteger(year); year++) {
 			for (HolidayDefinition hd : calendar) {
 				HolidayExpression expr = CentralBankDecoratorLocator.decorate(hd, calendar.getCentralBank());
 				Date date = expr.evaluate(year);
 				holidays.add(new Holiday(calendar, date, hd));
 			}
 			if (weekendsAsHolidays) {
-				addWeekends(calendar, holidays);
+				this.addWeekends(year, holidays);
 			}
 		}
 		return holidays.toArray(EMPTY_ARRAY);
 	}
 
-	private void addWeekends(FinancialCalendar calendar, List<Holiday> holidays) {
+	private void addWeekends(int year, List<Holiday> holidays) {
 		c.clear();
 		c.set(year, Calendar.JANUARY, 1);
 		while (c.get(Calendar.YEAR) == year) {

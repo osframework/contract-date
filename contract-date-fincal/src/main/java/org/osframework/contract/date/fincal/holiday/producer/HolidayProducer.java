@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.producer;
+package org.osframework.contract.date.fincal.holiday.producer;
 
 import org.osframework.contract.date.fincal.definition.HolidayDefinition;
 import org.osframework.contract.date.fincal.holiday.Holiday;
