@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.data.file;
+package org.osframework.contract.date.fincal.output.file;
 
 import static org.osframework.contract.date.fincal.ObjectMother.HOLIDAY_DEF_ID_INDEPENDENCE_DAY;
 import static org.osframework.contract.date.fincal.ObjectMother.HOLIDAY_DEF_ID_MLK_DAY;
@@ -28,9 +28,9 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import org.apache.commons.lang.SystemUtils;
-import org.osframework.contract.date.fincal.model.FinancialCalendar;
-import org.osframework.contract.date.fincal.model.Holiday;
-import org.osframework.contract.date.fincal.model.HolidayDefinition;
+import org.osframework.contract.date.fincal.definition.FinancialCalendar;
+import org.osframework.contract.date.fincal.definition.HolidayDefinition;
+import org.osframework.contract.date.fincal.holiday.Holiday;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

@@ -21,4 +21,4 @@
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-package org.osframework.contract.date.fincal.data.file.tab;
+package org.osframework.contract.date.fincal.output.file.tab;

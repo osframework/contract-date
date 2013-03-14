@@ -15,13 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.data.file;
+package org.osframework.contract.date.fincal.output.file;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.osframework.contract.date.fincal.data.AbstractOutputStreamOutput;
+import org.osframework.contract.date.fincal.output.AbstractOutputStreamOutput;
 
 /**
  * Abstract superclass of <code>Output</code> objects that store data to a

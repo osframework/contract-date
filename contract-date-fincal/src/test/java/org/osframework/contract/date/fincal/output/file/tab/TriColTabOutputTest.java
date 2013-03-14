@@ -1,5 +1,5 @@
 /*
- * File: TriColCsvOutputTest.java
+ * File: TriColTabOutputTest.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -15,31 +15,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.data.file.csv;
+package org.osframework.contract.date.fincal.output.file.tab;
 
 import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
 
 import org.apache.commons.lang.SystemUtils;
-import org.osframework.contract.date.fincal.data.file.AbstractDelimitedTextFileOutputTest;
-import org.osframework.contract.date.fincal.model.Holiday;
+import org.osframework.contract.date.fincal.holiday.Holiday;
+import org.osframework.contract.date.fincal.output.file.AbstractDelimitedTextFileOutputTest;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for <code>TriColCsvOutput</code>.
+ * Unit tests for <code>TriColTabOutput</code>.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class TriColCsvOutputTest extends AbstractDelimitedTextFileOutputTest {
+public class TriColTabOutputTest extends AbstractDelimitedTextFileOutputTest {
 
 	@Test(groups="data",
 		  dependsOnGroups="model",
 		  dataProvider = "oneHoliday")
 	public void testStoreOneHoliday(Holiday holiday, String expected) throws IOException {
-		TriColCsvOutput tcco = new TriColCsvOutput(file);
-		tcco.store(holiday);
-		tcco.close();
+		TriColTabOutput tcto = new TriColTabOutput(file);
+		tcto.store(holiday);
+		tcto.close();
 		String actual = actualFileContent(file);
 		assertEquals(actual, expected);
 	}
@@ -48,9 +48,9 @@ public class TriColCsvOutputTest extends AbstractDelimitedTextFileOutputTest {
 		  dependsOnGroups="model",
 		  dataProvider = "twoHolidays")
 	public void testStoreHolidayArray(Holiday[] holidays, String[] expecteds) throws IOException {
-		TriColCsvOutput tcco = new TriColCsvOutput(file);
-		tcco.store(holidays);
-		tcco.close();
+		TriColTabOutput tcto = new TriColTabOutput(file);
+		tcto.store(holidays);
+		tcto.close();
 		String actual = actualFileContent(file);
 		String[] actuals = actual.split(SystemUtils.LINE_SEPARATOR);
 		for (int i = 0; i < expecteds.length; i++) {
@@ -60,13 +60,13 @@ public class TriColCsvOutputTest extends AbstractDelimitedTextFileOutputTest {
 
 	@Override
 	protected String holidayToExpectedString(Holiday h) {
-		StringBuilder csv = new StringBuilder()
+		StringBuilder tsv = new StringBuilder()
                                 .append(h.getDate())
-                                .append(",")
+                                .append('\t')
                                 .append(h.getFinancialCalendar().getId())
-                                .append(",")
+                                .append('\t')
                                 .append(h.getHolidayDefinition().getName());
-		return csv.toString();
+		return tsv.toString();
 	}
 
 }

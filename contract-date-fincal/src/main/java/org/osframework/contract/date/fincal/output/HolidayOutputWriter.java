@@ -1,5 +1,5 @@
 /*
- * File: package-info.java
+ * File: HolidayOutputWriter.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -15,10 +15,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.osframework.contract.date.fincal.output;
+
+
 /**
- * Provides output classes for storing <tt>FinancialCalendar</tt> and
- * <tt>Holiday</tt> objects to comma-separated value (CSV) files.
+ * Defines the required behavior of objects which write financial calendar
+ * holidays to an output destination.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-package org.osframework.contract.date.fincal.data.file.csv;
+public interface HolidayOutputWriter {
+
+	/**
+	 * Generate financial calendar holidays and write them to the specified
+	 * output.
+	 * 
+	 * @param output holiday output target
+	 * @throws HolidayOutputException if holiday generation or output fails
+	 *         for any reason
+	 */
+	public void writeHolidays(HolidayOutput<?, ?> output)
+		throws HolidayOutputException;
+
+}
