@@ -104,11 +104,9 @@
 
 	<modules>
 		<module>calc</module>
-		<module>fincal-core</module>
-		<module>fincal-file</module>
-    <module>fincal-jdbc</module>
-    <module>contract-date-fincal</module>
-  </modules>
+		<module>contract-date-fincal</module>
+		<module>fincal-jdbc</module>
+	</modules>
 
 	<dependencyManagement>
 		<dependencies>
