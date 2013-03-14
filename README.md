@@ -1,21 +1,21 @@
-Contract Date Calculator
-========================
+Contract Date
+=============
 
 Synopsis
 --------
 
-Contract Date Calculator is a Java project that provides an API for calculation
+Contract Date is a Java project that provides an API for calculation
 of derivative contract dates. It calculates multiple types of dates using
 standard market conventions and formulae.
 
 Modules
 -------
 
-* calc: Calculates contract dates
-* fincal-core: Configurable, extensible financial calendar generator
+* contract-date-calc: Calculates contract dates
+* contract-date-fincal: Configurable, extensible financial calendar generator
 * fincal-file: Extension for file-based configuration and storage of financial calendars
 * fincal-jdbc: Extension for relational database configuration and storage of financial calendars
-* ws: Date calculation web service(s) for remote client integration
+* contract-date-ws: Date calculation web service(s) for remote client integration
 
 License
 -------

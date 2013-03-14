@@ -44,6 +44,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.reflect.ConstructorUtils;
 import org.osframework.contract.date.fincal.config.AbstractConcurrentMapConfiguration;
 import org.osframework.contract.date.fincal.config.ConfigurationException;
+import org.osframework.contract.date.fincal.definition.xml.StackElement;
+import org.osframework.contract.date.fincal.definition.xml.XmlConstants;
 import org.osframework.contract.date.fincal.model.CentralBank;
 import org.osframework.contract.date.fincal.model.FinancialCalendar;
 import org.osframework.contract.date.fincal.model.HolidayDefinition;

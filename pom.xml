@@ -10,11 +10,11 @@
 
 	<groupId>org.osframework.contract-date</groupId>
 	<artifactId>contract-date</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Contract Date Calculator</name>
-	<description>Derivative contract date calculation service</description>
+	<description>Derivative contract date calculation</description>
 	<url>http://osframework.org/projects/contract-date/</url>
 	<inceptionYear>2012</inceptionYear>
 
@@ -107,6 +107,7 @@
 		<module>fincal-core</module>
 		<module>fincal-file</module>
     <module>fincal-jdbc</module>
+    <module>contract-date-fincal</module>
   </modules>
 
 	<dependencyManagement>

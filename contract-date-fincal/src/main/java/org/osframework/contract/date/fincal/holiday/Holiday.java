@@ -68,7 +68,7 @@ public class Holiday extends HolidayId implements Serializable {
 		return holidayDefinition;
 	}
 
-	public HolidayId getKey() {
+	public HolidayId getId() {
 		return this;
 	}
 
