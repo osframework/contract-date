@@ -103,7 +103,7 @@
 	</properties>
 
 	<modules>
-		<module>calc</module>
+		<module>contract-date-calc</module>
 		<module>contract-date-fincal</module>
 	</modules>
 
