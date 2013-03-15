@@ -6,10 +6,10 @@
 	<parent>
 		<groupId>org.osframework.contract-date</groupId>
 		<artifactId>contract-date</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>1.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>calc</artifactId>
+	<artifactId>contract-date-calc</artifactId>
 	<packaging>jar</packaging>
 
 	<name>Contract Date Calculator</name>
