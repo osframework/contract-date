@@ -12,7 +12,7 @@
 	<artifactId>contract-date-calc</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Contract Date Calculator</name>
+	<name>Contract Date - Calculator</name>
 	<description>Calculates contract dates from standard market convention parameters and bank holiday calendars</description>
 
 	<properties>

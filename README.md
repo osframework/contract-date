@@ -13,8 +13,7 @@ Modules
 
 * contract-date-calc: Calculates contract dates
 * contract-date-fincal: Configurable, extensible financial calendar generator
-* fincal-file: Extension for file-based configuration and storage of financial calendars
-* fincal-jdbc: Extension for relational database configuration and storage of financial calendars
+* contract-date-spring: Integration with Spring Framework
 * contract-date-ws: Date calculation web service(s) for remote client integration
 
 License

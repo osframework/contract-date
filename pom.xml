@@ -13,9 +13,9 @@
 	<version>1.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>Contract Date Calculator</name>
+	<name>Contract Date</name>
 	<description>Derivative contract date calculation</description>
-	<url>http://osframework.org/projects/contract-date/</url>
+	<url>http://osframework.github.org/contract-date</url>
 	<inceptionYear>2012</inceptionYear>
 
 	<organization>
@@ -85,6 +85,7 @@
 		<jfin-DateMath.version>1.0.1</jfin-DateMath.version>
 		<jooq.version>3.0.0-RC1</jooq.version>
 		<slf4j.version>1.7.2</slf4j.version>
+		<spring.version>3.2.2.RELEASE</spring.version>
 		<logback.version>1.0.9</logback.version>
 		<testng-ext.version>1.0.0</testng-ext.version>
 
@@ -105,7 +106,8 @@
 	<modules>
 		<module>contract-date-calc</module>
 		<module>contract-date-fincal</module>
-	</modules>
+    <module>contract-date-spring</module>
+  </modules>
 
 	<dependencyManagement>
 		<dependencies>
@@ -134,9 +136,34 @@
 				<artifactId>common-utils</artifactId>
 				<version>${common-utils.version}</version>
 			</dependency>
+
+			<!-- Spring dependencies -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-core</artifactId>
+				<version>${spring.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<!-- Logging dependencies -->
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
 				<version>${slf4j.version}</version>
 			</dependency>
 			<dependency>
@@ -156,6 +183,12 @@
 				<groupId>org.osframework.testng</groupId>
 				<artifactId>testng-ext</artifactId>
 				<version>${testng-ext.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-test</artifactId>
+				<version>${spring.version}</version>
 				<scope>test</scope>
 			</dependency>
 		</dependencies>
