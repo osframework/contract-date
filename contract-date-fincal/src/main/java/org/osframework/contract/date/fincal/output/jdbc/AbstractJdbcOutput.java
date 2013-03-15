@@ -1,4 +1,4 @@
-/**
+/*
  * File: AbstractJdbcOutput.java
  * 
  * Copyright 2013 OSFramework Project.
@@ -15,47 +15,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.data.jdbc;
+package org.osframework.contract.date.fincal.output.jdbc;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.osframework.contract.date.fincal.data.AbstractOutput;
+import org.osframework.contract.date.fincal.output.AbstractOutput;
 
 /**
- * AbstractJdbcOutput description here.
+ * Abstract superclass of objects which store definition or generated
+ * <tt>Holiday</tt> objects to a JDBC <tt>DataSource</tt>.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
 public abstract class AbstractJdbcOutput<M> extends AbstractOutput<M, DataSource, SQLException> {
 
 	protected final DataSource dataSource;
-	protected final JdbcOutputDelegate<M> delegate;
-
 	private volatile boolean closed;
 
-	public AbstractJdbcOutput(final DataSource dataSource,
-			                  final JdbcOutputDelegate<M> delegate) throws SQLException {
+	public AbstractJdbcOutput(final DataSource dataSource) throws SQLException {
 		super();
 		this.dataSource = dataSource;
-		this.delegate = delegate;
 		this.closed = false;
 	}
 
-	@Override
 	public void store(M... m) throws SQLException {
 		if (closed) {
-			throw new SQLException("Cannot perform storage after invocation of close method");
+			throw new SQLException("Cannot store after invocation of close method");
 		}
+		final JdbcOutputTransactionWorker<M> txnWorker = getTransactionWorker();
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
-			delegate.storeInDatabase(connection, m);
+			connection.setAutoCommit(false);
+			txnWorker.storeInTransaction(connection, m);
+			connection.commit();
+			logger.debug("Stored {} objects", Integer.valueOf(m.length));
 		} catch (SQLException se) {
-			if (null != connection) {
-				connection.rollback();
+			try {
+				if (null != connection) {
+					connection.rollback();
+				}
+			} catch (SQLException se2) {
+				logger.error("Could not rollback JDBC transaction", se2);
 			}
 			throw se;
 		} finally {
@@ -68,5 +72,7 @@ public abstract class AbstractJdbcOutput<M> extends AbstractOutput<M, DataSource
 	public void close() throws SQLException {
 		closed = true;	
 	}
+
+	protected abstract JdbcOutputTransactionWorker<M> getTransactionWorker();
 
 }

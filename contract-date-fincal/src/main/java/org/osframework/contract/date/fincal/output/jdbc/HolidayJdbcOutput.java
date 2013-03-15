@@ -1,5 +1,5 @@
 /*
- * File: JdbcOutputDelegate.java
+ * File: HolidayJdbcOutput.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -15,18 +15,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.data.jdbc;
+package org.osframework.contract.date.fincal.output.jdbc;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
+import org.osframework.contract.date.fincal.holiday.Holiday;
+
 /**
- * JdbcOutputDelegate description here.
+ * HolidayJdbcOutput description here.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public interface JdbcOutputDelegate<M> {
+public class HolidayJdbcOutput extends AbstractJdbcOutput<Holiday> {
 
-	public int storeInDatabase(Connection connection, M... modelObjs) throws SQLException;
+	private final HolidayTransactionWorker txnWorker;
+
+	public HolidayJdbcOutput(final DataSource dataSource,
+			                 final HolidayTransactionWorker txnWorker)
+		throws SQLException {
+		super(dataSource);
+		this.txnWorker = txnWorker;
+	}
+
+	protected JdbcOutputTransactionWorker<Holiday> getTransactionWorker() {
+		return txnWorker;
+	}
 
 }

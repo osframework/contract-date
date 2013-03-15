@@ -1,5 +1,5 @@
 /*
- * File: HolidayJdbcOutput.java
+ * File: FinancialCalendarJdbcOutput.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -15,26 +15,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.data.jdbc;
+package org.osframework.contract.date.fincal.output.jdbc;
 
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.osframework.contract.date.fincal.data.HolidayOutput;
-import org.osframework.contract.date.fincal.model.Holiday;
+import org.osframework.contract.date.fincal.definition.FinancialCalendar;
 
 /**
- * HolidayJdbcOutput description here.
+ * FinancialCalendarJdbcOutput description here.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class HolidayJdbcOutput extends AbstractJdbcOutput<Holiday>
-	implements HolidayOutput<DataSource, SQLException> {
+public class FinancialCalendarJdbcOutput extends
+	AbstractJdbcOutput<FinancialCalendar> {
 
-	public HolidayJdbcOutput(final DataSource dataSource,
-			                 final JdbcOutputDelegate<Holiday> delegate) throws SQLException {
-		super(dataSource, delegate);
+	private final FinancialCalendarTransactionWorker txnWorker;
+
+	public FinancialCalendarJdbcOutput(final DataSource dataSource,
+			                           final FinancialCalendarTransactionWorker txnWorker)
+		throws SQLException {
+		super(dataSource);
+		this.txnWorker = txnWorker;
+	}
+
+	protected JdbcOutputTransactionWorker<FinancialCalendar> getTransactionWorker() {
+		return txnWorker;
 	}
 
 }

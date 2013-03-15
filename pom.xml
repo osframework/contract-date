@@ -105,7 +105,6 @@
 	<modules>
 		<module>calc</module>
 		<module>contract-date-fincal</module>
-		<module>fincal-jdbc</module>
 	</modules>
 
 	<dependencyManagement>

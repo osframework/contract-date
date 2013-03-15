@@ -1,5 +1,5 @@
 /*
- * File: InfoJdbcOutput.java
+ * File: HolidayTransactionWorker.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -15,26 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.data.jdbc;
+package org.osframework.contract.date.fincal.output.jdbc;
 
-import java.sql.SQLException;
-
-import javax.sql.DataSource;
-
-import org.osframework.contract.date.fincal.data.InfoOutput;
-import org.osframework.contract.date.fincal.model.FinancialCalendar;
+import org.osframework.contract.date.fincal.holiday.Holiday;
 
 /**
- * InfoJdbcOutput description here.
+ * Provides in-transaction JDBC persistence behavior for storage of
+ * generated <tt>Holiday</tt> objects.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class InfoJdbcOutput extends AbstractJdbcOutput<FinancialCalendar>
-	implements InfoOutput<DataSource, SQLException> {
-
-	public InfoJdbcOutput(final DataSource dataSource,
-			              final JdbcOutputDelegate<FinancialCalendar> delegate) throws SQLException {
-		super(dataSource, delegate);
-	}
+public interface HolidayTransactionWorker extends
+		JdbcOutputTransactionWorker<Holiday> {
 
 }
