@@ -1,5 +1,5 @@
 /*
- * File: AbstractInfoOutputFactoryBean.java
+ * File: FileOutputType.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -15,24 +15,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.spring.fincal.output;
+package org.osframework.contract.date.spring.fincal.output.file;
 
-import org.osframework.contract.date.fincal.output.InfoOutput;
-import org.springframework.beans.factory.config.AbstractFactoryBean;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * AbstractInfoOutputFactoryBean description here.
+ * Typesafe enumeration of recognized output file types.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public abstract class AbstractInfoOutputFactoryBean extends AbstractFactoryBean<InfoOutput<?, Exception>> {
+public enum FileOutputType {
 
-	public AbstractInfoOutputFactoryBean() {
-		super();
+	CSV("CSV"), TAB("TAB","TSV");
+
+	private final Set<String> extensions;
+
+	private FileOutputType(final String... extensions) {
+		this.extensions = new HashSet<String>(Arrays.asList(extensions));
 	}
 
-	public Class<?> getObjectType() {
-		return InfoOutput.class;
+	public boolean matchesExtension(String extension) {
+		return extensions.contains(extension);
 	}
 
 }

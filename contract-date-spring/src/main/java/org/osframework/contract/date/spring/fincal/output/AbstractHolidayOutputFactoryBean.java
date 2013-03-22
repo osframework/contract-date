@@ -1,5 +1,5 @@
 /*
- * File: AbstractInfoOutputFactoryBean.java
+ * File: AbstractHolidayOutputFactoryBean.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -17,22 +17,22 @@
  */
 package org.osframework.contract.date.spring.fincal.output;
 
-import org.osframework.contract.date.fincal.output.InfoOutput;
+import org.osframework.contract.date.fincal.output.HolidayOutput;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 
 /**
- * AbstractInfoOutputFactoryBean description here.
+ * AbstractHolidayOutputFactoryBean description here.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public abstract class AbstractInfoOutputFactoryBean extends AbstractFactoryBean<InfoOutput<?, Exception>> {
+public abstract class AbstractHolidayOutputFactoryBean extends AbstractFactoryBean<HolidayOutput<?, ? extends Exception>> {
 
-	public AbstractInfoOutputFactoryBean() {
+	public AbstractHolidayOutputFactoryBean() {
 		super();
 	}
 
 	public Class<?> getObjectType() {
-		return InfoOutput.class;
+		return HolidayOutput.class;
 	}
 
 }

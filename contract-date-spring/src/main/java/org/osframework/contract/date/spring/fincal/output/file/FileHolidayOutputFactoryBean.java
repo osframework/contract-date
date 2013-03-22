@@ -1,5 +1,5 @@
 /*
- * File: FileInfoOutputFactoryBean.java
+ * File: FileHolidayOutputFactoryBean.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -21,26 +21,26 @@ import java.io.File;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
-import org.osframework.contract.date.fincal.output.InfoOutput;
-import org.osframework.contract.date.fincal.output.file.csv.InfoCsvOutput;
-import org.osframework.contract.date.fincal.output.file.tab.InfoTabOutput;
-import org.osframework.contract.date.spring.fincal.output.AbstractInfoOutputFactoryBean;
+import org.osframework.contract.date.fincal.output.HolidayOutput;
+import org.osframework.contract.date.fincal.output.file.csv.TriColCsvOutput;
+import org.osframework.contract.date.fincal.output.file.tab.TriColTabOutput;
+import org.osframework.contract.date.spring.fincal.output.AbstractHolidayOutputFactoryBean;
 
 /**
- * <tt>FactoryBean</tt> for creation of file-based <tt>InfoOutput</tt> objects.
- * Instances of this factory bean class produce only <i>prototype</i>-scoped
- * beans, due to creation of an output stream on the target file.
+ * <tt>FactoryBean</tt> for creation of file-based <tt>HolidayOutput</tt>
+ * objects. Instances of this factory bean class produce only <i>prototype</i>
+ * -scoped beans, due to creation of an output stream on the target file.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class FileInfoOutputFactoryBean extends AbstractInfoOutputFactoryBean {
+public class FileHolidayOutputFactoryBean extends AbstractHolidayOutputFactoryBean {
 
 	private static final FileOutputType DEFAULT_TYPE = FileOutputType.CSV;
 
 	private File target = null;
 	private FileOutputType type = null;
 
-	public FileInfoOutputFactoryBean() {
+	public FileHolidayOutputFactoryBean() {
 		super();
 	}
 
@@ -63,7 +63,7 @@ public class FileInfoOutputFactoryBean extends AbstractInfoOutputFactoryBean {
 	@Override
 	public void setSingleton(boolean singleton) {
 		if (singleton) {
-			throw new IllegalArgumentException("File-based InfoOutput objects cannot be singletons");
+			throw new IllegalArgumentException("File-based HolidayOutput objects cannot be singletons");
 		}
 	}
 
@@ -103,22 +103,21 @@ public class FileInfoOutputFactoryBean extends AbstractInfoOutputFactoryBean {
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
-	protected InfoOutput createInstance() throws Exception {
+	protected HolidayOutput<?, ? extends Exception> createInstance() throws Exception {
 		Validate.notNull(target, "Missing required 'target' property");
 		if (null == type) {
 			final String path = target.getAbsolutePath();
 			final String ext = path.substring(path.lastIndexOf('.') + 1);
 			setOutputType(ext);
 		}
-		InfoOutput output = null;
+		HolidayOutput<?, ? extends Exception> output = null;
 		switch (type) {
 		case TAB:
-			output = new InfoTabOutput(target);
+			output = new TriColTabOutput(target);
 			break;
 		case CSV:
 		default:
-			output = new InfoCsvOutput(target);
+			output = new TriColCsvOutput(target);
 			break;
 		}
 		return output;
