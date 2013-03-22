@@ -1,5 +1,5 @@
 /*
- * File: AbstractInfoOutputFactoryBean.java
+ * File: package-info.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -15,25 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.spring.fincal.output;
-
-import org.osframework.contract.date.fincal.output.InfoOutput;
-import org.springframework.beans.factory.config.AbstractFactoryBean;
-
 /**
- * AbstractInfoOutputFactoryBean description here.
+ * package-info description here.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-@SuppressWarnings("rawtypes")
-public abstract class AbstractInfoOutputFactoryBean extends AbstractFactoryBean<InfoOutput> {
-
-	public AbstractInfoOutputFactoryBean() {
-		super();
-	}
-
-	public Class<?> getObjectType() {
-		return InfoOutput.class;
-	}
-
-}
+package org.osframework.contract.date.spring.fincal.output.file;
