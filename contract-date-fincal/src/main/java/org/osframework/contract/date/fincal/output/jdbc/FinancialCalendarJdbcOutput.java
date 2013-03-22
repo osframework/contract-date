@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import org.osframework.contract.date.fincal.definition.FinancialCalendar;
+import org.osframework.contract.date.fincal.output.InfoOutput;
 
 /**
  * FinancialCalendarJdbcOutput description here.
@@ -29,7 +30,8 @@ import org.osframework.contract.date.fincal.definition.FinancialCalendar;
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
 public class FinancialCalendarJdbcOutput extends
-	AbstractJdbcOutput<FinancialCalendar> {
+	AbstractJdbcOutput<FinancialCalendar> implements
+	InfoOutput<DataSource, SQLException>{
 
 	private final FinancialCalendarTransactionWorker txnWorker;
 

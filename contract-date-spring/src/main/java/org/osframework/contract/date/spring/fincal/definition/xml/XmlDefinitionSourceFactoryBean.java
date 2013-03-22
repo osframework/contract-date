@@ -15,12 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.definition.xml;
+package org.osframework.contract.date.spring.fincal.definition.xml;
 
 import java.io.File;
 import java.net.URL;
 
-import org.osframework.contract.date.fincal.definition.AbstractDefinitionSourceFactoryBean;
+import org.osframework.contract.date.fincal.definition.xml.XmlDefinitionSource;
+import org.osframework.contract.date.spring.fincal.definition.AbstractDefinitionSourceFactoryBean;
 import org.springframework.core.io.Resource;
 
 /**
@@ -43,11 +44,11 @@ public class XmlDefinitionSourceFactoryBean extends
 			throw new IllegalStateException("Missing required 'source' property");
 		} else {
 			if (s instanceof File) {
-				definitionSource = new XmlDefinitionSource(File.class.cast(s));
+				definitionSource = new XmlDefinitionSource((File)s);
 			} else if (s instanceof Resource) {
-				definitionSource = new XmlDefinitionSource(Resource.class.cast(s).getURL());
+				definitionSource = new XmlDefinitionSource(((Resource)s).getURL());
 			} else if (s instanceof URL) {
-				definitionSource = new XmlDefinitionSource(URL.class.cast(s));
+				definitionSource = new XmlDefinitionSource((URL)s);
 			}
 		}
 		if (null == definitionSource) {
