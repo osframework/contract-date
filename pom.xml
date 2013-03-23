@@ -41,13 +41,12 @@
 				<role>Project Lead</role>
 			</roles>
 		</developer>
-	</developers>
-	<contributors>
-		<contributor>
+		<developer>
+			<id>munitras</id>
 			<name>Martin Snyman</name>
-			<timezone>2</timezone>
-		</contributor>
-	</contributors>
+			<email>martin@osframework.org</email>
+		</developer>
+	</developers>
 
 	<scm>
 		<url>git@github.com/osframework/contract-date.git</url>
@@ -153,6 +152,11 @@
 						<artifactId>commons-logging</artifactId>
 					</exclusion>
 				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-jdbc</artifactId>
+				<version>${spring.version}</version>
 			</dependency>
 
 			<!-- Logging dependencies -->

@@ -45,34 +45,19 @@ public abstract class AbstractJdbcOutput<M> extends AbstractOutput<M, DataSource
 		if (closed) {
 			throw new SQLException("Cannot store after invocation of close method");
 		}
-		final JdbcOutputTransactionWorker<M> txnWorker = getTransactionWorker();
-		Connection connection = null;
-		try {
-			connection = dataSource.getConnection();
-			connection.setAutoCommit(false);
-			txnWorker.storeInTransaction(connection, m);
-			connection.commit();
-			logger.debug("Stored {} objects", Integer.valueOf(m.length));
-		} catch (SQLException se) {
-			try {
-				if (null != connection) {
-					connection.rollback();
-				}
-			} catch (SQLException se2) {
-				logger.error("Could not rollback JDBC transaction", se2);
-			}
-			throw se;
-		} finally {
-			if (null != connection) {
-				connection.close();
-			}
-		}
+		doStore(m);
 	}
 
 	public void close() throws SQLException {
 		closed = true;	
 	}
 
-	protected abstract JdbcOutputTransactionWorker<M> getTransactionWorker();
+	protected abstract void doStore(M... m) throws SQLException;
+
+	protected Connection getConnection() throws SQLException {
+		Connection c = dataSource.getConnection();
+		c.setAutoCommit(false);
+		return c;
+	}
 
 }
