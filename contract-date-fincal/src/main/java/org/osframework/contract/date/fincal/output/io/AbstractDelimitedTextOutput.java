@@ -1,5 +1,5 @@
 /*
- * File: AbstractDelimitedTextFileOutput.java
+ * File: AbstractDelimitedTextOutput.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.output.file;
+package org.osframework.contract.date.fincal.output.io;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,12 +26,12 @@ import java.io.IOException;
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public abstract class AbstractDelimitedTextFileOutput<M> extends AbstractTextFileOutput<M> {
+public abstract class AbstractDelimitedTextOutput<M> extends AbstractTextOutput<M> {
 
 	protected final String delimiter;
 	protected int recordCount;
 
-	public AbstractDelimitedTextFileOutput(final File textFile, final String delimiter) throws IOException {
+	public AbstractDelimitedTextOutput(final File textFile, final String delimiter) throws IOException {
 		super(textFile);
 		this.delimiter = delimiter;
 		this.recordCount = 0;

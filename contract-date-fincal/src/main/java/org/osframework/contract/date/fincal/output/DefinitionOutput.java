@@ -1,5 +1,5 @@
 /*
- * File: InfoOutput.java
+ * File: DefinitionOutput.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -21,14 +21,14 @@ import org.osframework.contract.date.fincal.definition.FinancialCalendar;
 
 /**
  * Defines behavior of objects which store <code>FinancialCalendar</code>
- * objects to an <i>info</i> manifest location, for use in combination with a
- * corresponding <i>holiday data</i> location.
+ * objects to an definition location, for use in combination with a
+ * corresponding holiday location.
  *
  * @param <T> Output destination type
  * @param <E> Base exception class thrown by operations on output
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public interface InfoOutput<T, E extends Exception>
+public interface DefinitionOutput<T, E extends Exception>
 	extends Output<FinancialCalendar, T, E> {
 
 	static final String[] COLUMNS = {

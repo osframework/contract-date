@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.output.file.tab;
+package org.osframework.contract.date.fincal.output.io.tab;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +23,7 @@ import java.io.OutputStream;
 
 import org.osframework.contract.date.fincal.holiday.Holiday;
 import org.osframework.contract.date.fincal.output.HolidayOutput;
-import org.osframework.contract.date.fincal.output.file.AbstractDelimitedTextFileOutput;
+import org.osframework.contract.date.fincal.output.io.AbstractDelimitedTextOutput;
 
 /**
  * Stores <tt>Holiday</tt> data in TriCol tab-delimited format specified by <a
@@ -31,7 +31,7 @@ import org.osframework.contract.date.fincal.output.file.AbstractDelimitedTextFil
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class TriColTabOutput extends AbstractDelimitedTextFileOutput<Holiday>
+public class TriColTabOutput extends AbstractDelimitedTextOutput<Holiday>
 	implements HolidayOutput<OutputStream, IOException> {
 
 	public TriColTabOutput(final File tabFile) throws IOException {

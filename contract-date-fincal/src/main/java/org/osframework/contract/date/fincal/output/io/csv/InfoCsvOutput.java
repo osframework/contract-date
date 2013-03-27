@@ -1,5 +1,5 @@
 /*
- * File: InfoTabOutput.java
+ * File: InfoCsvOutput.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.output.file.tab;
+package org.osframework.contract.date.fincal.output.io.csv;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,21 +23,21 @@ import java.io.OutputStream;
 
 import org.apache.commons.lang.StringUtils;
 import org.osframework.contract.date.fincal.definition.FinancialCalendar;
-import org.osframework.contract.date.fincal.output.InfoOutput;
-import org.osframework.contract.date.fincal.output.file.AbstractDelimitedTextFileOutput;
+import org.osframework.contract.date.fincal.output.DefinitionOutput;
+import org.osframework.contract.date.fincal.output.io.AbstractDelimitedTextOutput;
 
 
 /**
- * Stores <tt>FinancialCalendar</tt> info in tab-delimited format as specified
- * by <a href="http://www.financialcalendar.com/">financialcalendar.com</a>.
+ * Stores <tt>FinancialCalendar</tt> info in CSV format as specified by <a
+ * href="http://www.financialcalendar.com/">financialcalendar.com</a>.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class InfoTabOutput extends AbstractDelimitedTextFileOutput<FinancialCalendar>
-	implements InfoOutput<OutputStream, IOException> {
+public class InfoCsvOutput extends AbstractDelimitedTextOutput<FinancialCalendar>
+	implements DefinitionOutput<OutputStream, IOException> {
 
-	public InfoTabOutput(final File tabFile) throws IOException {
-		super(tabFile, String.valueOf('\t'));
+	public InfoCsvOutput(final File csvFile) throws IOException {
+		super(csvFile, ",");
 	}
 
 	@Override

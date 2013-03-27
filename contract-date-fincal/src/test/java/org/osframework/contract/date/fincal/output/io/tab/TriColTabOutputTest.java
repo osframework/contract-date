@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.output.file.tab;
+package org.osframework.contract.date.fincal.output.io.tab;
 
 import static org.testng.Assert.assertEquals;
 
@@ -23,7 +23,8 @@ import java.io.IOException;
 
 import org.apache.commons.lang.SystemUtils;
 import org.osframework.contract.date.fincal.holiday.Holiday;
-import org.osframework.contract.date.fincal.output.file.AbstractDelimitedTextFileOutputTest;
+import org.osframework.contract.date.fincal.output.io.AbstractDelimitedTextFileOutputTest;
+import org.osframework.contract.date.fincal.output.io.tab.TriColTabOutput;
 import org.testng.annotations.Test;
 
 /**

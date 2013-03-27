@@ -15,13 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.output;
+package org.osframework.contract.date.fincal.output.io;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+
+import org.osframework.contract.date.fincal.output.AbstractOutput;
 
 /**
  * AbstractOutputStreamOutput description here.

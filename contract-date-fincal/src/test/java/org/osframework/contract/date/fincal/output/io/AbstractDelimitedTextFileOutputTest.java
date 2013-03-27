@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.output.file;
+package org.osframework.contract.date.fincal.output.io;
 
 import static org.osframework.contract.date.fincal.ObjectMother.HOLIDAY_DEF_ID_INDEPENDENCE_DAY;
 import static org.osframework.contract.date.fincal.ObjectMother.HOLIDAY_DEF_ID_MLK_DAY;

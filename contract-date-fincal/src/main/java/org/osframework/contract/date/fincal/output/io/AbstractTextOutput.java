@@ -1,5 +1,5 @@
 /*
- * File: AbstractTextFileOutput.java
+ * File: AbstractTextOutput.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -15,13 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.output.file;
+package org.osframework.contract.date.fincal.output.io;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.osframework.contract.date.fincal.output.AbstractOutputStreamOutput;
 
 /**
  * Abstract superclass of <code>Output</code> objects that store data to a
@@ -29,9 +28,9 @@ import org.osframework.contract.date.fincal.output.AbstractOutputStreamOutput;
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public abstract class AbstractTextFileOutput<M> extends AbstractOutputStreamOutput<M> {
+public abstract class AbstractTextOutput<M> extends AbstractOutputStreamOutput<M> {
 
-	public AbstractTextFileOutput(final File textFile) throws IOException {
+	public AbstractTextOutput(final File textFile) throws IOException {
 		super(new FileOutputStream(textFile));
 	}
 
