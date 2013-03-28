@@ -34,7 +34,7 @@ public abstract class AbstractOutputStreamOutput<M> extends AbstractOutput<M, Ou
 
 	protected final BufferedWriter writer;
 
-	public AbstractOutputStreamOutput(final OutputStream out) throws IOException {
+	public AbstractOutputStreamOutput(final OutputStream out) {
 		super();
 		this.writer = new BufferedWriter(new OutputStreamWriter(out, Charset.forName("UTF-8")));
 	}

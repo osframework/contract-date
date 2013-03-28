@@ -1,5 +1,5 @@
 /*
- * File: AbstractInfoOutputFactoryBean.java
+ * File: AbstractDefinitionOutputFactoryBean.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -17,22 +17,22 @@
  */
 package org.osframework.contract.date.spring.fincal.output;
 
-import org.osframework.contract.date.fincal.output.InfoOutput;
+import org.osframework.contract.date.fincal.output.DefinitionOutput;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 
 /**
- * AbstractInfoOutputFactoryBean description here.
+ * AbstractDefinitionOutputFactoryBean description here.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public abstract class AbstractInfoOutputFactoryBean extends AbstractFactoryBean<InfoOutput<?, Exception>> {
+public abstract class AbstractDefinitionOutputFactoryBean extends AbstractFactoryBean<DefinitionOutput<?, Exception>> {
 
-	public AbstractInfoOutputFactoryBean() {
+	public AbstractDefinitionOutputFactoryBean() {
 		super();
 	}
 
 	public Class<?> getObjectType() {
-		return InfoOutput.class;
+		return DefinitionOutput.class;
 	}
 
 }

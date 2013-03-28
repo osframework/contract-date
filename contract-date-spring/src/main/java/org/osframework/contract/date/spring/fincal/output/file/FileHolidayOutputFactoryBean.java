@@ -22,8 +22,8 @@ import java.io.File;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.osframework.contract.date.fincal.output.HolidayOutput;
-import org.osframework.contract.date.fincal.output.file.csv.TriColCsvOutput;
-import org.osframework.contract.date.fincal.output.file.tab.TriColTabOutput;
+import org.osframework.contract.date.fincal.output.io.csv.TriColCsvOutput;
+import org.osframework.contract.date.fincal.output.io.tab.TriColTabOutput;
 import org.osframework.contract.date.spring.fincal.output.AbstractHolidayOutputFactoryBean;
 
 /**

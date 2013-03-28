@@ -21,19 +21,19 @@ import java.io.File;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
-import org.osframework.contract.date.fincal.output.InfoOutput;
-import org.osframework.contract.date.fincal.output.file.csv.InfoCsvOutput;
-import org.osframework.contract.date.fincal.output.file.tab.InfoTabOutput;
-import org.osframework.contract.date.spring.fincal.output.AbstractInfoOutputFactoryBean;
+import org.osframework.contract.date.fincal.output.DefinitionOutput;
+import org.osframework.contract.date.fincal.output.io.csv.InfoCsvOutput;
+import org.osframework.contract.date.fincal.output.io.tab.InfoTabOutput;
+import org.osframework.contract.date.spring.fincal.output.AbstractDefinitionOutputFactoryBean;
 
 /**
- * <tt>FactoryBean</tt> for creation of file-based <tt>InfoOutput</tt> objects.
+ * <tt>FactoryBean</tt> for creation of file-based <tt>DefinitionOutput</tt> objects.
  * Instances of this factory bean class produce only <i>prototype</i>-scoped
  * beans, due to creation of an output stream on the target file.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class FileInfoOutputFactoryBean extends AbstractInfoOutputFactoryBean {
+public class FileInfoOutputFactoryBean extends AbstractDefinitionOutputFactoryBean {
 
 	private static final FileOutputType DEFAULT_TYPE = FileOutputType.CSV;
 
@@ -63,7 +63,7 @@ public class FileInfoOutputFactoryBean extends AbstractInfoOutputFactoryBean {
 	@Override
 	public void setSingleton(boolean singleton) {
 		if (singleton) {
-			throw new IllegalArgumentException("File-based InfoOutput objects cannot be singletons");
+			throw new IllegalArgumentException("File-based DefinitionOutput objects cannot be singletons");
 		}
 	}
 
@@ -104,14 +104,14 @@ public class FileInfoOutputFactoryBean extends AbstractInfoOutputFactoryBean {
 	}
 
 	@SuppressWarnings("rawtypes")
-	protected InfoOutput createInstance() throws Exception {
+	protected DefinitionOutput createInstance() throws Exception {
 		Validate.notNull(target, "Missing required 'target' property");
 		if (null == type) {
 			final String path = target.getAbsolutePath();
 			final String ext = path.substring(path.lastIndexOf('.') + 1);
 			setOutputType(ext);
 		}
-		InfoOutput output = null;
+		DefinitionOutput output = null;
 		switch (type) {
 		case TAB:
 			output = new InfoTabOutput(target);

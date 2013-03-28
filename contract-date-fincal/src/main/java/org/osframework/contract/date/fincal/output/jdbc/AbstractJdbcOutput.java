@@ -32,29 +32,34 @@ import org.osframework.contract.date.fincal.output.AbstractOutput;
  */
 public abstract class AbstractJdbcOutput<M> extends AbstractOutput<M, DataSource, SQLException> {
 
-	protected final DataSource dataSource;
+	protected DataSource dataSource;
 	private volatile boolean closed;
 
-	public AbstractJdbcOutput(final DataSource dataSource) throws SQLException {
+	public AbstractJdbcOutput() {
 		super();
-		this.dataSource = dataSource;
 		this.closed = false;
 	}
 
-	public void store(M... m) throws SQLException {
-		if (closed) {
-			throw new SQLException("Cannot store after invocation of close method");
-		}
-		doStore(m);
+	public AbstractJdbcOutput(final DataSource dataSource) {
+		this();
+		this.dataSource = dataSource;
+	}
+
+	/**
+	 * @param dataSource the dataSource to set
+	 */
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
 	}
 
 	public void close() throws SQLException {
-		closed = true;	
+		closed = true;
 	}
 
-	protected abstract void doStore(M... m) throws SQLException;
-
 	protected Connection getConnection() throws SQLException {
+		if (closed) {
+			throw new SQLException("Output has already been closed");
+		}
 		Connection c = dataSource.getConnection();
 		c.setAutoCommit(false);
 		return c;

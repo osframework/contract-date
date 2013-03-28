@@ -1,5 +1,5 @@
-/**
- * File: AbstractOutput.java
+/*
+ * File: JdbcOutputHandler.java
  * 
  * Copyright 2013 OSFramework Project.
  * 
@@ -15,25 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.output;
+package org.osframework.contract.date.fincal.output.jdbc;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
- * AbstractOutput description here.
+ * JdbcOutputHandler description here.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public abstract class AbstractOutput<M, T, E extends Exception> implements Output<M, T, E> {
+public interface JdbcOutputHandler<M> {
 
-	protected final Logger logger;
-
-	/**
-	 * Constructor. Initializes logging facility.
-	 */
-	public AbstractOutput() {
-		this.logger = LoggerFactory.getLogger(this.getClass());
-	}
+	public Integer storeInConnection(Connection connection, M objToStore) throws SQLException;
 
 }
