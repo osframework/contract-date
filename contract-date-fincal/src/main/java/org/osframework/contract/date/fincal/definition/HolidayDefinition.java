@@ -24,34 +24,36 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.osframework.contract.date.fincal.ImmutableEntity;
 import org.osframework.contract.date.fincal.expression.HolidayExpression;
 
 /**
  * Definition of a holiday observed in one or more financial markets.
- * <p>Instances of this class are immutable and thread-safe.</p>
+ * <p>An instance of this class can provide an immutable and thread-safe
+ * version of itself.</p>
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class HolidayDefinition implements HolidayExpression, Serializable {
+public class HolidayDefinition implements Serializable, HolidayExpression, ImmutableEntity<HolidayDefinition> {
 
 	/**
 	 * Serializable UID.
 	 */
-	private static final long serialVersionUID = 7746146194828405806L;
+	private static final long serialVersionUID = -8997298685130920758L;
 
-	private final String id;
-	private final String name;
-	private final String description;
-	private final HolidayType observance;
-	private final String expression;
+	private String id;
+	private String name;
+	private String description;
+	private HolidayType observance;
+	private String expression;
 
 	/**
-	 * Cached hash value for this instance.
+	 * Default constructor.
 	 */
-	private volatile transient int hashCode;
+	public HolidayDefinition() {}
 
 	/**
-	 * Constructor.
+	 * Full constructor.
 	 */
 	public HolidayDefinition(final String id,
 			                 final String name,
@@ -73,10 +75,24 @@ public class HolidayDefinition implements HolidayExpression, Serializable {
 	}
 
 	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	/**
 	 * @return the name
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
@@ -87,6 +103,13 @@ public class HolidayDefinition implements HolidayExpression, Serializable {
 	}
 
 	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	/**
 	 * @return the observance
 	 */
 	public HolidayType getObservance() {
@@ -94,10 +117,24 @@ public class HolidayDefinition implements HolidayExpression, Serializable {
 	}
 
 	/**
+	 * @param observance the observance to set
+	 */
+	public void setObservance(HolidayType observance) {
+		this.observance = observance;
+	}
+
+	/**
 	 * @return the expression
 	 */
 	public String getExpression() {
 		return expression;
+	}
+
+	/**
+	 * @param expression the expression to set
+	 */
+	public void setExpression(String expression) {
+		this.expression = expression;
 	}
 
 	/**
@@ -129,18 +166,23 @@ public class HolidayDefinition implements HolidayExpression, Serializable {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
+	public HolidayDefinition toImmutable() {
+		return new ImmutableHolidayDefinition(this.id, this.name, this.description, this.observance, this.expression);
+	}
+
+	public boolean isImmutable() {
+		return (this instanceof ImmutableHolidayDefinition);
+	}
+
 	@Override
 	public int hashCode() {
-		if (0 == hashCode) {
-			hashCode = new HashCodeBuilder()
-			               .append(id)
-			               .append(name)
-			               .append(description)
-			               .append(observance)
-			               .append(expression)
-			               .toHashCode();
-		}
-		return hashCode;
+		return new HashCodeBuilder()
+                   .append(id)
+                   .append(name)
+                   .append(description)
+                   .append(observance)
+                   .append(expression)
+                   .toHashCode();
 	}
 
 	@Override
@@ -161,6 +203,99 @@ public class HolidayDefinition implements HolidayExpression, Serializable {
 			equals = false;
 		}
 		return equals;
+	}
+
+	private final class ImmutableHolidayDefinition extends HolidayDefinition {
+
+		/**
+		 * Serializable UID.
+		 */
+		private static final long serialVersionUID = 6143622333833253558L;
+	
+		/**
+		 * Cached hash value for this instance.
+		 */
+		private volatile transient int hashCode;
+
+		ImmutableHolidayDefinition(final String id,
+                                   final String name,
+                                   final String description,
+                                   final HolidayType observance,
+                                   final String expression) {
+			super(id, name, description, observance, expression);
+		}
+
+		/**
+		 * Overridden method to prevent mutability of this instance.
+		 * 
+		 * @throws UnsupportedOperationException
+		 */
+		@Override
+		public final void setId(String id) {
+			throw new UnsupportedOperationException(DEFAULT_EXCEPTION_MSG);
+		}
+
+		/**
+		 * Overridden method to prevent mutability of this instance.
+		 * 
+		 * @throws UnsupportedOperationException
+		 */
+		@Override
+		public final void setName(String name) {
+			throw new UnsupportedOperationException(DEFAULT_EXCEPTION_MSG);
+		}
+
+		/**
+		 * Overridden method to prevent mutability of this instance.
+		 * 
+		 * @throws UnsupportedOperationException
+		 */
+		@Override
+		public final void setDescription(String description) {
+			throw new UnsupportedOperationException(DEFAULT_EXCEPTION_MSG);
+		}
+
+		/**
+		 * Overridden method to prevent mutability of this instance.
+		 * 
+		 * @throws UnsupportedOperationException
+		 */
+		@Override
+		public final void setObservance(HolidayType observance) {
+			throw new UnsupportedOperationException(DEFAULT_EXCEPTION_MSG);
+		}
+
+		/**
+		 * Overridden method to prevent mutability of this instance.
+		 * 
+		 * @throws UnsupportedOperationException
+		 */
+		@Override
+		public final void setExpression(String expression) {
+			throw new UnsupportedOperationException(DEFAULT_EXCEPTION_MSG);
+		}
+
+		/**
+		 * This implementation simply returns <code>this</code>.
+		 */
+		@Override
+		public final HolidayDefinition toImmutable() {
+			return this;
+		}
+	
+		@Override
+		public int hashCode() {
+			if (0 == hashCode) {
+				hashCode = new HashCodeBuilder()
+				               .append(id)
+				               .append(name)
+				               .append(description)
+				               .append(observance)
+				               .append(expression)
+				               .toHashCode();
+			}
+			return hashCode;
+		}
 	}
 
 }

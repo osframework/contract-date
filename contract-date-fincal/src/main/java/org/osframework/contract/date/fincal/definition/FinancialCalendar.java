@@ -274,15 +274,18 @@ public class FinancialCalendar implements Serializable, Iterable<HolidayDefiniti
 		private volatile transient int hashCode;
 
 		/**
+		 * Constructor. Accepts all fields as arguments, using the parent
+		 * class's setters for initialization.
+		 * 
 		 * @param id
 		 * @param description
 		 * @param centralBank
 		 * @param holidayDefinitions
 		 */
-		public ImmutableFinancialCalendar(final String id,
-				                          final String description,
-				                          final CentralBank centralBank,
-				                          final Set<HolidayDefinition> holidayDefinitions) {
+		ImmutableFinancialCalendar(final String id,
+				                   final String description,
+				                   final CentralBank centralBank,
+				                   final Set<HolidayDefinition> holidayDefinitions) {
 			super();
 			super.setId(id);
 			super.setDescription(description);

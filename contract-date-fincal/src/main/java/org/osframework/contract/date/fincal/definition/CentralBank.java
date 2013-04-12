@@ -233,7 +233,8 @@ public class CentralBank implements Serializable, ImmutableEntity<CentralBank> {
 		private volatile transient int hashCode;
 	
 		/**
-		 * Constructor.
+		 * Constructor. Accepts all fields as arguments, using the parent
+		 * class's setters for initialization.
 		 *
 		 * @param id unique identifier for this instance
 		 * @param name name of this central bank
