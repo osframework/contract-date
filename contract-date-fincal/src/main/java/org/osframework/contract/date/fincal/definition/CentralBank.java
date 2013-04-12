@@ -26,31 +26,33 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.osframework.contract.date.fincal.ImmutableEntity;
 
 /**
  * Public institution that manages a country's currency, money supply, and
  * interest rates. Central banks also usually oversee the commercial banking
  * system of their respective countries.
- * <p>Instances of this class are immutable and thread-safe.</p>
+ * <p>An instance of this class can provide an immutable and thread-safe
+ * version of itself.</p>
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public class CentralBank implements Serializable {
+public class CentralBank implements Serializable, ImmutableEntity<CentralBank> {
 
 	/**
 	 * Serializable UID.
 	 */
-	private static final long serialVersionUID = 4094026015917601847L;
+	private static final long serialVersionUID = 4797279366774872436L;
 
-	private final String id;
-	private final String name;
-	private final String country;
-	private final Currency currency;
+	private String id;
+	private String name;
+	private String country;
+	private Currency currency;
 
 	/**
-	 * Cached hash value for this instance.
+	 * Default constructor.
 	 */
-	private volatile transient int hashCode;
+	public CentralBank() {}
 
 	/**
 	 * Constructor.
@@ -59,29 +61,18 @@ public class CentralBank implements Serializable {
 	 * @param name name of this central bank
 	 * @param country ISO-3166 country code for this central bank
 	 * @param currency currency managed by this central bank
-	 * @throws IllegalArgumentException if any argument is null or empty, or if
-	 *         <code>country</code> is not valid ISO-3166 alpha2 code
+	 * @throws IllegalArgumentException if <code>country</code> is not valid
+	 *         ISO-3166 alpha2 code or if <code>currency</code> is null
 	 */
-	public CentralBank(final String id,
-			           final String name,
-			           final String country,
-			           final Currency currency) {
-		if (StringUtils.isBlank(id)) {
-			throw new IllegalArgumentException("Invalid blank 'id' argument");
-		}
-		if (StringUtils.isBlank(name)) {
-			throw new IllegalArgumentException("Invalid blank 'name' argument");
-		}
-		if (2 != StringUtils.length(country)) {
-			throw new IllegalArgumentException("Invalid ISO-3166 alpha2 country code");
-		}
-		if (null == currency) {
-			throw new IllegalArgumentException("Currency argument cannot be null");
-		}
-		this.id = id;
-		this.name = name;
-		this.country = StringUtils.upperCase(country, Locale.ENGLISH);
-		this.currency = currency;
+	public CentralBank(String id,
+			           String name,
+			           String country,
+			           Currency currency) {
+		this();
+		this.setId(id);
+		this.setName(name);
+		this.setCountry(country);
+		this.setCurrency(currency);
 	}
 
 	/**
@@ -91,9 +82,9 @@ public class CentralBank implements Serializable {
 	 * @param name name of this central bank
 	 * @param country ISO-3166 country code for this central bank
 	 * @param currency ISO-4217 code for currency managed by this central bank
-	 * @throws IllegalArgumentException if any argument is null or empty, or if
-	 *         <code>country</code> is not valid ISO-3166 alpha2 code, or if
-	 *         <code>currencyCode</code> is not valid ISO-4217 code
+	 * @throws IllegalArgumentException if <code>country</code> is not valid
+	 *         ISO-3166 alpha2 code or if <code>currencyCode</code> is not valid
+	 *         ISO-4217 code
 	 */
 	public CentralBank(final String id,
 			           final String name,
@@ -110,10 +101,28 @@ public class CentralBank implements Serializable {
 	}
 
 	/**
+	 * Set unique identifier for this central bank.
+	 * 
+	 * @param id unique identifier for this instance
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	/**
 	 * @return name of this central bank
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * Set name of this central bank.
+	 * 
+	 * @param name name of this central bank
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
@@ -124,10 +133,49 @@ public class CentralBank implements Serializable {
 	}
 
 	/**
+	 * Set ISO-3166 country code for this central bank.
+	 * 
+	 * @param country ISO-3166 country code for this central bank
+	 * @throws IllegalArgumentException if country is not a supported ISO-3166
+	 *         alpha2 country code
+	 */
+	public void setCountry(String country) {
+		if (StringUtils.isBlank(country) ||
+			(2 != StringUtils.length(country.trim()))) {
+			throw new IllegalArgumentException("Invalid ISO-3166 alpha2 country code");
+		}
+		this.country = StringUtils.upperCase(country.trim(), Locale.ENGLISH);
+	}
+
+	/**
 	 * @return currency managed by this central bank
 	 */
 	public Currency getCurrency() {
 		return currency;
+	}
+
+	/**
+	 * Set currency managed by this central bank.
+	 * 
+	 * @param currency currency managed by this central bank
+	 * @throws IllegalArgumentException if currency is null
+	 */
+	public void setCurrency(Currency currency) {
+		if (null == currency) {
+			throw new IllegalArgumentException("Currency argument cannot be null");
+		}
+		this.currency = currency;
+	}
+
+	/**
+	 * Set currency managed by this central bank.
+	 * 
+	 * @param currencyCode ISO-4217 code of currency managed by this central bank
+	 * @throws IllegalArgumentException if currencyCode is not a supported
+	 *         ISO-4217 code
+	 */
+	public void setCurrency(String currencyCode) {
+		this.currency = Currency.getInstance(currencyCode);
 	}
 
 	@Override
@@ -135,17 +183,22 @@ public class CentralBank implements Serializable {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
+	public CentralBank toImmutable() {
+		return new ImmutableCentralBank(this.id, name, country, currency);
+	}
+
+	public boolean isImmutable() {
+		return (this instanceof ImmutableCentralBank);
+	}
+
 	@Override
 	public int hashCode() {
-		if (0 == hashCode) {
-			hashCode = new HashCodeBuilder()
-			               .append(id)
-			               .append(name)
-			               .append(country)
-			               .append(currency)
-			               .toHashCode();
-		}
-		return hashCode;
+		return new HashCodeBuilder()
+                   .append(id)
+                   .append(name)
+                   .append(country)
+                   .append(currency)
+                   .toHashCode();
 	}
 
 	@Override
@@ -165,6 +218,108 @@ public class CentralBank implements Serializable {
 			equals = false;
 		}
 		return equals;
+	}
+
+	private final class ImmutableCentralBank extends CentralBank {
+	
+		/**
+		 * Serializable UID.
+		 */
+		private static final long serialVersionUID = -5118309327834501135L;
+	
+		/**
+		 * Cached hash value for this instance.
+		 */
+		private volatile transient int hashCode;
+	
+		/**
+		 * Constructor.
+		 *
+		 * @param id unique identifier for this instance
+		 * @param name name of this central bank
+		 * @param country ISO-3166 country code for this central bank
+		 * @param currency ISO-4217 code for currency managed by this central bank
+		 * @throws IllegalArgumentException if any argument is null or empty, or if
+		 *         <code>country</code> is not valid ISO-3166 alpha2 code, or if
+		 *         <code>currencyCode</code> is not valid ISO-4217 code
+		 */
+		public ImmutableCentralBank(final String id,
+				                    final String name,
+				                    final String country,
+				                    final Currency currencyCode) {
+			super(id, name, country, currencyCode);
+		}
+
+		/**
+		 * Overridden method to prevent mutability of this instance.
+		 * 
+		 * @throws UnsupportedOperationException
+		 */
+		@Override
+		public final void setId(String id) {
+			throw new UnsupportedOperationException(DEFAULT_EXCEPTION_MSG);
+		}
+
+		/**
+		 * Overridden method to prevent mutability of this instance.
+		 * 
+		 * @throws UnsupportedOperationException
+		 */
+		@Override
+		public final void setName(String name) {
+			throw new UnsupportedOperationException(DEFAULT_EXCEPTION_MSG);
+		}
+
+		/**
+		 * Overridden method to prevent mutability of this instance.
+		 * 
+		 * @throws UnsupportedOperationException
+		 */
+		@Override
+		public final void setCountry(String country) {
+			throw new UnsupportedOperationException(DEFAULT_EXCEPTION_MSG);
+		}
+
+		/**
+		 * Overridden method to prevent mutability of this instance.
+		 * 
+		 * @throws UnsupportedOperationException
+		 */
+		@Override
+		public final void setCurrency(Currency currency) {
+			throw new UnsupportedOperationException(DEFAULT_EXCEPTION_MSG);
+		}
+
+		/**
+		 * Overridden method to prevent mutability of this instance.
+		 * 
+		 * @throws UnsupportedOperationException
+		 */
+		@Override
+		public final void setCurrency(String currencyCode) {
+			throw new UnsupportedOperationException(DEFAULT_EXCEPTION_MSG);
+		}
+
+		/**
+		 * This implementation simply returns <code>this</code>.
+		 */
+		@Override
+		public final CentralBank toImmutable() {
+			return this;
+		}
+	
+		@Override
+		public int hashCode() {
+			if (0 == hashCode) {
+				hashCode = new HashCodeBuilder()
+                               .append(id)
+                               .append(name)
+                               .append(country)
+                               .append(currency)
+                               .toHashCode();
+			}
+			return hashCode;
+		}
 	}
 
 }
