@@ -17,9 +17,15 @@
  */
 package org.osframework.contract.date.fincal.definition;
 
+import static org.osframework.contract.date.fincal.ObjectMother.CENTRAL_BANK_ID_USFR;
+import static org.osframework.contract.date.fincal.ObjectMother.createCentralBank;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotSame;
+import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
+
+import java.util.Currency;
 
 import org.testng.annotations.Test;
 
@@ -30,40 +36,85 @@ import org.testng.annotations.Test;
  */
 public class CentralBankTest {
 
-	@Test(groups = {"model"})
+	@Test(groups = {"definition"})
 	public void testEquals() {
-		CentralBank cb1 = new CentralBank("USFR", "United States Federal Reserve", "US", "USD");
-		CentralBank cb2 = new CentralBank("USFR", "United States Federal Reserve", "US", "USD");
+		CentralBank cb1 = createCentralBank(CENTRAL_BANK_ID_USFR);
+		CentralBank cb2 = createCentralBank(CENTRAL_BANK_ID_USFR);
 		assertNotSame(cb1, cb2);
 		assertEquals(cb1, cb2);
 	}
 
-	@Test(groups = {"model"},
-		  expectedExceptions = IllegalArgumentException.class)
-	public void testConstructorBlankId() {
-		new CentralBank(" ", "United States Federal Reserve", "US", "USD");
-		fail("Expected IllegalArgument exception to be thrown");
-	}
-
-	@Test(groups = {"model"},
-		  expectedExceptions = IllegalArgumentException.class)
-	public void testConstructorBlankName() {
-		new CentralBank("USFR", " ", "US", "USD");
-		fail("Expected IllegalArgument exception to be thrown");
-	}
-
-	@Test(groups = {"model"},
+	@Test(groups = {"definition"},
 		  expectedExceptions = IllegalArgumentException.class)
 	public void testConstructorInvalidCountry() {
 		new CentralBank("USFR", "United States Federal Reserve", "USA", "USD");
 		fail("Expected IllegalArgument exception to be thrown");
 	}
 
-	@Test(groups = {"model"},
+	@Test(groups = {"definition"},
 		  expectedExceptions = IllegalArgumentException.class)
 	public void testConstructorInvalidCurrency() {
 		new CentralBank("USFR", "United States Federal Reserve", "US", "US");
 		fail("Expected IllegalArgument exception to be thrown");
+	}
+
+	@Test(groups = {"definition"})
+	public void testToImmutable() {
+		CentralBank mutable = createCentralBank(CENTRAL_BANK_ID_USFR);
+		CentralBank immutable = mutable.toImmutable();
+		
+		// Test equality but non-identity
+		assertEquals(immutable, mutable);
+		assertNotSame(immutable, mutable);
+		
+		// Test that changes to mutable object do not appear in immutable object
+		assertTrue(immutable.getId().equals(mutable.getId()));
+		mutable.setId("USFS");
+		assertFalse(immutable.getId().equals(mutable.getId()));
+		
+		assertTrue(immutable.getName().equals(mutable.getName()));
+		mutable.setName("Some other name");
+		assertFalse(immutable.getName().equals(mutable.getName()));
+		
+		assertTrue(immutable.getCountry().equals(mutable.getCountry()));
+		mutable.setCountry("UK");
+		assertFalse(immutable.getCountry().equals(mutable.getCountry()));
+		
+		assertTrue(immutable.getCurrency().equals(mutable.getCurrency()));
+		mutable.setCurrency("GBP");
+		assertFalse(immutable.getCurrency().equals(mutable.getCurrency()));
+		
+		// Test that state cannot get changed via setters on immutable object
+		immutable = createCentralBank(CENTRAL_BANK_ID_USFR).toImmutable();
+		try {
+			immutable.setId("Other");
+			fail("Expected UnsupportedOperationException");
+		} catch (UnsupportedOperationException uoe) {}
+		try {
+			immutable.setName("Other");
+			fail("Expected UnsupportedOperationException");
+		} catch (UnsupportedOperationException uoe) {}
+		try {
+			immutable.setCountry("UK");
+			fail("Expected UnsupportedOperationException");
+		} catch (UnsupportedOperationException uoe) {}
+		try {
+			immutable.setCurrency("GBP");
+			fail("Expected UnsupportedOperationException");
+		} catch (UnsupportedOperationException uoe) {}
+		try {
+			immutable.setCurrency(Currency.getInstance("GBP"));
+			fail("Expected UnsupportedOperationException");
+		} catch (UnsupportedOperationException uoe) {}
+	}
+
+	@Test(groups = {"definition"})
+	public void testIsImmutable() {
+		CentralBank mutable = createCentralBank(CENTRAL_BANK_ID_USFR);
+		CentralBank immutable = mutable.toImmutable();
+		
+		assertFalse(mutable.isImmutable());
+		assertTrue(immutable.isImmutable());
 	}
 
 }
