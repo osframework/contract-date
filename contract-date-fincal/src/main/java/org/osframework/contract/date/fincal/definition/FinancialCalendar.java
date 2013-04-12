@@ -261,6 +261,13 @@ public class FinancialCalendar implements Serializable, Iterable<HolidayDefiniti
 		return result;
 	}
 
+	/**
+	 * Private immutable subclass of FinancialCalendar. This class is final; it
+	 * is intended solely for instantiation by
+	 * {@link FinancialCalendar#toImmutable()}.
+	 *
+	 * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
+	 */
 	private final class ImmutableFinancialCalendar extends FinancialCalendar {
 	
 		/**

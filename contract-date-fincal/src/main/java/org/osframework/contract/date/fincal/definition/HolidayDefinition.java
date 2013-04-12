@@ -68,70 +68,80 @@ public class HolidayDefinition implements Serializable, HolidayExpression, Immut
 	}
 
 	/**
-	 * @return the id
+	 * @return unique identifier for this instance
 	 */
 	public String getId() {
 		return id;
 	}
 
 	/**
-	 * @param id the id to set
+	 * Set unique identifier for this holiday definition.
+	 * 
+	 * @param id unique identifier for this instance
 	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
 	/**
-	 * @return the name
+	 * @return recognized name of the holiday defined by this object
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @param name the name to set
+	 * Set name of the holiday defined by this definition.
+	 * 
+	 * @param name recognized name of the holiday defined by this object
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	/**
-	 * @return the description
+	 * @return description of the holiday defined by this object
 	 */
 	public String getDescription() {
 		return description;
 	}
 
 	/**
-	 * @param description the description to set
+	 * Set description of this holiday defined by this definition.
+	 * 
+	 * @param description description of the holiday defined by this object
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	/**
-	 * @return the observance
+	 * @return type of observance of holiday defined by this object
 	 */
 	public HolidayType getObservance() {
 		return observance;
 	}
 
 	/**
-	 * @param observance the observance to set
+	 * Set holiday observance of this definition.
+	 * 
+	 * @param observance type of observance of holiday defined by this object
 	 */
 	public void setObservance(HolidayType observance) {
 		this.observance = observance;
 	}
 
 	/**
-	 * @return the expression
+	 * @return expression used to instances of the holiday defined by this object
 	 */
 	public String getExpression() {
 		return expression;
 	}
 
 	/**
-	 * @param expression the expression to set
+	 * Set expression string for this definition.
+	 * 
+	 * @param expression expression used to instances of the holiday defined by this object
 	 */
 	public void setExpression(String expression) {
 		this.expression = expression;
@@ -153,6 +163,7 @@ public class HolidayDefinition implements Serializable, HolidayExpression, Immut
 	 * Returns a <code>HolidayExpression</code> representation of the object.
 	 * 
 	 * @return  a <code>HolidayExpression</code> representation of the object
+	 * @throws IllegalStateException if observance or expression is null at time of invocation
 	 */
 	public HolidayExpression toHolidayExpression() {
 		if (null == observance || null == expression) {
@@ -205,6 +216,13 @@ public class HolidayDefinition implements Serializable, HolidayExpression, Immut
 		return equals;
 	}
 
+	/**
+	 * Private immutable subclass of HolidayDefinition. This class is final; it
+	 * is intended solely for instantiation by
+	 * {@link HolidayDefinition#toImmutable()}.
+	 *
+	 * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
+	 */
 	private final class ImmutableHolidayDefinition extends HolidayDefinition {
 
 		/**

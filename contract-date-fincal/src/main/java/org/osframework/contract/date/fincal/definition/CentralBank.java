@@ -220,6 +220,12 @@ public class CentralBank implements Serializable, ImmutableEntity<CentralBank> {
 		return equals;
 	}
 
+	/**
+	 * Private immutable subclass of CentralBank. This class is final; it is
+	 * intended solely for instantiation by {@link CentralBank#toImmutable()}.
+	 *
+	 * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
+	 */
 	private final class ImmutableCentralBank extends CentralBank {
 	
 		/**
