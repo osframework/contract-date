@@ -20,14 +20,15 @@ package org.osframework.contract.date.fincal.definition;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Currency;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.osframework.contract.date.fincal.ImmutableEntity;
 
 /**
  * Holiday calendar definition for a particular financial market. An instance of
@@ -40,60 +41,49 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * by <b>financialcalendar.com</b>, the <i>de facto</i> authoritative source of
  * calendar data used by financial institutions worldwide.
  * </p>
- * <p>Instances of this class are immutable and thread-safe.</p>
+ * <p>An instance of this class can provide an immutable and thread-safe
+ * version of itself.</p>
  * 
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  * @see <a href="http://www.financialcalendar.com/Data/Holidays/Coverage">
    Coverage - Financial Calendar</a>
  */
-public class FinancialCalendar implements Iterable<HolidayDefinition>, Serializable {
+public class FinancialCalendar implements Serializable, Iterable<HolidayDefinition>, ImmutableEntity<FinancialCalendar> {
 
 	/**
 	 * Serializable UID.
 	 */
-	private static final long serialVersionUID = -4226669744390855468L;
+	private static final long serialVersionUID = 6295632117301841003L;
 
-	private final String id;
-	private final String description;
-	private final CentralBank centralBank;
-	private final Set<HolidayDefinition> holidayDefinitions;
+	private String id;
+	private String description;
+	private CentralBank centralBank;
+	private Set<HolidayDefinition> holidayDefinitions = new HashSet<HolidayDefinition>();
 
 	/**
-	 * Cached hash value for this instance.
+	 * Default constructor.
 	 */
-	private volatile transient int hashCode;
+	public FinancialCalendar() {}
 
 	/**
 	 * Constructor. Holiday definitions passed to this constructor are copied to
-	 * an new, unmodifiable collection which is safe for multi-thread concurrent
-	 * iteration.
+	 * an new collection.
 	 *
 	 * @param id unique identifier for this instance
 	 * @param description short description of this calendar definition
 	 * @param centralBank central bank which governs this calendar's holiday definitions
 	 * @param holidayDefinitions collection of holiday definitions which comprise this calendar
-	 * @throws IllegalArgumentException if any argument is null or empty
+	 * @throws IllegalArgumentException if centralBank or holidayDefinitions is null
 	 */
 	public FinancialCalendar(final String id,
 			                 final String description,
 			                 final CentralBank centralBank,
 			                 final Set<HolidayDefinition> holidayDefinitions) {
-		if (StringUtils.isBlank(id)) {
-			throw new IllegalArgumentException("Invalid blank 'id' argument");
-		}
-		if (StringUtils.isBlank(description)) {
-			throw new IllegalArgumentException("Invalid blank 'description' argument");
-		}
-		if (null == centralBank) {
-			throw new IllegalArgumentException("CentralBank argument cannot be null");
-		}
-		if (null == holidayDefinitions) {
-			throw new IllegalArgumentException("Set argument cannot be null");
-		}
-		this.id = id;
-		this.description = description;
-		this.centralBank = centralBank;
-		this.holidayDefinitions = Collections.unmodifiableSet(holidayDefinitions);
+		this();
+		this.setId(id);
+		this.setDescription(description);
+		this.setCentralBank(centralBank);
+		this.setHolidayDefinitions(holidayDefinitions);
 	}
 
 	/**
@@ -104,10 +94,28 @@ public class FinancialCalendar implements Iterable<HolidayDefinition>, Serializa
 	}
 
 	/**
+	 * Set unique identifier for this financial calendar.
+	 * 
+	 * @param id unique identifier for this instance
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	/**
 	 * @return short description of this calendar definition
 	 */
 	public String getDescription() {
 		return description;
+	}
+
+	/**
+	 * Set description of this financial calendar.
+	 * 
+	 * @param description short description of this calendar definition
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	/**
@@ -118,10 +126,72 @@ public class FinancialCalendar implements Iterable<HolidayDefinition>, Serializa
 	}
 
 	/**
+	 * Set central bank of this financial calendar.
+	 * 
+	 * @param centralBank central bank which governs this calendar's holiday
+	 *                    definitions
+	 * @throws IllegalArgumentException if centralBank is null
+	 */
+	public void setCentralBank(CentralBank centralBank) {
+		if (null == centralBank) {
+			throw new IllegalArgumentException("CentralBank argument cannot be null");
+		}
+		this.centralBank = centralBank;
+	}
+
+	/**
 	 * @return currency with which this calendar definition is associated
 	 */
 	public Currency getCurrency() {
-		return centralBank.getCurrency();
+		return (null == centralBank) ? null : centralBank.getCurrency();
+	}
+
+	/**
+	 * @return holiday definitions referenced by this financial calendar
+	 */
+	public Set<HolidayDefinition> getHolidayDefinitions() {
+		return holidayDefinitions;
+	}
+
+	/**
+	 * Set holiday definitions to be referenced by this financial calendar.
+	 * 
+	 * @param holidayDefinitions holiday definitions referenced by this
+	 *                           financial calendar
+	 * @throws IllegalArgumentException if holidayDefinitions is null
+	 */
+	public void setHolidayDefinitions(Set<HolidayDefinition> holidayDefinitions) {
+		if (null == holidayDefinitions) {
+			throw new IllegalArgumentException("Set argument cannot be null");
+		}
+		this.holidayDefinitions.clear();
+		this.holidayDefinitions.addAll(holidayDefinitions);
+	}
+
+	/**
+	 * Add a holiday definition to this financial calendar.
+	 * 
+	 * @param holidayDefinition holiday definition to be added
+	 * @throws IllegalArgumentException if holidayDefinition is null
+	 */
+	public void addHolidayDefinition(HolidayDefinition holidayDefinition) {
+		if (null == holidayDefinition) {
+			throw new IllegalArgumentException("holidayDefinition argument cannot be null");
+		}
+		this.holidayDefinitions.add(holidayDefinition);
+	}
+
+	/**
+	 * Remove a holiday definition from this financial calendar.
+	 * 
+	 * @param holidayDefinition holiday definition to be removed
+	 * @throws IllegalArgumentException if holidayDefinition is null
+	 */
+	public void removeHolidayDefinition(HolidayDefinition holidayDefinition) {
+		if (null == holidayDefinition) {
+			throw new IllegalArgumentException("holidayDefinition argument cannot be null");
+		}
+		this.holidayDefinitions.remove(holidayDefinition);
 	}
 
 	/**
@@ -136,8 +206,7 @@ public class FinancialCalendar implements Iterable<HolidayDefinition>, Serializa
 	}
 
 	/**
-	 * @return unmodifiable iterator over the holiday definitions in this
-	 *         calendar
+	 * @return iterator over the holiday definitions in this financial calendar
 	 */
 	public Iterator<HolidayDefinition> iterator() {
 		return holidayDefinitions.iterator();
@@ -155,17 +224,22 @@ public class FinancialCalendar implements Iterable<HolidayDefinition>, Serializa
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
+	public FinancialCalendar toImmutable() {
+		return new ImmutableFinancialCalendar(this.id, this.description, this.centralBank, this.holidayDefinitions);
+	}
+
+	public boolean isImmutable() {
+		return (this instanceof ImmutableFinancialCalendar);
+	}
+
 	@Override
 	public int hashCode() {
-		if (0 == hashCode) {
-			hashCode = new HashCodeBuilder()
-			               .append(id)
-			               .append(description)
-			               .append(centralBank)
-			               .append(holidayDefinitions)
-			               .toHashCode();
-		}
-		return hashCode;
+		return new HashCodeBuilder()
+                   .append(id)
+                   .append(description)
+                   .append(centralBank)
+                   .append(holidayDefinitions)
+                   .toHashCode();
 	}
 
 	@Override
@@ -185,6 +259,134 @@ public class FinancialCalendar implements Iterable<HolidayDefinition>, Serializa
 			result = false;
 		}
 		return result;
+	}
+
+	private final class ImmutableFinancialCalendar extends FinancialCalendar {
+	
+		/**
+		 * Serializable UID.
+		 */
+		private static final long serialVersionUID = -7685175750981328587L;
+
+		/**
+		 * Cached hash value for this instance.
+		 */
+		private volatile transient int hashCode;
+
+		/**
+		 * @param id
+		 * @param description
+		 * @param centralBank
+		 * @param holidayDefinitions
+		 */
+		public ImmutableFinancialCalendar(final String id,
+				                          final String description,
+				                          final CentralBank centralBank,
+				                          final Set<HolidayDefinition> holidayDefinitions) {
+			super();
+			super.setId(id);
+			super.setDescription(description);
+			super.setCentralBank(centralBank);
+			super.setHolidayDefinitions(holidayDefinitions);
+		}
+
+		/**
+		 * Overridden method to prevent mutability of this instance.
+		 * 
+		 * @throws UnsupportedOperationException
+		 */
+		@Override
+		public final void setId(String id) {
+			throw new UnsupportedOperationException(DEFAULT_EXCEPTION_MSG);
+		}
+
+		/**
+		 * Overridden method to prevent mutability of this instance.
+		 * 
+		 * @throws UnsupportedOperationException
+		 */
+		@Override
+		public final void setDescription(String description) {
+			throw new UnsupportedOperationException(DEFAULT_EXCEPTION_MSG);
+		}
+
+		/**
+		 * Overridden method to prevent mutability of this instance.
+		 * 
+		 * @throws UnsupportedOperationException
+		 */
+		@Override
+		public final void setCentralBank(CentralBank centralBank) {
+			throw new UnsupportedOperationException(DEFAULT_EXCEPTION_MSG);
+		}
+
+		/**
+		 * Overridden method to prevent mutability of this instance.
+		 */
+		@Override
+		public final Set<HolidayDefinition> getHolidayDefinitions() {
+			return Collections.unmodifiableSet(super.getHolidayDefinitions());
+		}
+
+		/**
+		 * Overridden method to prevent mutability of this instance.
+		 * 
+		 * @throws UnsupportedOperationException
+		 */
+		@Override
+		public final void setHolidayDefinitions(Set<HolidayDefinition> holidayDefinitions) {
+			throw new UnsupportedOperationException(DEFAULT_EXCEPTION_MSG);
+		}
+
+		/**
+		 * Overridden method to prevent mutability of this instance.
+		 * 
+		 * @throws UnsupportedOperationException
+		 */
+		@Override
+		public final void addHolidayDefinition(HolidayDefinition holidayDefinition) {
+			throw new UnsupportedOperationException(DEFAULT_EXCEPTION_MSG);
+		}
+
+		/**
+		 * Overridden method to prevent mutability of this instance.
+		 * 
+		 * @throws UnsupportedOperationException
+		 */
+		@Override
+		public final void removeHolidayDefinition(HolidayDefinition holidayDefinition) {
+			throw new UnsupportedOperationException(DEFAULT_EXCEPTION_MSG);
+		}
+
+		/**
+		 * @return unmodifiable iterator over the holiday definitions in this
+		 *         financial calendar
+		 */
+		@Override
+		public final Iterator<HolidayDefinition> iterator() {
+			return this.getHolidayDefinitions().iterator();
+		}
+
+		/**
+		 * This implementation simply returns <code>this</code>.
+		 */
+		@Override
+		public final FinancialCalendar toImmutable() {
+			return this;
+		}
+
+		@Override
+		public int hashCode() {
+			if (0 == hashCode) {
+				hashCode = new HashCodeBuilder()
+				               .append(id)
+				               .append(description)
+				               .append(centralBank)
+				               .append(holidayDefinitions)
+				               .toHashCode();
+			}
+			return hashCode;
+		}
 	}
 
 }

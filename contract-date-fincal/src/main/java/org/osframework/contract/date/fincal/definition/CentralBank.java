@@ -64,10 +64,10 @@ public class CentralBank implements Serializable, ImmutableEntity<CentralBank> {
 	 * @throws IllegalArgumentException if <code>country</code> is not valid
 	 *         ISO-3166 alpha2 code or if <code>currency</code> is null
 	 */
-	public CentralBank(String id,
-			           String name,
-			           String country,
-			           Currency currency) {
+	public CentralBank(final String id,
+			           final String name,
+			           final String country,
+			           final Currency currency) {
 		this();
 		this.setId(id);
 		this.setName(name);
@@ -175,7 +175,7 @@ public class CentralBank implements Serializable, ImmutableEntity<CentralBank> {
 	 *         ISO-4217 code
 	 */
 	public void setCurrency(String currencyCode) {
-		this.currency = Currency.getInstance(currencyCode);
+		this.setCurrency(Currency.getInstance(currencyCode));
 	}
 
 	@Override
@@ -184,7 +184,7 @@ public class CentralBank implements Serializable, ImmutableEntity<CentralBank> {
 	}
 
 	public CentralBank toImmutable() {
-		return new ImmutableCentralBank(this.id, name, country, currency);
+		return new ImmutableCentralBank(this.id, this.name, this.country, this.currency);
 	}
 
 	public boolean isImmutable() {
@@ -241,13 +241,17 @@ public class CentralBank implements Serializable, ImmutableEntity<CentralBank> {
 		 * @param currency ISO-4217 code for currency managed by this central bank
 		 * @throws IllegalArgumentException if any argument is null or empty, or if
 		 *         <code>country</code> is not valid ISO-3166 alpha2 code, or if
-		 *         <code>currencyCode</code> is not valid ISO-4217 code
+		 *         <code>currency</code> is null
 		 */
-		public ImmutableCentralBank(final String id,
-				                    final String name,
-				                    final String country,
-				                    final Currency currencyCode) {
-			super(id, name, country, currencyCode);
+		ImmutableCentralBank(final String id,
+				             final String name,
+				             final String country,
+				             final Currency currency) {
+			super();
+			super.setId(id);
+			super.setName(name);
+			super.setCountry(country);
+			super.setCurrency(currency);
 		}
 
 		/**
