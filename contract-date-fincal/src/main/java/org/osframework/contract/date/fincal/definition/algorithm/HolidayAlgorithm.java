@@ -1,5 +1,5 @@
 /*
- * File: HolidayExpression.java
+ * File: HolidayAlgorithm.java
  * 
  * Copyright 2012 OSFramework Project.
  * 
@@ -15,24 +15,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.expression;
+package org.osframework.contract.date.fincal.definition.algorithm;
 
 import java.util.Date;
 
 /**
- * Behavior exposed by objects that produce the date of a holiday through
- * evaluation of some logic.
+ * Behavior provided by objects which encapsulate a particular algorithm or
+ * formula for calculation of a named holiday.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
-public interface HolidayExpression {
+public interface HolidayAlgorithm {
 
 	/**
-	 * Produce the date of a defined holiday for the specified year.
+	 * @return name of algorithm implemented by this object. Cannot be null.
+	 */
+	public String name();
+
+	/**
+	 * Compute the date of this object's named holiday via its algorithm.
 	 * 
-	 * @param year year for which this expression must produce the holiday date
+	 * @param year year for which this algorithm must compute the holiday date
 	 * @return date of a defined holiday in the given year
 	 */
-	public Date evaluate(int year);
+	public Date compute(int year);
 
 }

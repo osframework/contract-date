@@ -17,11 +17,10 @@
  */
 package org.osframework.contract.date.fincal.definition;
 
-import org.osframework.contract.date.fincal.expression.HolidayExpression;
-import org.osframework.contract.date.fincal.expression.HolidayExpressionCalculatedImpl;
-import org.osframework.contract.date.fincal.expression.HolidayExpressionFixedImpl;
-import org.osframework.contract.date.fincal.expression.HolidayExpressionOneTimeImpl;
-import org.osframework.contract.date.fincal.expression.HolidayExpressionRelativeImpl;
+import org.osframework.contract.date.fincal.definition.expression.HolidayExpressionCalculatedImpl;
+import org.osframework.contract.date.fincal.definition.expression.HolidayExpressionFixedImpl;
+import org.osframework.contract.date.fincal.definition.expression.HolidayExpressionOneTimeImpl;
+import org.osframework.contract.date.fincal.definition.expression.HolidayExpressionRelativeImpl;
 
 /**
  * Enumeration of holiday types. Given a valid expression, a

@@ -25,7 +25,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.osframework.contract.date.fincal.ImmutableEntity;
-import org.osframework.contract.date.fincal.expression.HolidayExpression;
 
 /**
  * Definition of a holiday observed in one or more financial markets.

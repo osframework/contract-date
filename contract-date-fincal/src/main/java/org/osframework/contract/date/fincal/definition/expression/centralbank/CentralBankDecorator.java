@@ -15,11 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.expression.centralbank;
+package org.osframework.contract.date.fincal.definition.expression.centralbank;
 
 import org.osframework.contract.date.fincal.definition.CentralBank;
-import org.osframework.contract.date.fincal.expression.HolidayExpression;
-import org.osframework.contract.date.fincal.expression.HolidayExpressionDecorator;
+import org.osframework.contract.date.fincal.definition.HolidayExpression;
+import org.osframework.contract.date.fincal.definition.expression.HolidayExpressionDecorator;
 
 /**
  * Abstract superclass of decorators that provide <code>CentralBank</code>

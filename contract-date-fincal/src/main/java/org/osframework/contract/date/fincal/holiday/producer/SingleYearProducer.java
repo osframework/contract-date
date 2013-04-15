@@ -27,8 +27,8 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.osframework.contract.date.fincal.definition.FinancialCalendar;
 import org.osframework.contract.date.fincal.definition.HolidayDefinition;
-import org.osframework.contract.date.fincal.expression.HolidayExpression;
-import org.osframework.contract.date.fincal.expression.centralbank.CentralBankDecoratorLocator;
+import org.osframework.contract.date.fincal.definition.HolidayExpression;
+import org.osframework.contract.date.fincal.definition.expression.centralbank.CentralBankDecoratorLocator;
 import org.osframework.contract.date.fincal.holiday.Holiday;
 
 /**

@@ -15,9 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.expression;
+package org.osframework.contract.date.fincal.definition.expression;
 
 import java.util.Date;
+
+import org.osframework.contract.date.fincal.definition.HolidayExpression;
 
 /**
  * Abstract superclass of objects that decorate an underlying

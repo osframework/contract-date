@@ -15,15 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.expression;
+package org.osframework.contract.date.fincal.definition.expression;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.osframework.contract.date.fincal.expression.algorithm.HolidayAlgorithm;
-import org.osframework.contract.date.fincal.expression.algorithm.HolidayAlgorithmLoader;
+import org.osframework.contract.date.fincal.definition.HolidayExpression;
+import org.osframework.contract.date.fincal.definition.algorithm.HolidayAlgorithm;
+import org.osframework.contract.date.fincal.definition.algorithm.HolidayAlgorithmLoader;
 
 /**
  * Produce the date of a holiday calculated via an algorithm and/or formula.

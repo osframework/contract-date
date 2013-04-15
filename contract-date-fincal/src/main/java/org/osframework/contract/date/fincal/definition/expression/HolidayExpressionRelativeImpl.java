@@ -15,12 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.expression;
+package org.osframework.contract.date.fincal.definition.expression;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Calendar;
 import java.util.Date;
+
+import org.osframework.contract.date.fincal.definition.HolidayExpression;
 
 /**
  * Produce the date of a holiday occurring on the <i>N</i>th named weekday in a

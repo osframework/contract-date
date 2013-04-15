@@ -1,5 +1,5 @@
 /*
- * File: package-info.java
+ * File: HolidayExpression.java
  * 
  * Copyright 2012 OSFramework Project.
  * 
@@ -15,11 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.osframework.contract.date.fincal.definition;
+
+import java.util.Date;
+
 /**
- * Expression decorators for application of <code>CentralBank</code>-specific
- * date adjustments.
+ * Behavior exposed by objects that produce the date of a holiday through
+ * evaluation of some logic.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
- * @see org.osframework.contract.date.fincal.expression.HolidayExpressionDecorator
  */
-package org.osframework.contract.date.fincal.expression.centralbank;
+public interface HolidayExpression {
+
+	/**
+	 * Produce the date of a defined holiday for the specified year.
+	 * 
+	 * @param year year for which this expression must produce the holiday date
+	 * @return date of a defined holiday in the given year
+	 */
+	public Date evaluate(int year);
+
+}

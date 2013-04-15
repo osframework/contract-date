@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.expression.algorithm;
+package org.osframework.contract.date.fincal.definition.algorithm;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;

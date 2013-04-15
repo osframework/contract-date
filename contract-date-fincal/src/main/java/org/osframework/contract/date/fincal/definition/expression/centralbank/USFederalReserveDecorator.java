@@ -15,13 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.expression.centralbank;
+package org.osframework.contract.date.fincal.definition.expression.centralbank;
 
 import java.util.Calendar;
 import java.util.Date;
 
 import org.osframework.contract.date.fincal.definition.CentralBank;
-import org.osframework.contract.date.fincal.expression.HolidayExpression;
+import org.osframework.contract.date.fincal.definition.HolidayExpression;
 
 /**
  * Applies date adjustments per US Federal Reserve bank holiday guidelines -

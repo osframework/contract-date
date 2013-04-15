@@ -22,4 +22,4 @@
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  *
  */
-package org.osframework.contract.date.fincal.expression.algorithm;
+package org.osframework.contract.date.fincal.definition.algorithm;

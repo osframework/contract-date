@@ -16,9 +16,10 @@
  * limitations under the License.
  */
 /**
- * Expression classes for creation of a particular type of holiday date for a
- * given year.
+ * Expression decorators for application of <code>CentralBank</code>-specific
+ * date adjustments.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
+ * @see org.osframework.contract.date.fincal.definition.expression.HolidayExpressionDecorator
  */
-package org.osframework.contract.date.fincal.expression;
+package org.osframework.contract.date.fincal.definition.expression.centralbank;
