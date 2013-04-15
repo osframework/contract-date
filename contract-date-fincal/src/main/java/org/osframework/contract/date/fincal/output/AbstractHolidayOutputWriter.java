@@ -21,8 +21,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.osframework.contract.date.fincal.definition.DefinitionSource;
 import org.osframework.contract.date.fincal.definition.FinancialCalendar;
+import org.osframework.contract.date.fincal.definition.source.DefinitionSource;
 import org.osframework.contract.date.fincal.holiday.Holiday;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

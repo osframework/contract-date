@@ -20,7 +20,7 @@ package org.osframework.contract.date.spring.fincal.definition.xml;
 import java.io.File;
 import java.net.URL;
 
-import org.osframework.contract.date.fincal.definition.xml.XmlDefinitionSource;
+import org.osframework.contract.date.fincal.definition.source.xml.XmlDefinitionSource;
 import org.osframework.contract.date.spring.fincal.definition.AbstractDefinitionSourceFactoryBean;
 import org.springframework.core.io.Resource;
 

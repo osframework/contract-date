@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.definition.xml;
+package org.osframework.contract.date.fincal.definition.source.xml;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -48,11 +48,11 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.reflect.ConstructorUtils;
 import org.osframework.contract.date.fincal.definition.CentralBank;
-import org.osframework.contract.date.fincal.definition.DefinitionSource;
-import org.osframework.contract.date.fincal.definition.DefinitionSourceException;
 import org.osframework.contract.date.fincal.definition.FinancialCalendar;
 import org.osframework.contract.date.fincal.definition.HolidayDefinition;
 import org.osframework.contract.date.fincal.definition.HolidayType;
+import org.osframework.contract.date.fincal.definition.source.DefinitionSource;
+import org.osframework.contract.date.fincal.definition.source.DefinitionSourceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

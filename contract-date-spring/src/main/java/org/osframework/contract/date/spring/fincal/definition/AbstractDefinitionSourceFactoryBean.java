@@ -17,7 +17,7 @@
  */
 package org.osframework.contract.date.spring.fincal.definition;
 
-import org.osframework.contract.date.fincal.definition.DefinitionSource;
+import org.osframework.contract.date.fincal.definition.source.DefinitionSource;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 import org.springframework.util.Assert;
 

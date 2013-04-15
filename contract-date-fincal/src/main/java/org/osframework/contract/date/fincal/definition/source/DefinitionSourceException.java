@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.definition;
+package org.osframework.contract.date.fincal.definition.source;
 
 /**
  * Runtime exception type thrown for an error encountered in a

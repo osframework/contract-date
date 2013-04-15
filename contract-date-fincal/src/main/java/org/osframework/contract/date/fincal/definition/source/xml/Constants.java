@@ -15,13 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.definition.xml;
+package org.osframework.contract.date.fincal.definition.source.xml;
 
 import javax.xml.XMLConstants;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.osframework.contract.date.fincal.definition.DefinitionSourceException;
+import org.osframework.contract.date.fincal.definition.source.DefinitionSourceException;
 import org.xml.sax.SAXException;
 
 /**
