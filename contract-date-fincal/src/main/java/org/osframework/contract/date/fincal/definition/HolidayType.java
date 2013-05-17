@@ -17,6 +17,10 @@
  */
 package org.osframework.contract.date.fincal.definition;
 
+import javax.xml.bind.annotation.XmlEnum;
+import javax.xml.bind.annotation.XmlEnumValue;
+import javax.xml.bind.annotation.XmlType;
+
 import org.osframework.contract.date.fincal.definition.expression.HolidayExpressionCalculatedImpl;
 import org.osframework.contract.date.fincal.definition.expression.HolidayExpressionFixedImpl;
 import org.osframework.contract.date.fincal.definition.expression.HolidayExpressionOneTimeImpl;
@@ -30,11 +34,14 @@ import org.osframework.contract.date.fincal.definition.expression.HolidayExpress
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  * @see HolidayExpression
  */
+@XmlType(name = "holidayType")
+@XmlEnum
 public enum HolidayType {
 
 	/**
 	 * Holiday which always falls on the same date every year.
 	 */
+	@XmlEnumValue("fixed")
 	FIXED(new HolidayExpressionStrategy() {
 		public HolidayExpression toExpression(String ruleExpression) {
 			return new HolidayExpressionFixedImpl(ruleExpression);
@@ -44,6 +51,7 @@ public enum HolidayType {
 	/**
 	 * Holiday which falls on the <i>N</i>th weekday of a month every year.
 	 */
+	@XmlEnumValue("relative")
 	RELATIVE(new HolidayExpressionStrategy() {
 		public HolidayExpression toExpression(String ruleExpression) {
 			return new HolidayExpressionRelativeImpl(ruleExpression);
@@ -54,6 +62,7 @@ public enum HolidayType {
 	 * Holiday for which a date must be calculated via some algorithm. Many
 	 * religious / ecumenical calendar holidays are of this type.
 	 */
+	@XmlEnumValue("calculated")
 	CALCULATED(new HolidayExpressionStrategy() {
 		public HolidayExpression toExpression(String ruleExpression) {
 			return new HolidayExpressionCalculatedImpl(ruleExpression);
@@ -63,6 +72,7 @@ public enum HolidayType {
 	/**
 	 * Holiday which occurs exactly once (typically a national special occasion).
 	 */
+	@XmlEnumValue("one-time")
 	ONETIME(new HolidayExpressionStrategy() {
 		public HolidayExpression toExpression(String ruleExpression) {
 			return new HolidayExpressionOneTimeImpl(ruleExpression);

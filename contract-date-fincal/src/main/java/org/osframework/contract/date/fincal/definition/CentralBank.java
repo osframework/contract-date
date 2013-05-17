@@ -21,6 +21,14 @@ import java.io.Serializable;
 import java.util.Currency;
 import java.util.Locale;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -37,6 +45,12 @@ import org.osframework.contract.date.fincal.ImmutableEntity;
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(name = "centralBank", propOrder = {
+		"name",
+		"country",
+		"currency"
+})
 public class CentralBank implements Serializable, ImmutableEntity<CentralBank> {
 
 	/**
@@ -96,6 +110,8 @@ public class CentralBank implements Serializable, ImmutableEntity<CentralBank> {
 	/**
 	 * @return unique identifier for this instance
 	 */
+	@XmlID
+	@XmlAttribute(name = "id", required = true)
 	public String getId() {
 		return id;
 	}
@@ -112,6 +128,7 @@ public class CentralBank implements Serializable, ImmutableEntity<CentralBank> {
 	/**
 	 * @return name of this central bank
 	 */
+	@XmlElement(name = "name", required = true)
 	public String getName() {
 		return name;
 	}
@@ -128,6 +145,7 @@ public class CentralBank implements Serializable, ImmutableEntity<CentralBank> {
 	/**
 	 * @return ISO-3166 country code for this central bank
 	 */
+	@XmlElement(name = "country", required = true)
 	public String getCountry() {
 		return country;
 	}
@@ -150,6 +168,7 @@ public class CentralBank implements Serializable, ImmutableEntity<CentralBank> {
 	/**
 	 * @return currency managed by this central bank
 	 */
+	@XmlElement(name = "currency", required = true)
 	public Currency getCurrency() {
 		return currency;
 	}
@@ -187,6 +206,7 @@ public class CentralBank implements Serializable, ImmutableEntity<CentralBank> {
 		return new ImmutableCentralBank(this.id, this.name, this.country, this.currency);
 	}
 
+	@XmlTransient
 	public boolean isImmutable() {
 		return (this instanceof ImmutableCentralBank);
 	}
@@ -226,6 +246,7 @@ public class CentralBank implements Serializable, ImmutableEntity<CentralBank> {
 	 *
 	 * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
 	 */
+	@XmlTransient
 	private final class ImmutableCentralBank extends CentralBank {
 	
 		/**

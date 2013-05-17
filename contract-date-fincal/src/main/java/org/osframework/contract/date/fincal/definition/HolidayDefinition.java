@@ -20,6 +20,14 @@ package org.osframework.contract.date.fincal.definition;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -33,6 +41,13 @@ import org.osframework.contract.date.fincal.ImmutableEntity;
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(name = "holidayDefinition", propOrder = {
+	"name",
+	"description",
+	"observance",
+	"expression"
+})
 public class HolidayDefinition implements Serializable, HolidayExpression, ImmutableEntity<HolidayDefinition> {
 
 	/**
@@ -69,6 +84,8 @@ public class HolidayDefinition implements Serializable, HolidayExpression, Immut
 	/**
 	 * @return unique identifier for this instance
 	 */
+	@XmlID
+	@XmlAttribute(name = "id", required = true)
 	public String getId() {
 		return id;
 	}
@@ -85,6 +102,7 @@ public class HolidayDefinition implements Serializable, HolidayExpression, Immut
 	/**
 	 * @return recognized name of the holiday defined by this object
 	 */
+	@XmlElement(name = "name", required = true)
 	public String getName() {
 		return name;
 	}
@@ -101,6 +119,7 @@ public class HolidayDefinition implements Serializable, HolidayExpression, Immut
 	/**
 	 * @return description of the holiday defined by this object
 	 */
+	@XmlElement(name = "description", required = false)
 	public String getDescription() {
 		return description;
 	}
@@ -117,6 +136,7 @@ public class HolidayDefinition implements Serializable, HolidayExpression, Immut
 	/**
 	 * @return type of observance of holiday defined by this object
 	 */
+	@XmlElement(name = "observance", required = true)
 	public HolidayType getObservance() {
 		return observance;
 	}
@@ -133,6 +153,7 @@ public class HolidayDefinition implements Serializable, HolidayExpression, Immut
 	/**
 	 * @return expression used to instances of the holiday defined by this object
 	 */
+	@XmlElement(name = "expression", required = true)
 	public String getExpression() {
 		return expression;
 	}
@@ -180,6 +201,7 @@ public class HolidayDefinition implements Serializable, HolidayExpression, Immut
 		return new ImmutableHolidayDefinition(this.id, this.name, this.description, this.observance, this.expression);
 	}
 
+	@XmlTransient
 	public boolean isImmutable() {
 		return (this instanceof ImmutableHolidayDefinition);
 	}
@@ -222,6 +244,7 @@ public class HolidayDefinition implements Serializable, HolidayExpression, Immut
 	 *
 	 * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
 	 */
+	@XmlTransient
 	private final class ImmutableHolidayDefinition extends HolidayDefinition {
 
 		/**

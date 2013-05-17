@@ -24,6 +24,17 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -48,6 +59,12 @@ import org.osframework.contract.date.fincal.ImmutableEntity;
  * @see <a href="http://www.financialcalendar.com/Data/Holidays/Coverage">
    Coverage - Financial Calendar</a>
  */
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(name = "calendar", propOrder = {
+	"description",
+	"centralBank",
+	"holidayDefinitions"
+})
 public class FinancialCalendar implements Serializable, Iterable<HolidayDefinition>, ImmutableEntity<FinancialCalendar> {
 
 	/**
@@ -89,6 +106,8 @@ public class FinancialCalendar implements Serializable, Iterable<HolidayDefiniti
 	/**
 	 * @return unique identifier for this instance
 	 */
+	@XmlID
+	@XmlAttribute(name = "id", required = true)
 	public String getId() {
 		return id;
 	}
@@ -105,6 +124,7 @@ public class FinancialCalendar implements Serializable, Iterable<HolidayDefiniti
 	/**
 	 * @return short description of this calendar definition
 	 */
+	@XmlElement(name = "description", required = true)
 	public String getDescription() {
 		return description;
 	}
@@ -121,6 +141,7 @@ public class FinancialCalendar implements Serializable, Iterable<HolidayDefiniti
 	/**
 	 * @return central bank which governs this calendar's holiday definitions
 	 */
+	@XmlIDREF
 	public CentralBank getCentralBank() {
 		return centralBank;
 	}
@@ -142,6 +163,7 @@ public class FinancialCalendar implements Serializable, Iterable<HolidayDefiniti
 	/**
 	 * @return currency with which this calendar definition is associated
 	 */
+	@XmlTransient
 	public Currency getCurrency() {
 		return (null == centralBank) ? null : centralBank.getCurrency();
 	}
@@ -149,6 +171,8 @@ public class FinancialCalendar implements Serializable, Iterable<HolidayDefiniti
 	/**
 	 * @return holiday definitions referenced by this financial calendar
 	 */
+	@XmlElementWrapper(name = "holidayDefinitions", required = true)
+	@XmlElementRef
 	public Set<HolidayDefinition> getHolidayDefinitions() {
 		return holidayDefinitions;
 	}
