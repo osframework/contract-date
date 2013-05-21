@@ -106,6 +106,7 @@
 	<modules>
 		<module>contract-date-calc</module>
 		<module>contract-date-fincal</module>
+		<module>contract-date-fincal-support</module>
 		<module>contract-date-spring</module>
 	</modules>
 
