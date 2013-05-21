@@ -19,6 +19,8 @@ package org.osframework.contract.date.fincal.definition.expression;
 
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.osframework.contract.date.fincal.definition.HolidayExpression;
 
 /**
@@ -28,6 +30,7 @@ import org.osframework.contract.date.fincal.definition.HolidayExpression;
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
+@XmlTransient
 public abstract class HolidayExpressionDecorator implements HolidayExpression {
 
 	protected final HolidayExpression decoratedExpression;

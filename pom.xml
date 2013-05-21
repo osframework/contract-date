@@ -89,6 +89,7 @@
 		<testng-ext.version>1.0.0</testng-ext.version>
 
 		<!-- Plugin versions -->
+		<jaxb2-maven-plugin.version>1.5</jaxb2-maven-plugin.version>
 		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
 		<maven-surefire-plugin.version>2.12.4</maven-surefire-plugin.version>
 		<maven-jxr-plugin.version>2.3</maven-jxr-plugin.version>
@@ -105,8 +106,8 @@
 	<modules>
 		<module>contract-date-calc</module>
 		<module>contract-date-fincal</module>
-    <module>contract-date-spring</module>
-  </modules>
+		<module>contract-date-spring</module>
+	</modules>
 
 	<dependencyManagement>
 		<dependencies>
@@ -246,6 +247,11 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-deploy-plugin</artifactId>
 					<version>${maven-deploy-plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>jaxb2-maven-plugin</artifactId>
+					<version>${jaxb2-maven-plugin.version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>

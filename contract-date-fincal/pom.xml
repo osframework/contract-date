@@ -44,4 +44,36 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jaxb2-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>schemagen</goal>
+						</goals>
+						<configuration>
+							<verbose>true</verbose>
+							<includes>
+								<include>org/osframework/contract/date/fincal/*.java</include>
+								<include>org/osframework/contract/date/fincal/definition/*.java</include>
+								<include>org/osframework/contract/date/fincal/definition/algorithm/*.java</include>
+								<include>org/osframework/contract/date/fincal/definition/expression/*.java</include>
+							</includes>
+							<outputDirectory>${project.build.outputDirectory}</outputDirectory>
+							<transformSchemas>
+								<transformSchema>
+									<uri>http://osframework.org/schema/contract-date-fincal</uri>
+									<toFile>definitions.xsd</toFile>
+								</transformSchema>
+							</transformSchemas>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

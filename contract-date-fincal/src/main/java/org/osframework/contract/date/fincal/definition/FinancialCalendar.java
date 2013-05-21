@@ -28,8 +28,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlTransient;
@@ -142,6 +142,7 @@ public class FinancialCalendar implements Serializable, Iterable<HolidayDefiniti
 	 * @return central bank which governs this calendar's holiday definitions
 	 */
 	@XmlIDREF
+	@XmlAttribute(name = "centralBank", required = true)
 	public CentralBank getCentralBank() {
 		return centralBank;
 	}
@@ -172,7 +173,10 @@ public class FinancialCalendar implements Serializable, Iterable<HolidayDefiniti
 	 * @return holiday definitions referenced by this financial calendar
 	 */
 	@XmlElementWrapper(name = "holidayDefinitions", required = true)
-	@XmlElementRef
+	@XmlElements({
+		@XmlElement(name = "ref", type = HolidayDefinition.class)
+	})
+	@XmlIDREF
 	public Set<HolidayDefinition> getHolidayDefinitions() {
 		return holidayDefinitions;
 	}
@@ -252,6 +256,7 @@ public class FinancialCalendar implements Serializable, Iterable<HolidayDefiniti
 		return new ImmutableFinancialCalendar(this.id, this.description, this.centralBank, this.holidayDefinitions);
 	}
 
+	@XmlTransient
 	public boolean isImmutable() {
 		return (this instanceof ImmutableFinancialCalendar);
 	}
@@ -292,6 +297,7 @@ public class FinancialCalendar implements Serializable, Iterable<HolidayDefiniti
 	 *
 	 * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
 	 */
+	@XmlTransient
 	private final class ImmutableFinancialCalendar extends FinancialCalendar {
 	
 		/**

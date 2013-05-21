@@ -20,6 +20,8 @@ package org.osframework.contract.date.fincal.definition.algorithm;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 /**
  * Provides computation of Easter Sunday by the "Western" definition (ie, Roman
  * Catholic and most Protestant churches). British, European, and some Asian
@@ -27,6 +29,7 @@ import java.util.Date;
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
+@XmlTransient
 public class WesternEaster implements HolidayAlgorithm {
 
 	public static final String NAME = "EASTER";

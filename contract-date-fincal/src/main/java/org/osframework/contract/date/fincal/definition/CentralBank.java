@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -168,6 +169,7 @@ public class CentralBank implements Serializable, ImmutableEntity<CentralBank> {
 	/**
 	 * @return currency managed by this central bank
 	 */
+	@XmlJavaTypeAdapter(CurrencyAdapter.class)
 	@XmlElement(name = "currency", required = true)
 	public Currency getCurrency() {
 		return currency;

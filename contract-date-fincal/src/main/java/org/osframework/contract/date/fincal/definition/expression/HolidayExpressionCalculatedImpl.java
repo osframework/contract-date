@@ -22,6 +22,8 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.osframework.contract.date.fincal.definition.HolidayExpression;
 import org.osframework.contract.date.fincal.definition.algorithm.HolidayAlgorithm;
 import org.osframework.contract.date.fincal.definition.algorithm.HolidayAlgorithmLoader;
@@ -31,6 +33,7 @@ import org.osframework.contract.date.fincal.definition.algorithm.HolidayAlgorith
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
+@XmlTransient
 public class HolidayExpressionCalculatedImpl implements HolidayExpression {
 
 	public static final String REGEX_CALCULATED_EXPRESSION = "^([a-zA-Z0-9_]+)((\\+|-)(\\d+))?$";

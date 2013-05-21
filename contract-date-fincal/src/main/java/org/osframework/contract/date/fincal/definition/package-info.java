@@ -22,19 +22,12 @@
  */
 @XmlSchema(
 	elementFormDefault = XmlNsForm.QUALIFIED,
-	namespace = "http://osframework.org/schema/contract-date-fincal"
+	namespace = XmlConstants.CONTRACT_DATE_FINCAL_NS_URI
 )
-@XmlJavaTypeAdapters({
-	@XmlJavaTypeAdapter(type = Currency.class, value = CurrencyAdapter.class)
-})
 package org.osframework.contract.date.fincal.definition;
-
-import java.util.Currency;
 
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlSchema;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
+import org.osframework.contract.date.fincal.XmlConstants;
 
-import org.osframework.contract.date.fincal.definition.jaxb.CurrencyAdapter;
 

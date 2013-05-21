@@ -19,6 +19,7 @@ package org.osframework.contract.date.fincal.definition;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.osframework.contract.date.fincal.definition.expression.HolidayExpressionCalculatedImpl;
@@ -98,6 +99,7 @@ public enum HolidayType {
 		return this.strategy.toExpression(expression);
 	}
 
+	@XmlTransient
 	private static interface HolidayExpressionStrategy {
 
 		HolidayExpression toExpression(final String ruleExpression);

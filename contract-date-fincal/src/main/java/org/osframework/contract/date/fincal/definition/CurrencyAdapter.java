@@ -15,10 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osframework.contract.date.fincal.definition.jaxb;
+package org.osframework.contract.date.fincal.definition;
 
 import java.util.Currency;
 
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
@@ -26,6 +27,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
+@XmlTransient
 public class CurrencyAdapter extends XmlAdapter<String, Currency> {
 
 	public Currency unmarshal(String currencyCode) throws Exception {

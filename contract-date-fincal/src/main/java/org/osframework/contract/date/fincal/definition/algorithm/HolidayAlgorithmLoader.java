@@ -21,11 +21,14 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 /**
  * Runtime service loader for <code>HolidayAlgorithm</code> implementations.
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
+@XmlTransient
 public class HolidayAlgorithmLoader {
 
 	private HolidayAlgorithmLoader() {}

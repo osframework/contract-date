@@ -20,6 +20,8 @@ package org.osframework.contract.date.fincal.definition.expression;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.osframework.contract.date.fincal.definition.HolidayExpression;
 import org.osframework.util.DateUtil;
 
@@ -29,6 +31,7 @@ import org.osframework.util.DateUtil;
  *
  * @author <a href="mailto:dave@osframework.org">Dave Joyce</a>
  */
+@XmlTransient
 public class HolidayExpressionOneTimeImpl implements HolidayExpression {
 
 	private final Date oneTimeHolidayDate;
